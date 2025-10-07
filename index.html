@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Room Expense Tracker</title>
+<style>
+:root {
+  --bg-start:#6dd5fa; --bg-end:#2980b9; --text:#222; --card-bg:#ffffffdd;
+  --accent:#007bff; --highlight:#28a745; --remove:#e74c3c;
+}
+body.dark {
+  --bg-start:#0f2027; --bg-end:#203a43; --text:#eee; --card-bg:#1f1f1fdd;
+  --accent:#2196f3; --highlight:#4caf50; --remove:#e74c3c;
+}
+body {
+  font-family:"Poppins",sans-serif; margin:0; padding:20px; color:var(--text);
+  background:linear-gradient(270deg,var(--bg-start),var(--bg-end));
+  background-size:400% 400%; animation:gradientShift 15s ease infinite;
+  transition:all 0.5s ease;
+}
+@keyframes gradientShift {
+  0% {background-position:0% 50%;}
+  50% {background-position:100% 50%;}
+  100% {background-position:0% 50%;}
+}
+.container { max-width:500px; margin:auto; background:var(--card-bg); border-radius:15px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.25);}
+h2,h3{text-align:center;margin:5px 0;}
+input,select,button{
+  padding:10px; margin:5px 0; border-radius:6px; border:1px solid #ccc;
+  font-size:16px; width:100%; box-sizing:border-box; background:var(--card-bg); color:var(--text);
+}
+button{cursor:pointer; background-color:var(--highlight); color:#fff; border:none;}
+button:hover{opacity:0.9;}
+table{width:100%; border-collapse:separate; border-spacing:0 6px; margin:10px 0;}
+th,td{padding:8px; text-align:center; border-radius:6px; font-size:14px;}
+thead th{background-color:var(--accent); color:white; font-size:14px;}
+tbody tr{background-color:var(--card-bg); box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+tfoot td{font-weight:bold; border-radius:6px;}
+.remove-btn{background-color:var(--remove); color:white; border:none; padding:4px 8px; border-radius:5px; cursor:pointer;}
+.remove-btn:hover{opacity:0.8;}
+.action-bar{text-align:center; margin:10px 0;}
+.action-bar button{margin:5px; width:48%}
+.modal{display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;}
+.modal-content{background:var(--card-bg); padding:15px; border-radius:10px; width:95%; max-width:400px; color:var(--text); max-height:90%; overflow-y:auto; box-shadow:0 4px 15px rgba(0,0,0,0.3);}
+.close-btn{float:right; background:var(--remove); border-radius:50%; padding:2px 8px; cursor:pointer;}
+.member-item{display:flex; justify-content:space-between; margin:5px 0; padding:6px 8px; background:rgba(0,0,0,0.05); border-radius:5px;}
+.member-item button{background:var(--remove); padding:2px 6px; border-radius:50%;}
+#quickAddBtn {position:fixed;bottom:20px;right:20px;background:var(--highlight);color:#fff;
+  border:none;width:60px;height:60px;border-radius:50%;font-size:30px;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:10;}
+.quick-modal .modal-content {max-width:350px;}
+@media(max-width:400px){button,input,select{font-size:14px;padding:8px;}}
+</style>
+</head>
+<body>
+<div class="container">
+<h2>🏠 Room Expense Tracker</h2>
+<input type="number" id="rent" placeholder="Total Room Rent (AED)">
+<div style="text-align:center;margin:10px 0;">
+<button onclick="openMemberEditor()">👥 Edit Members</button>
+<button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+</div>
+
+<h3>🧾 Expenses</h3>
+<table id="expenseTable">
+<thead><tr><th>Person</th><th>Amount (AED)</th><th>Action</th></tr></thead>
+<tbody></tbody>
+</table>
+<div class="action-bar">
+<button onclick="addExpenseRow()">➕ Add Row</button>
+<button onclick="calculateAndShow()">💰 Calculate</button>
+<button onclick="resetAll()">🔄 Clear Values</button>
+</div>
+</div>
+
+<!-- Quick Add Modal -->
+<button id="quickAddBtn" onclick="openQuickAdd()">+</button>
+<div class="modal quick-modal" id="quickModal">
+<div class="modal-content">
+<button class="close-btn" onclick="closeQuickAdd()">×</button>
+<h3>➕ Quick Add Expense</h3>
+<select id="quickPerson"></select>
+<input type="number" id="quickAmount" placeholder="Amount">
+<button onclick="addQuickExpense()">Add</button>
+</div>
+</div>
+
+<!-- Member Modal -->
+<div class="modal" id="memberModal">
+<div class="modal-content">
+<button class="close-btn" onclick="closeMemberEditor()">×</button>
+<h3>Edit Members</h3>
+<div id="memberList"></div>
+<input type="text" id="newMemberName" placeholder="Add new member">
+<button onclick="addMember()">Add</button>
+<button onclick="saveMemberChanges()">✅ Done</button>
+</div>
+</div>
+
+<!-- Summary Modal -->
+<div class="modal" id="summaryModal">
+<div class="modal-content">
+<button class="close-btn" onclick="closeSummary()">×</button>
+<h3>📊 Payment Summary</h3>
+<div style="overflow-x:auto;">
+<table id="summaryTable">
+<thead><tr><th>Name</th><th>Paid</th><th>Expense</th><th>Rent</th><th>To Pay</th></tr></thead>
+<tbody></tbody>
+<tfoot></tfoot>
+</table>
+</div>
+<div style="text-align:center;margin-top:10px;">
+<button onclick="downloadPDF()">📄 PDF</button>
+<button onclick="shareOnWhatsApp()">💬 WhatsApp</button>
+</div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+let people=["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+function addExpenseRow(person="",amount=""){
+  const tbody=document.querySelector("#expenseTable tbody");
+  const row=document.createElement("tr");
+  row.innerHTML=`<td><select class="person-select">${people.map(p=>`<option value="${p}" ${p===person?"selected":""}>${p}</option>`).join('')}</select></td>
+  <td><input type="number" class="amount" value="${amount}" placeholder="0"></td>
+  <td><button class="remove-btn" onclick="this.closest('tr').remove();saveData();">❌</button></td>`;
+  tbody.appendChild(row);
+}
+function updateDropdowns(){
+  document.querySelectorAll(".person-select").forEach(sel=>{
+    const current=sel.value;
+    sel.innerHTML=people.map(p=>`<option value="${p}" ${p===current?"selected":""}>${p}</option>`).join('');
+  });
+  updateQuickDropdown();
+}
+function openMemberEditor(){
+  const modal=document.getElementById("memberModal");
+  const list=document.getElementById("memberList");
+  list.innerHTML="";
+  people.forEach(p=>{
+    const div=document.createElement("div");
+    div.className="member-item";
+    div.innerHTML=`<span>${p}</span><button onclick="removeMemberFromModal('${p}')">×</button>`;
+    list.appendChild(div);
+  });
+  modal.style.display="flex";
+}
+function closeMemberEditor(){document.getElementById("memberModal").style.display="none";}
+function addMember(){
+  const name=document.getElementById("newMemberName").value.trim().toUpperCase();
+  if(name && !people.includes(name)){ people.push(name); openMemberEditor(); document.getElementById("newMemberName").value="";}
+}
+function removeMemberFromModal(name){people=people.filter(p=>p!==name); openMemberEditor();}
+function saveMemberChanges(){closeMemberEditor(); updateDropdowns(); saveData();}
+function openQuickAdd(){document.getElementById("quickModal").style.display="flex"; updateQuickDropdown();}
+function closeQuickAdd(){document.getElementById("quickModal").style.display="none";}
+function updateQuickDropdown(){
+  const sel=document.getElementById("quickPerson");
+  sel.innerHTML=people.map(p=>`<option value="${p}">${p}</option>`).join('');
+}
+function addQuickExpense(){
+  const person=document.getElementById("quickPerson").value;
+  const amount=document.getElementById("quickAmount").value;
+  if(person && amount){
+    addExpenseRow(person,amount); document.getElementById("quickAmount").value=""; closeQuickAdd(); saveData();
+  }
+}
+function calculateTotals(){
+  const rent=parseFloat(document.getElementById('rent').value)||0;
+  const totals={}; people.forEach(p=>totals[p]=0);
+  document.querySelectorAll("#expenseTable tbody tr").forEach(row=>{
+    const person=row.querySelector(".person-select").value;
+    const amount=parseFloat(row.querySelector(".amount").value)||0;
+    if(totals.hasOwnProperty(person)) totals[person]+=amount;
+  });
+  const totalExpenses=Object.values(totals).reduce((a,b)=>a+b,0);
+  const expenseShare=totalExpenses/people.length;
+  const rentShare=rent/people.length;
+  return {totals,totalExpenses,expenseShare,rentShare};
+}
+function calculateAndShow(){
+  const {totals,totalExpenses,expenseShare,rentShare}=calculateTotals();
+  const tbody=document.querySelector("#summaryTable tbody");
+  const tfoot=document.querySelector("#summaryTable tfoot");
+  tbody.innerHTML=""; tfoot.innerHTML="";
+  people.forEach(p=>{
+    const toPay=(rentShare+expenseShare-totals[p]).toFixed(2);
+    tbody.innerHTML+=`<tr>
+      <td>${p}</td>
+      <td>${totals[p].toFixed(2)}</td>
+      <td>${expenseShare.toFixed(2)}</td>
+      <td>${rentShare.toFixed(2)}</td>
+      <td style="font-weight:bold;color:${toPay>0?'#d9534f':'#28a745'};">${toPay}</td>
+    </tr>`;
+  });
+  tfoot.innerHTML=`<tr><td colspan="2">Total Expenses</td><td colspan="3">${totalExpenses.toFixed(2)} AED</td></tr>`;
+  document.getElementById("summaryModal").style.display="flex";
+  saveData();
+}
+function closeSummary(){document.getElementById("summaryModal").style.display="none";}
+function resetAll(){
+  if(!confirm("Clear all values?")) return;
+  document.getElementById('rent').value = "";
+  document.querySelectorAll("#expenseTable tbody tr").forEach(row => {
+    row.querySelector(".amount").value = "";
+  });
+  document.querySelector("#summaryTable tbody").innerHTML = "";
+  document.querySelector("#summaryTable tfoot").innerHTML = "";
+  saveData();
+}
+function toggleDarkMode(){document.body.classList.toggle("dark"); saveData();}
+function saveData(){
+  const rent=document.getElementById('rent').value;
+  const rows=Array.from(document.querySelectorAll("#expenseTable tbody tr")).map(r=>({
+    person:r.querySelector(".person-select").value,
+    amount:r.querySelector(".amount").value
+  }));
+  localStorage.setItem("roomExpenseData",JSON.stringify({rent,rows,people, dark:document.body.classList.contains("dark")}));
+}
+function loadData(){
+  const data=JSON.parse(localStorage.getItem("roomExpenseData")||"{}");
+  if(data.people) people=data.people;
+  if(data.rent) document.getElementById('rent').value=data.rent;
+  document.querySelector("#expenseTable tbody").innerHTML="";
+  if(data.rows) data.rows.forEach(r=>addExpenseRow(r.person,r.amount));
+  else people.forEach(()=>addExpenseRow());
+  if(data.dark) document.body.classList.add("dark");
+  updateDropdowns();
+}
+document.addEventListener("input",e=>{if(e.target.classList.contains("amount")||e.target.id==="rent") saveData();});
+window.addEventListener("DOMContentLoaded",loadData);
+window.addEventListener("beforeunload",saveData);
+</script>
+</body>
+</html>
