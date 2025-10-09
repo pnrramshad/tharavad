@@ -1,399 +1,690 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Room Expense Tracker</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Room Expense Tracker -- Dark Elegant</title>
+
+<!-- Font Awesome (icons) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+<!-- jsPDF (kept as before) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
 <style>
 :root{
-  --bg-start:#6dd5fa;--bg-end:#2980b9;
-  --card-bg:#ffffffdd;--accent:#007bff;--highlight:#28a745;
-  --remove:#e74c3c;--text:#222;
-  --header-light:#fff; --row-light:#f9f9f9;
+  --bg-1:#0f2027;
+  --bg-2:#203a43;
+  --bg-3:#2c5364;
+  --glass: rgba(255,255,255,0.04);
+  --glass-2: rgba(255,255,255,0.03);
+  --accent: #00c6ff;
+  --accent-2: #1de9b6;
+  --danger: #ff5252;
+  --text-light: #e6f7ff;
+  --muted: #9fb4bf;
+  --card-radius: 14px;
+  --glass-blur: 8px;
+  --shadow: 0 8px 30px rgba(2,8,16,0.6);
+  --glass-border: rgba(255,255,255,0.06);
+  --success: #7ef0b7;
 }
 
-body{
-  margin:0;
-  padding:20px;
-  font-family:"Poppins",sans-serif;
-  color:var(--text);
-  background:linear-gradient(270deg,var(--bg-start),var(--bg-end));
-  background-size:400% 400%;
-  animation:gradShift 15s ease infinite;
-}
-@keyframes gradShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
-
-.container{
-  max-width:600px;
-  margin:auto;
-  background:var(--card-bg);
-  border-radius:15px;
-  padding:20px;
-  box-shadow:0 8px 20px rgba(0,0,0,0.25);
-}
-h2{text-align:center;margin:0 0 10px 0;}
-input,select,button{
-  padding:10px;
-  margin:5px 0;
-  border-radius:6px;
-  border:1px solid #ccc;
-  font-size:16px;
-  width:100%;
-  box-sizing:border-box;
-  background:var(--card-bg);
-  color:var(--text);
-}
-button{
-  cursor:pointer;
-  display:flex;
-  align-items:center;
-  gap:6px;
-  transition:all 0.2s;
-}
-button:hover{transform:scale(1.05);}
-button.remove-btn{background:var(--remove);color:#fff;border:none;}
-button.split-btn{background:var(--accent);color:#fff;border:none;}
-button.report-btn{background:var(--highlight);color:#fff;border:none;}
-
-.table-wrap{overflow-x:auto;margin-top:10px;}
-table{width:100%;border-collapse:separate;border-spacing:0 6px;}
-thead th{padding:8px;border-radius:6px;background-color:var(--accent);color:var(--header-light);}
-tbody td{padding:8px;text-align:center;border-radius:6px;font-size:14px;}
-tfoot td{font-weight:bold;border-radius:6px;padding:8px;text-align:center;}
-tbody tr:nth-child(odd){background-color:var(--row-light);}
-
-/* Members styling */
-.member-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:8px 12px;
-  margin:6px 0;
-  border-radius:8px;
-  background: rgba(0,0,0,0.05);
-  box-sizing:border-box;
-  font-size:14px;
-}
-.member-item button{
-  background: var(--remove);
-  color: #fff;
-  border: none;
-  border-radius: 50%;
-  width:28px;
-  height:28px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:16px;
-  cursor:pointer;
-  flex-shrink:0;
-}
-
-/* Quick Add Button */
-#quickAddBtn{
-  position:fixed;
-  bottom:20px;
-  right:20px;
-  background:var(--highlight);
-  color:#fff;
-  border:none;
-  width:60px;
-  height:60px;
-  border-radius:50%;
-  font-size:30px;
-  box-shadow:0 4px 10px rgba(0,0,0,0.3);
-  z-index:10;
-}
-
-/* Modals */
-.modal{
-  display:none;
-  position:fixed;
-  z-index:100;
-  left:0;
-  top:0;
-  width:100%;
+/* Page background */
+html,body{
   height:100%;
-  background:rgba(0,0,0,0.6);
-  justify-content:center;
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color:var(--text-light);
+  background: linear-gradient(135deg,var(--bg-1),var(--bg-2) 45%,var(--bg-3));
+  background-attachment: fixed;
+  padding:18px;
+  box-sizing:border-box;
+}
+
+/* App container */
+.app {
+  max-width:980px;
+  margin: 10px auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+/* Sticky header */
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  border-radius:var(--card-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  position: sticky;
+  top: 12px;
+  z-index: 60;
+}
+.header .title {
+  display:flex;
+  gap:12px;
   align-items:center;
 }
-.modal-content{
-  background:var(--card-bg);
-  padding:20px;
+.logo {
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#002b34;font-weight:700;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+  font-size:20px;
+}
+.header h1{font-size:18px;margin:0;color:var(--text-light);letter-spacing:0.2px;}
+.header .nav {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.icon-btn {
+  background:transparent;border:0;color:var(--muted);
+  padding:8px;border-radius:10px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition: all .16s ease;
+}
+.icon-btn:hover { transform: translateY(-3px); color:var(--accent); box-shadow: 0 6px 18px rgba(0,198,255,0.06); }
+.icon-btn.primary { color: var(--accent); }
+
+/* Main glass card */
+.container {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius: var(--card-radius);
+  padding:18px;
+  box-shadow: var(--shadow);
+  border:1px solid var(--glass-border);
+}
+
+/* Inputs & controls */
+.controls {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:8px;
+}
+.controls input[type="number"],
+.controls input[type="text"]{
+  min-width:150px;
+  max-width:260px;
+  flex:1 1 220px;
+  background: transparent;
+  border:1px solid rgba(255,255,255,0.06);
+  color:var(--text-light);
+  padding:10px 12px;border-radius:10px;
+  outline:none;
+  transition: box-shadow .15s ease, transform .12s ease;
+}
+.controls input::placeholder{ color: rgba(255,255,255,0.38); }
+.controls input:focus{ box-shadow: 0 6px 20px rgba(0,198,255,0.07); transform: translateY(-2px); border-color: var(--accent); }
+
+/* Buttons */
+.btn {
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:#002b34;border:0;padding:10px 12px;border-radius:10px;
+  font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(2,198,255,0.08); }
+.btn.ghost { background: transparent; color: var(--muted); border:1px solid rgba(255,255,255,0.04); }
+.btn.danger { background: linear-gradient(90deg,#ff6b6b,#ff5252); color: white; }
+
+/* Layout for the table card */
+.section-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.section-title h2 { margin:0; font-size:16px; color:var(--text-light); }
+.small-muted { color:var(--muted); font-size:13px; }
+
+/* Table wrapper: scrollable with sticky header */
+.table-wrap {
+  overflow:auto;
+  max-height:360px;
   border-radius:10px;
-  width:95%;
-  max-width:400px;
-  color:var(--text);
-  max-height:90%;
-  overflow-y:auto;
-  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  padding:8px;
+  border:1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Tables (expense & report) */
+table {
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 8px;
+  min-width:600px;
+  color:var(--text-light);
+}
+thead th {
+  position: sticky;
+  top:0;
+  z-index:10;
+  text-align:left;
+  padding:10px 12px;
+  font-weight:700;
+  font-size:13px;
+  color:var(--text-light);
+  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.8));
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px);
+}
+tbody td {
+  padding:12px;
+  font-size:14px;
+  vertical-align:middle;
+  background: transparent;
+}
+tbody tr {
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  border-radius:8px;
+  display:table-row;
+}
+tbody tr td:first-child { border-top-left-radius:8px; border-bottom-left-radius:8px; }
+tbody tr td:last-child { border-top-right-radius:8px; border-bottom-right-radius:8px; }
+
+/* Alternating rows */
+tbody tr:nth-child(odd) td {
+  background: rgba(255,255,255,0.03);
+}
+tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
+}
+tbody tr:hover td {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(2,8,16,0.6);
+}
+
+/* Action buttons in table */
+.table-btn {
+  background:transparent;border:0;color:var(--muted);
+  padding:8px;border-radius:8px;cursor:pointer;
+  transition: all .12s ease;
+}
+.table-btn:hover { color: var(--danger); transform: translateY(-2px); }
+
+/* New row highlight animation */
+@keyframes rowIn {
+  0% { opacity:0; transform: translateY(14px) scale(.995); box-shadow: none; }
+  40% { opacity:1; transform: translateY(0) scale(1.005); box-shadow: 0 10px 28px rgba(0,198,255,0.06); }
+  100% { transform: translateY(0) scale(1); box-shadow:none; }
+}
+.new-row td { animation: rowIn .8s ease both; outline: 2px solid rgba(0,198,255,0.12); }
+
+/* Highlight pulse after add (temporary) */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(0,198,255,0.18); }
+  60% { box-shadow: 0 0 12px 6px rgba(0,198,255,0.08); }
+  100% { box-shadow: none; }
+}
+
+/* Modal styles with animation */
+.modal {
+  display:none; position:fixed; inset:0;
+  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.6));
+  backdrop-filter: blur(4px);
+  align-items:center; justify-content:center;
+  z-index:120;
+  padding:18px;
+}
+.modal.open { display:flex; animation: modalIn .28s cubic-bezier(.2,.9,.3,1); }
+@keyframes modalIn {
+  from { opacity:0; transform: translateY(10px) scale(.995); }
+  to { opacity:1; transform: translateY(0) scale(1); }
+}
+.modal-content {
+  width:100%; max-width:520px; border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.04);
+  padding:16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
   position:relative;
 }
 
-/* Close Button */
+/* Close button */
 .close-btn {
-  position: absolute;
-  top:10px;
-  right:10px;
-  background: var(--remove);
-  border: none;
-  border-radius: 50%;
-  width:30px;
-  height:30px;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  cursor:pointer;
-  color:#fff;
-  font-size:16px;
-  z-index:10;
-  transition: transform 0.2s, background 0.2s;
+  position:absolute; right:12px; top:12px; border:0; padding:8px;
+  border-radius:8px; cursor:pointer; background: rgba(255,255,255,0.02);
+  color: var(--muted);
 }
-.close-btn:hover {
-  transform: scale(1.2);
-  background:#c0392b;
-}
+.close-btn:hover { color: white; transform: scale(1.06); background: rgba(255,255,255,0.03); }
 
-/* Split checkboxes styling */
+/* Checkbox grid (split) */
 .checkbox-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-  gap: 8px;
-  margin: 10px 0;
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+  gap:8px; margin-top:8px;
 }
-.checkbox-grid input[type="checkbox"] {
-  display: none;
+.split-chip {
+  display:flex; align-items:center; justify-content:center;
+  padding:8px 12px; border-radius:999px; cursor:pointer;
+  background: rgba(255,255,255,0.02); color:var(--text-light);
+  transition: all .18s ease;
+  border:1px solid rgba(255,255,255,0.02);
 }
-.checkbox-grid label {
-  display: flex;
-  justify-content:center;
-  align-items: center;
-  cursor: pointer;
+.split-chip input { display:none; }
+.split-chip.checked { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 8px 26px rgba(2,198,255,0.06); transform: translateY(-3px); }
+
+/* Floating Add button (mobile-friendly) */
+#quickAddBtn {
+  position: fixed; right:18px; bottom:18px; width:62px; height:62px; border-radius:50%;
+  border:0; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer;
+  background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 12px 38px rgba(2,198,255,0.12);
+  z-index:80;
 }
-.checkbox-grid span {
-  display: inline-block;
-  padding: 6px 14px;
-  border-radius: 50px;
-  background: rgba(0,0,0,0.05);
-  color: var(--text);
-  font-size: 14px;
-  text-align: center;
-  transition: all 0.25s ease;
-  min-width: 60px;
-  position: relative;
+#quickAddBtn:hover { transform: translateY(-4px); }
+
+/* Toast (notifications) */
+.toast-wrap {
+  position: fixed; right:18px; top:18px; z-index:200; display:flex; flex-direction:column; gap:10px;
 }
-.checkbox-grid input[type="checkbox"]:checked + span {
-  background: var(--highlight);
-  color: #fff;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
-  transform: scale(1.05);
+.toast {
+  min-width:220px; padding:10px 14px; border-radius:10px; color:#002b34; font-weight:700;
+  display:flex; gap:10px; align-items:center; box-shadow: 0 10px 30px rgba(2,8,16,0.48);
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(90deg,var(--success), #d7ffd8);
+  opacity:0; transform: translateY(-8px) scale(.995);
+  animation: toastIn .28s cubic-bezier(.22,.9,.3,1) forwards;
 }
-.checkbox-grid input[type="checkbox"]:checked + span::after {
-  content: "✔";
-  position: absolute;
-  right: 6px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  opacity: 0.9;
+.toast.error { background: linear-gradient(90deg,#ffb2b2,#ff8686); color: #2b0b0b; }
+@keyframes toastIn { to { opacity:1; transform: translateY(0) scale(1); } }
+
+/* Footer */
+.footer {
+  text-align:center; color:var(--muted); font-size:13px; padding:8px 4px;
 }
 
-/* Tabs */
-.tab-btns{
-  display:flex;
-  gap:8px;
-  margin-bottom:8px;
-  justify-content:center;
-  flex-wrap:wrap;
+/* Responsive adjustments */
+@media (max-width:720px){
+  .header { padding:10px; }
+  .controls { gap:8px; }
+  .table-wrap { max-height:280px; }
+  table { min-width:480px; }
+  .modal-content { max-width:92%; padding:14px; }
+  #quickAddBtn { width:56px; height:56px; font-size:20px; right:14px; bottom:14px; }
 }
-.tab-btns button{flex:1;}
-
-@media(max-width:400px){
-  button,input,select{font-size:14px;padding:8px;}
-  .checkbox-grid span {font-size:13px;padding:4px 8px; min-width:50px;}
-  .member-item {padding:6px 8px;}
-  .member-item button {width:24px;height:24px;font-size:14px;}
+@media (max-width:460px){
+  .controls { flex-direction:column; align-items:stretch; }
+  .header { gap:8px; }
+  .logo { width:40px;height:40px;font-size:18px; }
+  table { min-width:420px; font-size:13px; }
 }
 </style>
 </head>
 <body>
+<div class="app">
+  <!-- Header -->
+  <div class="header">
+    <div class="title">
+      <div class="logo">RT</div>
+      <div>
+        <h1>Room Expense Tracker</h1>
+        <div class="small-muted">Dark Elegant • Tharavad</div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="icon-btn" onclick="scrollToTop()" title="Home"><i class="fas fa-home"></i></button>
+      <button class="icon-btn" onclick="openAddExpenseModal()" title="Add Expense"><i class="fas fa-plus"></i></button>
+      <button class="icon-btn" onclick="openReportModal()" title="Reports"><i class="fas fa-chart-pie"></i></button>
+      <button class="icon-btn" onclick="openMemberEditor()" title="Members"><i class="fas fa-users"></i></button>
+    </div>
+  </div>
 
-<div class="container">
-<h2>🏠 Room Expense Tracker</h2>
-<input type="number" id="rent" placeholder="Total Room Rent (AED)">
-<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;">
-<button onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
-<button onclick="openAddExpenseModal()" class="split-btn"><i class="fas fa-plus"></i> Add Expense</button>
-<button onclick="openReportModal()" class="report-btn"><i class="fas fa-chart-pie"></i> Reports</button>
-<button onclick="resetValues()" class="remove-btn"><i class="fas fa-redo"></i> Clear</button>
-</div>
-<div class="table-wrap">
-<table id="expenseTable">
-<thead><tr><th>Payer</th><th>Amount</th><th>Shared Amount</th><th>Shared With</th><th>Action</th></tr></thead>
-<tbody></tbody>
-<tfoot></tfoot>
-</table>
-</div>
+  <!-- Main container -->
+  <div class="container">
+    <div class="section-title">
+      <h2>🏠 Overview</h2>
+      <div class="small-muted">Manage shared expenses & rent</div>
+    </div>
+
+    <div class="controls">
+      <!-- Rent textbox (readonly) shows total & per-head in same box -->
+      <input id="rent" type="text" placeholder="Total Room Rent (AED)" readonly>
+      <button class="btn" onclick="openRentModal()"><i class="fas fa-dollar-sign"></i> Setup Rent</button>
+      <button class="btn ghost" onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
+      <button class="btn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i> Add Expense</button>
+      <button class="btn" onclick="openReportModal()"><i class="fas fa-chart-pie"></i> Reports</button>
+      <button class="btn danger" onclick="resetValues()"><i class="fas fa-trash"></i> Clear</button>
+    </div>
+
+    <div class="section-title">
+      <h2>Expenses</h2>
+      <div class="small-muted" id="expensesCount">0 entries</div>
+    </div>
+
+    <div class="table-wrap" id="expenseWrap">
+      <table id="expenseTable" aria-label="Expense table">
+        <thead>
+          <tr>
+            <th>Payer</th>
+            <th>Amount (AED)</th>
+            <th>Shared Amount</th>
+            <th>Shared With</th>
+            <th style="text-align:right">Action</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">Room Expense Tracker • Tharavad • © <span id="year"></span></div>
 </div>
 
-<button id="quickAddBtn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i></button>
+<!-- Floating Add -->
+<button id="quickAddBtn" onclick="openAddExpenseModal()" title="Quick add"><i class="fas fa-plus"></i></button>
+
+<!-- Toast wrapper -->
+<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
 
 <!-- Add Expense Modal -->
-<div class="modal" id="expenseModal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeAddExpenseModal()"><i class="fas fa-times"></i></button>
-<h3>➕ Add Expense</h3>
-<select id="expensePayer"></select>
-<input type="number" id="expenseAmount" placeholder="Amount">
-<div>
-<h4>Split with:</h4>
-<div class="checkbox-grid" id="expenseSplit"></div>
-</div>
-<button onclick="submitExpense()" class="split-btn" style="margin-top:10px;"><i class="fas fa-check"></i> Add Expense</button>
-</div>
-</div>
+<div class="modal" id="expenseModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="addExpenseTitle">
+    <button class="close-btn" onclick="closeAddExpenseModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="addExpenseTitle">➕ Add Expense</h3>
 
-<!-- Members Modal -->
-<div class="modal" id="memberModal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeMemberEditor()"><i class="fas fa-times"></i></button>
-<h3>👥 Edit Members</h3>
-<div id="memberList"></div>
-<input type="text" id="newMemberName" placeholder="Add new member">
-<div style="display:flex;gap:6px;margin-top:6px;">
-<button onclick="addMember()" class="split-btn"><i class="fas fa-plus"></i> Add</button>
-<button onclick="saveMemberChanges()" class="report-btn"><i class="fas fa-check"></i> Done</button>
-</div>
-</div>
-</div>
-<!-- Reports Modal -->
-<div class="modal" id="reportModal">
-  <div class="modal-content">
-    <button class="close-btn" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
-    <h3>📊 Reports</h3>
-    <div class="tab-btns">
-      <button onclick="generateExpenseReport()" class="split-btn"><i class="fas fa-list"></i> Expense Report</button>
-      <button onclick="generateToPayReport()" class="report-btn"><i class="fas fa-hand-holding-usd"></i> To Pay Report</button>
+    <div style="margin-top:6px;">
+      <label class="small-muted">Payer</label>
+      <select id="expensePayer" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light)"></select>
     </div>
-    <div class="table-wrap">
-      <table id="reportTable"><thead></thead><tbody></tbody></table>
+
+    <div style="margin-top:10px;">
+      <label class="small-muted">Amount (AED)</label>
+      <input id="expenseAmount" type="number" placeholder="Enter amount" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
     </div>
-    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
-      <button onclick="downloadReportPDF()" class="report-btn"><i class="fas fa-file-pdf"></i> PDF</button>
-      <button onclick="shareReportWhatsApp()" class="report-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+
+    <div style="margin-top:10px;">
+      <label class="small-muted">Split with</label>
+      <div class="checkbox-grid" id="expenseSplit"></div>
+    </div>
+
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn ghost" onclick="closeAddExpenseModal()"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn" id="addExpenseSubmit" onclick="submitExpense()"><i class="fas fa-check"></i> Add Expense</button>
     </div>
   </div>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<!-- Members Modal -->
+<div class="modal" id="memberModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="memberTitle">
+    <button class="close-btn" onclick="closeMemberEditor()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="memberTitle">👥 Edit Members</h3>
+
+    <div id="memberList" style="margin-top:8px;"></div>
+
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <input id="newMemberName" type="text" placeholder="Add new member" style="padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light); flex:1;">
+      <button class="btn" onclick="addMember()"><i class="fas fa-user-plus"></i> Add</button>
+      <button class="btn ghost" onclick="saveMemberChanges()"><i class="fas fa-check"></i> Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- Reports Modal -->
+<div class="modal" id="reportModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <button class="close-btn" onclick="closeReportModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="reportTitle">📊 Reports</h3>
+
+    <div style="display:flex; gap:8px; margin-top:8px;">
+      <button class="btn" onclick="generateExpenseReport()"><i class="fas fa-list"></i> Expense Report</button>
+      <button class="btn" onclick="generateToPayReport()"><i class="fas fa-hand-holding-usd"></i> To Pay Report</button>
+    </div>
+
+    <div class="table-wrap" style="margin-top:12px; max-height:320px;">
+      <table id="reportTable"><thead></thead><tbody></tbody></table>
+    </div>
+
+    <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+      <button class="btn" onclick="downloadReportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+      <button class="btn" onclick="shareReportWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- Rent Modal -->
+<div class="modal" id="rentModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rentTitle">
+    <button class="close-btn" onclick="closeRentModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="rentTitle">💰 Set Room Rent</h3>
+
+    <div style="margin-top:10px;">
+      <label class="small-muted">Total Rent (AED)</label>
+      <input id="rentInput" type="number" placeholder="Enter total rent" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
+
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn ghost" onclick="closeRentModal()"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn" onclick="saveRent()"><i class="fas fa-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
+/* ---------------------------
+   Data & initial variables
+   --------------------------- */
 let people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
-let expenses = [];
+let expenses = []; // each { payer, amount, shared: [...], perShare }
+let rentValue = 0;
 let currentReportType = 'expense';
 
-// Members UI
+/* set copyright year */
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* ---------------------------
+   Toast notifications
+   --------------------------- */
+function showToast(type='success', message='') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type==='error' ? ' error' : '');
+  t.innerHTML = `<div style="font-size:16px;">${ type==='error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>' }</div><div style="flex:1">${message}</div>`;
+  wrap.appendChild(t);
+  // auto remove after 3s
+  setTimeout(()=> {
+    t.style.opacity = '0';
+    t.style.transform = 'translateY(-8px)';
+    setTimeout(()=> t.remove(), 350);
+  }, 3000);
+}
+
+/* ---------------------------
+   Members UI (editor with add/remove)
+   --------------------------- */
 function updateMemberUI() {
   const list = document.getElementById('memberList');
   list.innerHTML = '';
-  people.forEach(p => {
+  people.forEach((p, idx) => {
     const div = document.createElement('div');
     div.className = 'member-item';
-    div.innerHTML = `<span>${p}</span><button onclick="removeMember('${p}')">×</button>`;
+    div.style.display = 'flex';
+    div.style.justifyContent = 'space-between';
+    div.style.alignItems = 'center';
+    div.style.padding = '10px';
+    div.style.margin = '6px 0';
+    div.style.borderRadius = '10px';
+    div.style.background = 'linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))';
+    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34;font-weight:700">${p[0]||'U'}</div><div style="font-weight:600">${p}</div></div><div><button class="btn ghost" onclick="removeMember('${p}')"><i class="fas fa-trash"></i></button></div>`;
     list.appendChild(div);
   });
+
+  // update payer select & split chips if modal open
+  const sel = document.getElementById('expensePayer');
+  if (sel) sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
 }
+
+/* Add / remove members */
 function addMember() {
-  const name = document.getElementById('newMemberName').value.trim().toUpperCase();
-  if (!name || people.includes(name)) return;
+  const nameEl = document.getElementById('newMemberName');
+  const name = (nameEl.value || '').trim().toUpperCase();
+  if (!name) { showToast('error', 'Please enter a name'); return; }
+  if (people.includes(name)) { showToast('error', 'Member already exists'); nameEl.value=''; return; }
   people.push(name);
-  document.getElementById('newMemberName').value = '';
+  nameEl.value='';
   updateUI(); saveData();
+  showToast('success','Member added');
 }
 function removeMember(name) {
+  if (!confirm(`Remove member ${name}?`)) return;
   people = people.filter(p => p !== name);
+  // remove member from shared lists in expenses if any
+  expenses.forEach(e => { e.shared = e.shared.filter(x => x !== name); });
   updateUI(); saveData();
+  showToast('success','Member removed');
 }
-function saveMemberChanges() { closeMemberEditor(); saveData(); }
-function openMemberEditor() { document.getElementById('memberModal').style.display = 'flex'; updateMemberUI(); }
-function closeMemberEditor() { document.getElementById('memberModal').style.display = 'none'; }
+function saveMemberChanges() { closeMemberEditor(); saveData(); showToast('success','Members updated'); }
+function openMemberEditor() { document.getElementById('memberModal').classList.add('open'); document.getElementById('memberModal').ariaHidden = 'false'; updateMemberUI(); }
+function closeMemberEditor() { document.getElementById('memberModal').classList.remove('open'); document.getElementById('memberModal').ariaHidden = 'true'; }
 
-// Expense Modal
+/* ---------------------------
+   Expense Modal
+   --------------------------- */
 function openAddExpenseModal() {
-  document.getElementById('expenseModal').style.display = 'flex';
+  document.getElementById('expenseModal').classList.add('open');
+  document.getElementById('expenseModal').ariaHidden = 'false';
   const sel = document.getElementById('expensePayer');
   sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
   const split = document.getElementById('expenseSplit');
   split.innerHTML = '';
   people.forEach(p => {
     const id = 'chk_'+p;
-    split.innerHTML += `<label><input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span></label>`;
+    const label = document.createElement('label');
+    label.className = 'split-chip checked'; // default checked
+    label.innerHTML = `<input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span>`;
+    label.onclick = function(e){
+      const cb = this.querySelector('input');
+      cb.checked = !cb.checked;
+      this.classList.toggle('checked', cb.checked);
+    };
+    split.appendChild(label);
   });
   document.getElementById('expenseAmount').value = '';
 }
-function closeAddExpenseModal() { document.getElementById('expenseModal').style.display = 'none'; }
-function submitExpense() {
-  const payer = document.getElementById('expensePayer').value;
-  const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
-  if (!amount) return alert('Enter amount');
-  const shared = [...document.querySelectorAll('#expenseSplit input:checked')].map(c => c.value);
-  if (shared.length === 0) return alert('Select at least one member');
-  expenses.push({ payer, amount, shared });
-  updateExpenseTable(); closeAddExpenseModal(); saveData();
+function closeAddExpenseModal() {
+  document.getElementById('expenseModal').classList.remove('open');
+  document.getElementById('expenseModal').ariaHidden = 'true';
 }
 
-// Expense Table
+/* Submit expense (with validation + toasts + highlight) */
+function submitExpense() {
+  const payer = document.getElementById('expensePayer').value;
+  const amountRaw = document.getElementById('expenseAmount').value;
+  const amount = parseFloat(amountRaw);
+  if (!amount || amount <= 0 || isNaN(amount)) {
+    showToast('error','Please enter a valid amount');
+    return;
+  }
+  const shared = [...document.querySelectorAll('#expenseSplit input')].filter(i=>i.checked).map(c => c.value);
+  if (shared.length === 0) { showToast('error','Select at least one member'); return; }
+  const perShare = parseFloat((amount / shared.length).toFixed(2));
+  const entry = { payer, amount: +amount.toFixed(2), shared, perShare };
+  expenses.push(entry);
+  const newIndex = expenses.length - 1;
+  updateExpenseTable();
+  closeAddExpenseModal();
+  saveData();
+  // highlight last row
+  highlightExpenseRow(newIndex);
+  showToast('success','Expense added successfully');
+}
+
+/* highlight a row by index (temporary) */
+function highlightExpenseRow(idx){
+  const tbody = document.querySelector('#expenseTable tbody');
+  const row = tbody.children[idx];
+  if (!row) return;
+  row.classList.add('new-row');
+  setTimeout(()=> {
+    row.style.animation = 'pulseGlow .9s ease';
+  }, 350);
+  setTimeout(()=> {
+    row.classList.remove('new-row');
+    row.style.animation = '';
+  }, 2200);
+}
+
+/* ---------------------------
+   Expense Table rendering
+   --------------------------- */
 function updateExpenseTable() {
   const tbody = document.querySelector('#expenseTable tbody');
   tbody.innerHTML = '';
   expenses.forEach((e, idx) => {
-    const row = document.createElement('tr');
-    const perShare = (e.amount / e.shared.length).toFixed(2);
-    row.innerHTML = `<td>${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${perShare}</td><td>${e.shared.join(', ')}</td><td><button onclick="removeExpense(${idx})" class="remove-btn">×</button></td>`;
-    tbody.appendChild(row);
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600">${e.payer}</td>
+      <td>${e.amount.toFixed(2)}</td>
+      <td>${e.perShare.toFixed(2)}</td>
+      <td>${e.shared.join(', ')}</td>
+      <td style="text-align:right">
+        <button class="table-btn" title="Remove" onclick="removeExpense(${idx})"><i class="fas fa-trash"></i></button>
+      </td>
+    `;
+    tbody.appendChild(tr);
   });
+  document.getElementById('expensesCount').textContent = `${expenses.length} entries`;
 }
-function removeExpense(idx) { expenses.splice(idx,1); updateExpenseTable(); saveData(); }
 
-// Reports
-function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; generateExpenseReport(); }
-function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+/* remove expense */
+function removeExpense(idx) {
+  if(!confirm('Delete this expense?')) return;
+  expenses.splice(idx,1);
+  updateExpenseTable();
+  saveData();
+  showToast('success','Expense removed');
+}
+
+/* ---------------------------
+   Reports
+   --------------------------- */
+function openReportModal() { document.getElementById('reportModal').classList.add('open'); document.getElementById('reportModal').ariaHidden = 'false'; generateExpenseReport(); }
+function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); document.getElementById('reportModal').ariaHidden = 'true'; }
 function generateExpenseReport() { currentReportType='expense'; renderReport(); }
 function generateToPayReport() { currentReportType='toPay'; renderReport(); }
+
 function renderReport() {
-  const rent = parseFloat(document.getElementById('rent').value) || 0;
+  const rent = rentValue || 0;
   const paid = {}, owe = {};
   people.forEach(p => { paid[p]=0; owe[p]=0; });
   expenses.forEach(e => {
-    const per = (e.amount / e.shared.length);
+    const per = e.perShare;
     e.shared.forEach(p => owe[p] += per);
-    paid[e.payer] += e.amount;
+    paid[e.payer] = (paid[e.payer] || 0) + e.amount;
   });
-  const rentShare = rent / people.length;
+  const rentShare = (people.length > 0) ? (rent / people.length) : 0;
   const table = document.getElementById('reportTable');
   table.innerHTML = '';
   if(currentReportType==='expense'){
     let thead='<tr><th>Payer</th><th>Amount</th><th>Shared Amount</th><th>Shared With</th></tr>';
     let tbody='';
     expenses.forEach(e=>{
-      const per=(e.amount/e.shared.length).toFixed(2);
-      tbody+=`<tr><td>${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
+      const per=(e.perShare).toFixed(2);
+      tbody+=`<tr><td style="font-weight:600">${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
     });
     table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
   } else {
     let thead='<tr><th>Name</th><th>Paid</th><th>Expenses</th><th>Rent</th><th>To Pay</th></tr>';
     let tbody='';
     people.forEach(p=>{
-      const toPay=(rentShare+owe[p]-paid[p]).toFixed(2);
-      tbody+=`<tr><td>${p}</td><td>${paid[p].toFixed(2)}</td><td>${owe[p].toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td>${toPay}</td></tr>`;
+      const toPay=(rentShare + (owe[p]||0) - (paid[p]||0));
+      tbody+=`<tr><td style="font-weight:600">${p}</td><td>${(paid[p]||0).toFixed(2)}</td><td>${(owe[p]||0).toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td>${toPay.toFixed(2)}</td></tr>`;
     });
     table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
   }
 }
 
-// Reports Export / Share
+/* PDF and WhatsApp share */
 function downloadReportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
@@ -411,27 +702,100 @@ function shareReportWhatsApp() {
   window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
 }
 
-// Reset
-function resetValues() {
-  if(!confirm('Clear all data?')) return;
-  document.getElementById('rent').value='';
-  expenses=[];
-  updateExpenseTable();
+/* ---------------------------
+   Rent Modal functions
+   --------------------------- */
+function openRentModal() {
+  document.getElementById('rentModal').classList.add('open');
+  document.getElementById('rentModal').ariaHidden = 'false';
+  document.getElementById('rentInput').value = rentValue || '';
+  setTimeout(()=> document.getElementById('rentInput').focus(), 100);
+}
+function closeRentModal() {
+  document.getElementById('rentModal').classList.remove('open');
+  document.getElementById('rentModal').ariaHidden = 'true';
+}
+function saveRent() {
+  const val = parseFloat(document.getElementById('rentInput').value);
+  if (!val || val < 0 || isNaN(val)) { showToast('error','Enter a valid rent'); return; }
+  rentValue = +val.toFixed(2);
+  updateRentBox();
+  closeRentModal();
   saveData();
+  showToast('success','Rent updated');
 }
 
-// Update UI & LocalStorage
-function updateUI() { updateExpenseTable(); updateMemberUI(); }
-function saveData() { localStorage.setItem('roomExpenseData',JSON.stringify({people,expenses,rent:document.getElementById('rent').value})); }
+/* update rent display in the same textbox (total and per-head) */
+function updateRentBox(){
+  const rentBox = document.getElementById('rent');
+  const perHead = people.length > 0 ? (rentValue / people.length) : 0;
+  if (rentValue && rentValue > 0) {
+    rentBox.value = `${rentValue.toFixed(2)}  |  Per head: ${perHead.toFixed(2)}`;
+    rentBox.dataset.value = rentValue;
+  } else {
+    rentBox.value = '';
+    rentBox.dataset.value = 0;
+  }
+}
+
+/* ---------------------------
+   Reset / Save / Load
+   --------------------------- */
+function resetValues() {
+  if(!confirm('Clear all data?')) return;
+  rentValue = 0;
+  expenses=[];
+  people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+  updateUI();
+  saveData();
+  showToast('success','All data cleared');
+}
+
+/* Save to localStorage */
+function saveData() {
+  try {
+    localStorage.setItem('roomExpenseData', JSON.stringify({
+      people, expenses, rent: rentValue
+    }));
+  } catch(e) {
+    console.error('Save failed', e);
+  }
+}
+
+/* Load from localStorage */
 function loadData() {
-  const data=JSON.parse(localStorage.getItem('roomExpenseData')||'{}');
-  if(data.people) people=data.people;
-  if(data.expenses) expenses=data.expenses;
-  if(data.rent) document.getElementById('rent').value=data.rent;
+  try {
+    const data = JSON.parse(localStorage.getItem('roomExpenseData') || '{}');
+    if (data.people) people = data.people;
+    if (data.expenses) expenses = data.expenses;
+    if (data.rent) rentValue = data.rent;
+  } catch(e){ console.warn('Load failed', e); }
   updateUI();
 }
-window.addEventListener('DOMContentLoaded',loadData);
-window.addEventListener('beforeunload',saveData);
+
+/* update UI pieces */
+function updateUI() {
+  updateExpenseTable();
+  updateMemberUI();
+  updateRentBox();
+}
+
+/* helpers */
+function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+
+/* Event saves */
+window.addEventListener('DOMContentLoaded', loadData);
+window.addEventListener('beforeunload', saveData);
+
+/* small enhancement: close modal on backdrop click */
+document.querySelectorAll('.modal').forEach(mod => {
+  mod.addEventListener('click', (e) => {
+    if (e.target === mod) {
+      mod.classList.remove('open');
+      mod.ariaHidden = 'true';
+    }
+  });
+});
 </script>
 </body>
 </html>
