@@ -1,290 +1,437 @@
-
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0"> <title>Room Expense Tracke
-
-Ramshad PNR <pnrramshad@gmail.com>
-Attachments
-12:52 PM (6 hours ago)
-to me
-
---
-Yours Sincerely,
- 
-RAMSHAD PONNICHI PUTHIYAPURAYIL
-Mob: 0544291210
-Abu Dhabi, UAE.
- One attachment
-  •  Scanned by Gmail
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Room Expense Tracker</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <style>
-:root {
---bg-start:#6dd5fa; --bg-end:#2980b9; --text:#222; --card-bg:#ffffffdd;
---accent:#007bff; --highlight:#28a745; --remove:#e74c3c;
+:root{
+  --bg-start:#6dd5fa;--bg-end:#2980b9;
+  --card-bg:#ffffffdd;--accent:#007bff;--highlight:#28a745;
+  --remove:#e74c3c;--text:#222;
+  --header-light:#fff; --row-light:#f9f9f9;
 }
-body.dark {
---bg-start:#0f2027; --bg-end:#203a43; --text:#eee; --card-bg:#1f1f1fdd;
---accent:#2196f3; --highlight:#4caf50; --remove:#e74c3c;
+
+body{
+  margin:0;
+  padding:20px;
+  font-family:"Poppins",sans-serif;
+  color:var(--text);
+  background:linear-gradient(270deg,var(--bg-start),var(--bg-end));
+  background-size:400% 400%;
+  animation:gradShift 15s ease infinite;
 }
-body {
-font-family:"Poppins",sans-serif; margin:0; padding:20px; color:var(--text);
-background:linear-gradient(270deg,var(--bg-start),var(--bg-end));
-background-size:400% 400%; animation:gradientShift 15s ease infinite;
-transition:all 0.5s ease;
+@keyframes gradShift{0%{background-position:0% 50%;}50%{background-position:100% 50%;}100%{background-position:0% 50%;}}
+
+.container{
+  max-width:600px;
+  margin:auto;
+  background:var(--card-bg);
+  border-radius:15px;
+  padding:20px;
+  box-shadow:0 8px 20px rgba(0,0,0,0.25);
 }
-@keyframes gradientShift {
-0% {background-position:0% 50%;}
-50% {background-position:100% 50%;}
-100% {background-position:0% 50%;}
-}
-.container { max-width:500px; margin:auto; background:var(--card-bg); border-radius:15px; padding:20px; box-shadow:0 8px 20px rgba(0,0,0,0.25);}
-h2,h3{text-align:center;margin:5px 0;}
+h2{text-align:center;margin:0 0 10px 0;}
 input,select,button{
-padding:10px; margin:5px 0; border-radius:6px; border:1px solid #ccc;
-font-size:16px; width:100%; box-sizing:border-box; background:var(--card-bg); color:var(--text);
+  padding:10px;
+  margin:5px 0;
+  border-radius:6px;
+  border:1px solid #ccc;
+  font-size:16px;
+  width:100%;
+  box-sizing:border-box;
+  background:var(--card-bg);
+  color:var(--text);
 }
-button{cursor:pointer; background-color:var(--highlight); color:#fff; border:none;}
-button:hover{opacity:0.9;}
-table{width:100%; border-collapse:separate; border-spacing:0 6px; margin:10px 0;}
-th,td{padding:8px; text-align:center; border-radius:6px; font-size:14px;}
-thead th{background-color:var(--accent); color:white; font-size:14px;}
-tbody tr{background-color:var(--card-bg); box-shadow:0 2px 6px rgba(0,0,0,0.1);}
-tfoot td{font-weight:bold; border-radius:6px;}
-.remove-btn{background-color:var(--remove); color:white; border:none; padding:4px 8px; border-radius:5px; cursor:pointer;}
-.remove-btn:hover{opacity:0.8;}
-.action-bar{text-align:center; margin:10px 0;}
-.action-bar button{margin:5px; width:48%;}
-.modal{display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center;}
-.modal-content{background:var(--card-bg); padding:15px; border-radius:10px; width:95%; max-width:400px; color:var(--text); max-height:90%; overflow-y:auto; box-shadow:0 4px 15px rgba(0,0,0,0.3);}
-.close-btn{float:right; background:var(--remove); border-radius:50%; padding:2px 8px; cursor:pointer;}
-.member-item{display:flex; justify-content:space-between; margin:5px 0; padding:6px 8px; background:rgba(0,0,0,0.05); border-radius:5px;}
-.member-item button{background:var(--remove); padding:2px 6px; border-radius:50%;}
-#quickAddBtn {position:fixed;bottom:20px;right:20px;background:var(--highlight);color:#fff;
-border:none;width:60px;height:60px;border-radius:50%;font-size:30px;box-shadow:0 4px 10px rgba(0,0,0,0.3);z-index:10;}
-.quick-modal .modal-content {max-width:350px;}
-@media(max-width:400px){button,input,select{font-size:14px;padding:8px;}}
+button{
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:6px;
+  transition:all 0.2s;
+}
+button:hover{transform:scale(1.05);}
+button.remove-btn{background:var(--remove);color:#fff;border:none;}
+button.split-btn{background:var(--accent);color:#fff;border:none;}
+button.report-btn{background:var(--highlight);color:#fff;border:none;}
+
+.table-wrap{overflow-x:auto;margin-top:10px;}
+table{width:100%;border-collapse:separate;border-spacing:0 6px;}
+thead th{padding:8px;border-radius:6px;background-color:var(--accent);color:var(--header-light);}
+tbody td{padding:8px;text-align:center;border-radius:6px;font-size:14px;}
+tfoot td{font-weight:bold;border-radius:6px;padding:8px;text-align:center;}
+tbody tr:nth-child(odd){background-color:var(--row-light);}
+
+/* Members styling */
+.member-item{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 12px;
+  margin:6px 0;
+  border-radius:8px;
+  background: rgba(0,0,0,0.05);
+  box-sizing:border-box;
+  font-size:14px;
+}
+.member-item button{
+  background: var(--remove);
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width:28px;
+  height:28px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:16px;
+  cursor:pointer;
+  flex-shrink:0;
+}
+
+/* Quick Add Button */
+#quickAddBtn{
+  position:fixed;
+  bottom:20px;
+  right:20px;
+  background:var(--highlight);
+  color:#fff;
+  border:none;
+  width:60px;
+  height:60px;
+  border-radius:50%;
+  font-size:30px;
+  box-shadow:0 4px 10px rgba(0,0,0,0.3);
+  z-index:10;
+}
+
+/* Modals */
+.modal{
+  display:none;
+  position:fixed;
+  z-index:100;
+  left:0;
+  top:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  justify-content:center;
+  align-items:center;
+}
+.modal-content{
+  background:var(--card-bg);
+  padding:20px;
+  border-radius:10px;
+  width:95%;
+  max-width:400px;
+  color:var(--text);
+  max-height:90%;
+  overflow-y:auto;
+  box-shadow:0 4px 15px rgba(0,0,0,0.3);
+  position:relative;
+}
+
+/* Close Button */
+.close-btn {
+  position: absolute;
+  top:10px;
+  right:10px;
+  background: var(--remove);
+  border: none;
+  border-radius: 50%;
+  width:30px;
+  height:30px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  cursor:pointer;
+  color:#fff;
+  font-size:16px;
+  z-index:10;
+  transition: transform 0.2s, background 0.2s;
+}
+.close-btn:hover {
+  transform: scale(1.2);
+  background:#c0392b;
+}
+
+/* Split checkboxes styling */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 8px;
+  margin: 10px 0;
+}
+.checkbox-grid input[type="checkbox"] {
+  display: none;
+}
+.checkbox-grid label {
+  display: flex;
+  justify-content:center;
+  align-items: center;
+  cursor: pointer;
+}
+.checkbox-grid span {
+  display: inline-block;
+  padding: 6px 14px;
+  border-radius: 50px;
+  background: rgba(0,0,0,0.05);
+  color: var(--text);
+  font-size: 14px;
+  text-align: center;
+  transition: all 0.25s ease;
+  min-width: 60px;
+  position: relative;
+}
+.checkbox-grid input[type="checkbox"]:checked + span {
+  background: var(--highlight);
+  color: #fff;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+  transform: scale(1.05);
+}
+.checkbox-grid input[type="checkbox"]:checked + span::after {
+  content: "✔";
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+/* Tabs */
+.tab-btns{
+  display:flex;
+  gap:8px;
+  margin-bottom:8px;
+  justify-content:center;
+  flex-wrap:wrap;
+}
+.tab-btns button{flex:1;}
+
+@media(max-width:400px){
+  button,input,select{font-size:14px;padding:8px;}
+  .checkbox-grid span {font-size:13px;padding:4px 8px; min-width:50px;}
+  .member-item {padding:6px 8px;}
+  .member-item button {width:24px;height:24px;font-size:14px;}
+}
 </style>
 </head>
 <body>
+
 <div class="container">
 <h2>🏠 Room Expense Tracker</h2>
 <input type="number" id="rent" placeholder="Total Room Rent (AED)">
-<div style="text-align:center;margin:10px 0;">
-<button onclick="openMemberEditor()">👥 Edit Members</button>
-<button onclick="toggleDarkMode()">🌙 Dark Mode</button>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0;">
+<button onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
+<button onclick="openAddExpenseModal()" class="split-btn"><i class="fas fa-plus"></i> Add Expense</button>
+<button onclick="openReportModal()" class="report-btn"><i class="fas fa-chart-pie"></i> Reports</button>
+<button onclick="resetValues()" class="remove-btn"><i class="fas fa-redo"></i> Clear</button>
 </div>
-
-<h3>🧾 Expenses</h3>
+<div class="table-wrap">
 <table id="expenseTable">
-<thead><tr><th>Person</th><th>Amount (AED)</th><th>Action</th></tr></thead>
-<tbody></tbody>
-</table>
-<div class="action-bar">
-<button onclick="addExpenseRow()">➕ Add Row</button>
-<button onclick="calculateAndShow()">💰 Calculate</button>
-<button onclick="resetValues()">🔄 Clear Values</button>
-</div>
-</div>
-
-<button id="quickAddBtn" onclick="openQuickAdd()">+</button>
-
-<!-- Quick Add Modal -->
-<div class="modal quick-modal" id="quickModal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeQuickAdd()">×</button>
-<h3>➕ Quick Add Expense</h3>
-<select id="quickPerson"></select>
-<input type="number" id="quickAmount" placeholder="Amount">
-<button onclick="addQuickExpense()">Add</button>
-</div>
-</div>
-
-<!-- Member Modal -->
-<div class="modal" id="memberModal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeMemberEditor()">×</button>
-<h3>Edit Members</h3>
-<div id="memberList"></div>
-<input type="text" id="newMemberName" placeholder="Add new member">
-<button onclick="addMember()">Add</button>
-<button onclick="saveMemberChanges()">✅ Done</button>
-</div>
-</div>
-
-<!-- Summary Modal -->
-<div class="modal" id="summaryModal">
-<div class="modal-content">
-<button class="close-btn" onclick="closeSummary()">×</button>
-<h3>📊 Payment Summary</h3>
-<div style="overflow-x:auto;">
-<table id="summaryTable">
-<thead><tr><th>Name</th><th>Paid</th><th>Expense</th><th>Rent</th><th>To Pay</th></tr></thead>
+<thead><tr><th>Payer</th><th>Amount</th><th>Shared Amount</th><th>Shared With</th><th>Action</th></tr></thead>
 <tbody></tbody>
 <tfoot></tfoot>
 </table>
 </div>
-<div style="text-align:center;margin-top:10px;">
-<button onclick="downloadPDF()">📄 PDF</button>
-<button onclick="shareOnWhatsApp()">💬 WhatsApp</button>
+</div>
+
+<button id="quickAddBtn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i></button>
+
+<!-- Add Expense Modal -->
+<div class="modal" id="expenseModal">
+<div class="modal-content">
+<button class="close-btn" onclick="closeAddExpenseModal()"><i class="fas fa-times"></i></button>
+<h3>➕ Add Expense</h3>
+<select id="expensePayer"></select>
+<input type="number" id="expenseAmount" placeholder="Amount">
+<div>
+<h4>Split with:</h4>
+<div class="checkbox-grid" id="expenseSplit"></div>
+</div>
+<button onclick="submitExpense()" class="split-btn" style="margin-top:10px;"><i class="fas fa-check"></i> Add Expense</button>
 </div>
 </div>
+
+<!-- Members Modal -->
+<div class="modal" id="memberModal">
+<div class="modal-content">
+<button class="close-btn" onclick="closeMemberEditor()"><i class="fas fa-times"></i></button>
+<h3>👥 Edit Members</h3>
+<div id="memberList"></div>
+<input type="text" id="newMemberName" placeholder="Add new member">
+<div style="display:flex;gap:6px;margin-top:6px;">
+<button onclick="addMember()" class="split-btn"><i class="fas fa-plus"></i> Add</button>
+<button onclick="saveMemberChanges()" class="report-btn"><i class="fas fa-check"></i> Done</button>
+</div>
+</div>
+</div>
+<!-- Reports Modal -->
+<div class="modal" id="reportModal">
+  <div class="modal-content">
+    <button class="close-btn" onclick="closeReportModal()"><i class="fas fa-times"></i></button>
+    <h3>📊 Reports</h3>
+    <div class="tab-btns">
+      <button onclick="generateExpenseReport()" class="split-btn"><i class="fas fa-list"></i> Expense Report</button>
+      <button onclick="generateToPayReport()" class="report-btn"><i class="fas fa-hand-holding-usd"></i> To Pay Report</button>
+    </div>
+    <div class="table-wrap">
+      <table id="reportTable"><thead></thead><tbody></tbody></table>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:6px;flex-wrap:wrap;">
+      <button onclick="downloadReportPDF()" class="report-btn"><i class="fas fa-file-pdf"></i> PDF</button>
+      <button onclick="shareReportWhatsApp()" class="report-btn"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <script>
-let people=["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+let people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+let expenses = [];
+let currentReportType = 'expense';
 
-function addExpenseRow(person="",amount=""){
-const tbody=document.querySelector("#expenseTable tbody");
-const row=document.createElement("tr");
-row.innerHTML=`<td><select class="person-select">${people.map(p=>`<option value="${p}" ${p===person?"selected":""}>${p}</option>`).join('')}</select></td>
-<td><input type="number" class="amount" value="${amount}" placeholder="0"></td>
-<td><button class="remove-btn" onclick="this.closest('tr').remove();saveData();">❌</button></td>`;
-tbody.appendChild(row);
+// Members UI
+function updateMemberUI() {
+  const list = document.getElementById('memberList');
+  list.innerHTML = '';
+  people.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'member-item';
+    div.innerHTML = `<span>${p}</span><button onclick="removeMember('${p}')">×</button>`;
+    list.appendChild(div);
+  });
 }
+function addMember() {
+  const name = document.getElementById('newMemberName').value.trim().toUpperCase();
+  if (!name || people.includes(name)) return;
+  people.push(name);
+  document.getElementById('newMemberName').value = '';
+  updateUI(); saveData();
+}
+function removeMember(name) {
+  people = people.filter(p => p !== name);
+  updateUI(); saveData();
+}
+function saveMemberChanges() { closeMemberEditor(); saveData(); }
+function openMemberEditor() { document.getElementById('memberModal').style.display = 'flex'; updateMemberUI(); }
+function closeMemberEditor() { document.getElementById('memberModal').style.display = 'none'; }
 
-function updateDropdowns(){
-document.querySelectorAll(".person-select").forEach(sel=>{
-const current=sel.value;
-sel.innerHTML=people.map(p=>`<option value="${p}" ${p===current?"selected":""}>${p}</option>`).join('');
-});
-updateQuickDropdown();
+// Expense Modal
+function openAddExpenseModal() {
+  document.getElementById('expenseModal').style.display = 'flex';
+  const sel = document.getElementById('expensePayer');
+  sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
+  const split = document.getElementById('expenseSplit');
+  split.innerHTML = '';
+  people.forEach(p => {
+    const id = 'chk_'+p;
+    split.innerHTML += `<label><input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span></label>`;
+  });
+  document.getElementById('expenseAmount').value = '';
 }
-
-/* --- Member Editor --- */
-function openMemberEditor(){
-const modal=document.getElementById("memberModal");
-const list=document.getElementById("memberList");
-list.innerHTML="";
-people.forEach(p=>{
-const div=document.createElement("div");
-div.className="member-item";
-div.innerHTML=`<span>${p}</span><button onclick="removeMemberFromModal('${p}')">×</button>`;
-list.appendChild(div);
-});
-modal.style.display="flex";
-}
-function closeMemberEditor(){document.getElementById("memberModal").style.display="none";}
-function addMember(){
-const name=document.getElementById("newMemberName").value.trim().toUpperCase();
-if(name && !people.includes(name)){ people.push(name); openMemberEditor(); document.getElementById("newMemberName").value="";}
-}
-function removeMemberFromModal(name){people=people.filter(p=>p!==name); openMemberEditor();}
-function saveMemberChanges(){closeMemberEditor(); updateDropdowns(); saveData();}
-
-/* --- Quick Add --- */
-function openQuickAdd(){document.getElementById("quickModal").style.display="flex"; updateQuickDropdown();}
-function closeQuickAdd(){document.getElementById("quickModal").style.display="none";}
-function updateQuickDropdown(){
-const sel=document.getElementById("quickPerson");
-sel.innerHTML=people.map(p=>`<option value="${p}">${p}</option>`).join('');
-}
-function addQuickExpense(){
-const person=document.getElementById("quickPerson").value;
-const amount=document.getElementById("quickAmount").value;
-if(person && amount){
-addExpenseRow(person,amount); document.getElementById("quickAmount").value=""; closeQuickAdd(); saveData();
-}
-}
-
-/* --- Calculate & Summary --- */
-function calculateTotals(){
-const rent=parseFloat(document.getElementById('rent').value)||0;
-const totals={}; people.forEach(p=>totals[p]=0);
-document.querySelectorAll("#expenseTable tbody tr").forEach(row=>{
-const person=row.querySelector(".person-select").value;
-const amount=parseFloat(row.querySelector(".amount").value)||0;
-if(totals.hasOwnProperty(person)) totals[person]+=amount;
-});
-const totalExpenses=Object.values(totals).reduce((a,b)=>a+b,0);
-const expenseShare=totalExpenses/people.length;
-const rentShare=rent/people.length;
-return {totals,totalExpenses,expenseShare,rentShare};
+function closeAddExpenseModal() { document.getElementById('expenseModal').style.display = 'none'; }
+function submitExpense() {
+  const payer = document.getElementById('expensePayer').value;
+  const amount = parseFloat(document.getElementById('expenseAmount').value) || 0;
+  if (!amount) return alert('Enter amount');
+  const shared = [...document.querySelectorAll('#expenseSplit input:checked')].map(c => c.value);
+  if (shared.length === 0) return alert('Select at least one member');
+  expenses.push({ payer, amount, shared });
+  updateExpenseTable(); closeAddExpenseModal(); saveData();
 }
 
-function calculateAndShow(){
-const {totals,totalExpenses,expenseShare,rentShare}=calculateTotals();
-const tbody=document.querySelector("#summaryTable tbody");
-const tfoot=document.querySelector("#summaryTable tfoot");
-tbody.innerHTML=""; tfoot.innerHTML="";
-people.forEach(p=>{
-const toPay=(rentShare+expenseShare-totals[p]).toFixed(2);
-tbody.innerHTML+=`<tr>
-<td>${p}</td>
-<td>${totals[p].toFixed(2)}</td>
-<td>${expenseShare.toFixed(2)}</td>
-<td>${rentShare.toFixed(2)}</td>
-<td style="font-weight:bold;color:${toPay>0?'#d9534f':'#28a745'};">${toPay}</td>
-</tr>`;
-});
-tfoot.innerHTML=`<tr><td colspan="2">Total Expenses</td><td colspan="3">${totalExpenses.toFixed(2)} AED</td></tr>`;
-document.getElementById("summaryModal").style.display="flex";
-saveData();
+// Expense Table
+function updateExpenseTable() {
+  const tbody = document.querySelector('#expenseTable tbody');
+  tbody.innerHTML = '';
+  expenses.forEach((e, idx) => {
+    const row = document.createElement('tr');
+    const perShare = (e.amount / e.shared.length).toFixed(2);
+    row.innerHTML = `<td>${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${perShare}</td><td>${e.shared.join(', ')}</td><td><button onclick="removeExpense(${idx})" class="remove-btn">×</button></td>`;
+    tbody.appendChild(row);
+  });
 }
-function closeSummary(){document.getElementById("summaryModal").style.display="none";}
+function removeExpense(idx) { expenses.splice(idx,1); updateExpenseTable(); saveData(); }
 
-/* --- PDF & WhatsApp --- */
-function downloadPDF(){
-const { jsPDF } = window.jspdf;
-const doc = new jsPDF();
-doc.text("🏠 Room Expense Tracker",10,10);
-doc.text("Generated: "+new Date().toLocaleString(),10,16);
-doc.autoTable({startY:26, html:"#summaryTable"});
-doc.save("Room_Expense_Tracker.pdf");
-}
-
-function shareOnWhatsApp(){
-let text="🏠 Room Expense Tracker Summary\n\nName | Paid | Expense | Rent | To Pay\n";
-document.querySelectorAll("#summaryTable tbody tr").forEach(tr=>{
-text+=Array.from(tr.children).map(td=>td.textContent).join(" | ")+"\n";
-});
-text+="\nGenerated on: "+new Date().toLocaleString();
-window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
-}
-
-/* --- Reset Values Only --- */
-function resetValues(){
-if(!confirm("Clear all values?")) return;
-document.getElementById('rent').value = "";
-document.querySelectorAll("#expenseTable tbody tr").forEach(row => row.querySelector(".amount").value = "");
-document.querySelector("#summaryTable tbody").innerHTML = "";
-document.querySelector("#summaryTable tfoot").innerHTML = "";
-saveData();
-}
-
-/* --- Dark Mode --- */
-function toggleDarkMode(){document.body.classList.toggle("dark"); saveData();}
-
-/* --- LocalStorage --- */
-function saveData(){
-const rent=document.getElementById('rent').value;
-const rows=Array.from(document.querySelectorAll("#expenseTable tbody tr")).map(r=>({
-person:r.querySelector(".person-select").value,
-amount:r.querySelector(".amount").value
-}));
-localStorage.setItem("roomExpenseData",JSON.stringify({rent,rows,people,dark:document.body.classList.contains("dark")}));
+// Reports
+function openReportModal() { document.getElementById('reportModal').style.display = 'flex'; generateExpenseReport(); }
+function closeReportModal() { document.getElementById('reportModal').style.display = 'none'; }
+function generateExpenseReport() { currentReportType='expense'; renderReport(); }
+function generateToPayReport() { currentReportType='toPay'; renderReport(); }
+function renderReport() {
+  const rent = parseFloat(document.getElementById('rent').value) || 0;
+  const paid = {}, owe = {};
+  people.forEach(p => { paid[p]=0; owe[p]=0; });
+  expenses.forEach(e => {
+    const per = (e.amount / e.shared.length);
+    e.shared.forEach(p => owe[p] += per);
+    paid[e.payer] += e.amount;
+  });
+  const rentShare = rent / people.length;
+  const table = document.getElementById('reportTable');
+  table.innerHTML = '';
+  if(currentReportType==='expense'){
+    let thead='<tr><th>Payer</th><th>Amount</th><th>Shared Amount</th><th>Shared With</th></tr>';
+    let tbody='';
+    expenses.forEach(e=>{
+      const per=(e.amount/e.shared.length).toFixed(2);
+      tbody+=`<tr><td>${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
+    });
+    table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+  } else {
+    let thead='<tr><th>Name</th><th>Paid</th><th>Expenses</th><th>Rent</th><th>To Pay</th></tr>';
+    let tbody='';
+    people.forEach(p=>{
+      const toPay=(rentShare+owe[p]-paid[p]).toFixed(2);
+      tbody+=`<tr><td>${p}</td><td>${paid[p].toFixed(2)}</td><td>${owe[p].toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td>${toPay}</td></tr>`;
+    });
+    table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+  }
 }
 
-function loadData(){
-const data=JSON.parse(localStorage.getItem("roomExpenseData")||"{}");
-if(data.people) people=data.people;
-if(data.rent) document.getElementById('rent').value=data.rent;
-document.querySelector("#expenseTable tbody").innerHTML="";
-if(data.rows) data.rows.forEach(r=>addExpenseRow(r.person,r.amount));
-else people.forEach(()=>addExpenseRow());
-if(data.dark) document.body.classList.add("dark");
-updateDropdowns();
+// Reports Export / Share
+function downloadReportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("🏠 Room Expense Tracker",10,10);
+  doc.text("Generated: "+new Date().toLocaleString(),10,16);
+  doc.autoTable({startY:26, html:"#reportTable"});
+  doc.save("Room_Expense_Tracker.pdf");
+}
+function shareReportWhatsApp() {
+  let text="🏠 Room Expense Tracker Report\n\n";
+  document.querySelectorAll("#reportTable tbody tr").forEach(tr=>{
+    text+=Array.from(tr.children).map(td=>td.textContent).join(" | ")+"\n";
+  });
+  text+="Generated on: "+new Date().toLocaleString();
+  window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
 }
 
-document.addEventListener("input",e=>{if(e.target.classList.contains("amount")||e.target.id==="rent") saveData();});
-window.addEventListener("DOMContentLoaded",loadData);
-window.addEventListener("beforeunload",saveData);
+// Reset
+function resetValues() {
+  if(!confirm('Clear all data?')) return;
+  document.getElementById('rent').value='';
+  expenses=[];
+  updateExpenseTable();
+  saveData();
+}
+
+// Update UI & LocalStorage
+function updateUI() { updateExpenseTable(); updateMemberUI(); }
+function saveData() { localStorage.setItem('roomExpenseData',JSON.stringify({people,expenses,rent:document.getElementById('rent').value})); }
+function loadData() {
+  const data=JSON.parse(localStorage.getItem('roomExpenseData')||'{}');
+  if(data.people) people=data.people;
+  if(data.expenses) expenses=data.expenses;
+  if(data.rent) document.getElementById('rent').value=data.rent;
+  updateUI();
+}
+window.addEventListener('DOMContentLoaded',loadData);
+window.addEventListener('beforeunload',saveData);
 </script>
 </body>
 </html>
-index.html.txt
-Displaying index.html.txt.
