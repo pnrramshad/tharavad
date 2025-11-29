@@ -6,7 +6,7 @@
 <title>Room Expense Tracker -- Dark Elegant</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -27,6 +27,11 @@
   --shadow: 0 8px 30px rgba(2,8,16,0.6);
   --glass-border: rgba(255,255,255,0.06);
   --success: #7ef0b7;
+  --color-1: #00c6ff;
+  --color-2: #1de9b6;
+  --color-3: #ff6b6b;
+  --color-4: #ffd700;
+  --color-5: #b36eef;
 }
 
 /* Page background */
@@ -114,7 +119,8 @@ html,body{
   margin-bottom:8px;
 }
 .controls input[type="number"],
-.controls input[type="text"]{
+.controls input[type="text"],
+.controls select{
   min-width:150px;
   max-width:260px;
   flex:1 1 220px;
@@ -307,7 +313,7 @@ tbody tr:hover td {
   .header { padding:10px; }
   .controls { gap:8px; }
   .table-wrap { max-height:280px; }
-  table { min-width:480px; }
+  table { min-width:580px; } /* Increased min-width for new column */
   .modal-content { max-width:92%; padding:14px; }
   #quickAddBtn { width:56px; height:56px; font-size:20px; right:14px; bottom:14px; }
 }
@@ -315,7 +321,7 @@ tbody tr:hover td {
   .controls { flex-direction:column; align-items:stretch; }
   .header { gap:8px; }
   .logo { width:40px;height:40px;font-size:18px; }
-  table { min-width:420px; font-size:13px; }
+  table { min-width:500px; font-size:13px; } /* Adjusted min-width */
 }
 </style>
 </head>
@@ -326,7 +332,7 @@ tbody tr:hover td {
       <div class="logo">RT</div>
       <div>
         <h1>Room Expense Tracker</h1>
-        <div class="small-muted">Dark Elegant • Tharavad</div>
+        <div class="small-muted">Dark Elegant</div>
       </div>
     </div>
     <div class="nav">
@@ -344,7 +350,7 @@ tbody tr:hover td {
     </div>
 
     <div class="controls">
-      <input id="rent" type="text" placeholder="Total Room Rent (AED)" readonly>
+      <input id="rent" type="text" placeholder="Total Room Rent (AED)" readonly aria-label="Current Rent Value">
       <button class="btn" onclick="openRentModal()"><i class="fas fa-dollar-sign"></i> Setup Rent</button>
       <button class="btn ghost" onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
       <button class="btn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i> Add Expense</button>
@@ -363,6 +369,7 @@ tbody tr:hover td {
           <tr>
             <th>Payer</th>
             <th>Amount (AED)</th>
+            <th>Description</th>
             <th>Shared Amount</th>
             <th>Shared With</th>
             <th style="text-align:right">Action</th>
@@ -373,7 +380,7 @@ tbody tr:hover td {
     </div>
   </div>
 
-  <div class="footer">Room Expense Tracker • Tharavad • © <span id="year"></span></div>
+  <div class="footer">Room Expense Tracker • © <span id="year"></span></div>
 </div>
 
 <button id="quickAddBtn" onclick="openAddExpenseModal()" title="Quick add"><i class="fas fa-plus"></i></button>
@@ -387,16 +394,29 @@ tbody tr:hover td {
 
     <div style="margin-top:6px;">
       <label class="small-muted">Payer</label>
-      <select id="expensePayer" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light)"></select>
+      <select id="expensePayer" aria-label="Payer" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light)"></select>
     </div>
 
     <div style="margin-top:10px;">
       <label class="small-muted">Amount (AED)</label>
-      <input id="expenseAmount" type="number" placeholder="Enter amount" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+      <input id="expenseAmount" type="number" onkeyup="updateSplitChart()" placeholder="Enter amount" aria-label="Expense amount in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
+    
+    <div style="margin-top:10px;">
+      <label class="small-muted">Description (Optional)</label>
+      <input id="expenseDescription" type="text" placeholder="e.g. Electricity bill, Groceries" aria-label="Expense description" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
+    
+    <div id="splitChartContainer" style="margin-top:10px; height: 180px;">
+        <canvas id="splitChart"></canvas>
     </div>
 
     <div style="margin-top:10px;">
       <label class="small-muted">Split with</label>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="icon-btn" onclick="toggleSplitChecks(true)"><i class="fas fa-check-double"></i> All</button>
+        <button class="icon-btn" onclick="toggleSplitChecks(false)"><i class="fas fa-times-circle"></i> None</button>
+      </div>
       <div class="checkbox-grid" id="expenseSplit"></div>
     </div>
 
@@ -415,7 +435,7 @@ tbody tr:hover td {
     <div id="memberList" style="margin-top:8px;"></div>
 
     <div style="display:flex; gap:8px; margin-top:12px;">
-      <input id="newMemberName" type="text" placeholder="Add new member" style="padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light); flex:1;">
+      <input id="newMemberName" type="text" placeholder="Add new member" aria-label="New member name" style="padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light); flex:1;">
       <button class="btn" onclick="addMember()"><i class="fas fa-user-plus"></i> Add</button>
       <button class="btn ghost" onclick="saveMemberChanges()"><i class="fas fa-check"></i> Done</button>
     </div>
@@ -431,9 +451,14 @@ tbody tr:hover td {
       <button class="btn" onclick="generateExpenseReport()"><i class="fas fa-list"></i> Expense Report</button>
       <button class="btn" onclick="generateToPayReport()"><i class="fas fa-hand-holding-usd"></i> Balance Sheet</button>
       <button class="btn" onclick="generateSmartSettlement()"><i class="fas fa-exchange-alt"></i> Smart Settlement</button>
+      <button class="btn ghost" onclick="showReportView('chart')"><i class="fas fa-chart-bar"></i> View Chart</button>
+    </div>
+    
+    <div id="reportChartContainer" style="margin-top:12px; height: 300px; display: none;">
+        <canvas id="balanceChart"></canvas>
     </div>
 
-    <div class="table-wrap" style="margin-top:12px; max-height:320px;">
+    <div class="table-wrap" id="reportTableWrap" style="margin-top:12px; max-height:320px;">
       <table id="reportTable"><thead></thead><tbody></tbody></table>
     </div>
 
@@ -452,7 +477,7 @@ tbody tr:hover td {
 
     <div style="margin-top:10px;">
       <label class="small-muted">Total Rent (AED)</label>
-      <input id="rentInput" type="number" placeholder="Enter total rent" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+      <input id="rentInput" type="number" placeholder="Enter total rent" aria-label="Total Rent in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
     </div>
 
     <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
@@ -466,10 +491,18 @@ tbody tr:hover td {
 /* ---------------------------
    Data & initial variables
    --------------------------- */
-let people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
-let expenses = []; // each { payer, amount, shared: [...], perShare }
+// Start with an empty list of people
+let people = []; 
+// expense: { payer, amount, description, date, shared: [...], perShare }
+let expenses = []; 
 let rentValue = 0;
-let currentReportType = 'settlement'; // Updated default report type
+let currentReportType = 'settlement'; 
+let balanceData = []; // Store calculated balance for charting/pdf
+
+let balanceChartInstance = null; // Variable to hold the Report Chart.js instance
+let splitChartInstance = null; // Variable to hold the Expense Split Chart.js instance
+
+const chartColors = ['var(--color-1)', 'var(--color-2)', 'var(--color-3)', 'var(--color-4)', 'var(--color-5)'];
 
 /* set copyright year */
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -497,7 +530,7 @@ function showToast(type='success', message='') {
 function updateMemberUI() {
   const list = document.getElementById('memberList');
   list.innerHTML = '';
-  people.forEach((p, idx) => {
+  people.forEach((p) => {
     const div = document.createElement('div');
     div.className = 'member-item';
     div.style.display = 'flex';
@@ -507,7 +540,8 @@ function updateMemberUI() {
     div.style.margin = '6px 0';
     div.style.borderRadius = '10px';
     div.style.background = 'linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))';
-    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34;font-weight:700">${p[0]||'U'}</div><div style="font-weight:600">${p}</div></div><div><button class="btn ghost" onclick="removeMember('${p}')"><i class="fas fa-trash"></i></button></div>`;
+    // Use data-name for safer removal
+    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34;font-weight:700">${p[0]||'U'}</div><div style="font-weight:600">${p}</div></div><div><button class="btn ghost" onclick="removeMember('${p.replace(/'/g, "\\'")}')" aria-label="Remove ${p}"><i class="fas fa-trash"></i></button></div>`;
     list.appendChild(div);
   });
 
@@ -519,22 +553,54 @@ function updateMemberUI() {
 /* Add / remove members */
 function addMember() {
   const nameEl = document.getElementById('newMemberName');
-  const name = (nameEl.value || '').trim().toUpperCase();
+  const name = (nameEl.value || '').trim();
+  const nameUpper = name.toUpperCase(); // Force uppercase internally
+  
   if (!name) { showToast('error', 'Please enter a name'); return; }
-  if (people.includes(name)) { showToast('error', 'Member already exists'); nameEl.value=''; return; }
-  people.push(name);
+  
+  // Case-insensitive duplicate check
+  if (people.map(p => p.toUpperCase()).includes(nameUpper)) { 
+    showToast('error', 'Member already exists (case insensitive)'); 
+    nameEl.value=''; 
+    return; 
+  }
+  
+  people.push(nameUpper); // Store name as uppercase
   nameEl.value='';
   updateUI(); saveData();
   showToast('success','Member added');
 }
+
 function removeMember(name) {
-  if (!confirm(`Remove member ${name}?`)) return;
+  // name is already the uppercase version stored in the people array
+  if (!confirm(`Remove member ${name}? This will update existing expense splits.`)) return;
+  
   people = people.filter(p => p !== name);
-  // remove member from shared lists in expenses if any
-  expenses.forEach(e => { e.shared = e.shared.filter(x => x !== name); });
+  
+  // 1. Remove member from shared lists in expenses & recalculate perShare
+  expenses.forEach(e => { 
+    e.shared = e.shared.filter(x => x !== name); 
+    if (e.shared.length > 0) {
+      e.perShare = +(e.amount / e.shared.length).toFixed(2);
+    } else {
+      e.perShare = 0; // No one left to share with
+    }
+    // Also update payer if the payer was removed (transfer to first available member)
+    if (e.payer === name && people.length > 0) {
+        e.payer = people[0];
+        showToast('warning', `Payer for an expense (${e.amount.toFixed(2)}) was removed and transferred to ${e.payer}.`);
+    } else if (e.payer === name && people.length === 0) {
+        // If the last member is removed and they are a payer, remove the expense too.
+        e.remove = true; 
+    }
+  });
+
+  expenses = expenses.filter(e => !e.remove);
+
   updateUI(); saveData();
-  showToast('success','Member removed');
+  showToast('success','Member removed and expenses updated');
 }
+
 function saveMemberChanges() { closeMemberEditor(); saveData(); showToast('success','Members updated'); }
 function openMemberEditor() { document.getElementById('memberModal').classList.add('open'); document.getElementById('memberModal').ariaHidden = 'false'; updateMemberUI(); }
 function closeMemberEditor() { document.getElementById('memberModal').classList.remove('open'); document.getElementById('memberModal').ariaHidden = 'true'; }
@@ -545,42 +611,149 @@ function closeMemberEditor() { document.getElementById('memberModal').classList.
 function openAddExpenseModal() {
   document.getElementById('expenseModal').classList.add('open');
   document.getElementById('expenseModal').ariaHidden = 'false';
+  
   const sel = document.getElementById('expensePayer');
   sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
+  
+  // Reset other fields
+  document.getElementById('expenseAmount').value = '';
+  document.getElementById('expenseDescription').value = '';
+  
   const split = document.getElementById('expenseSplit');
   split.innerHTML = '';
+  
   people.forEach(p => {
     const id = 'chk_'+p;
     const label = document.createElement('label');
     label.className = 'split-chip checked'; // default checked
     label.innerHTML = `<input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span>`;
-    label.onclick = function(e){
+    label.onclick = function(){
       const cb = this.querySelector('input');
-      cb.checked = !cb.checked;
-      this.classList.toggle('checked', cb.checked);
+      // Use requestAnimationFrame to ensure we read the intended new state
+      requestAnimationFrame(() => {
+        this.classList.toggle('checked', cb.checked);
+        updateSplitChart(); // Update chart on chip click
+      });
     };
     split.appendChild(label);
   });
-  document.getElementById('expenseAmount').value = '';
+  updateSplitChart(); // Initial chart rendering (should be 0 or empty)
 }
+
+function toggleSplitChecks(check) {
+    document.querySelectorAll('#expenseSplit input[type="checkbox"]').forEach(cb => {
+        cb.checked = check;
+        cb.closest('.split-chip').classList.toggle('checked', check);
+    });
+    updateSplitChart(); // Update chart when toggling all/none
+}
+
 function closeAddExpenseModal() {
   document.getElementById('expenseModal').classList.remove('open');
   document.getElementById('expenseModal').ariaHidden = 'true';
+  if(splitChartInstance) {
+      splitChartInstance.destroy();
+      splitChartInstance = null;
+  }
 }
+
+// Function to render the real-time expense split chart (Donut Chart)
+function updateSplitChart() {
+    const amountRaw = document.getElementById('expenseAmount').value;
+    const amount = parseFloat(amountRaw);
+    const shared = [...document.querySelectorAll('#expenseSplit input')].filter(i=>i.checked).map(c => c.value);
+    
+    // Clear chart if input is invalid or no one is sharing
+    if (!amount || amount <= 0 || isNaN(amount) || shared.length === 0) {
+        if (splitChartInstance) splitChartInstance.destroy();
+        splitChartInstance = null;
+        return;
+    }
+    
+    const perShare = +(amount / shared.length).toFixed(2);
+    
+    const labels = shared.map(p => `${p} (${perShare.toFixed(2)} AED)`);
+    const dataValues = shared.map(() => perShare);
+    
+    // Use a subset of colors for the split members
+    const backgroundColors = dataValues.map((_, i) => chartColors[i % chartColors.length]);
+
+    if (splitChartInstance) splitChartInstance.destroy(); // Clear existing chart
+    
+    const ctx = document.getElementById('splitChart').getContext('2d');
+    
+    splitChartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: labels,
+            datasets: [{
+                data: dataValues,
+                backgroundColor: backgroundColors,
+                hoverOffset: 8,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: '70%',
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: { color: 'var(--text-light)', boxWidth: 10, padding: 8 }
+                },
+                title: {
+                    display: true,
+                    text: `Total: ${amount.toFixed(2)} AED`,
+                    color: 'var(--text-light)',
+                    padding: { top: 10, bottom: 0 }
+                },
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let label = context.label || '';
+                            if (label) {
+                                label += ': ';
+                            }
+                            if (context.parsed !== null) {
+                                label += new Intl.NumberFormat('en-AE', { style: 'currency', currency: 'AED' }).format(context.parsed);
+                            }
+                            return label;
+                        }
+                    }
+                }
+            }
+        }
+    });
+}
+
 
 /* Submit expense (with validation + toasts + highlight) */
 function submitExpense() {
   const payer = document.getElementById('expensePayer').value;
   const amountRaw = document.getElementById('expenseAmount').value;
+  const description = document.getElementById('expenseDescription').value || 'General Expense';
   const amount = parseFloat(amountRaw);
+  
   if (!amount || amount <= 0 || isNaN(amount)) {
     showToast('error','Please enter a valid amount');
     return;
   }
+  
   const shared = [...document.querySelectorAll('#expenseSplit input')].filter(i=>i.checked).map(c => c.value);
   if (shared.length === 0) { showToast('error','Select at least one member'); return; }
-  const perShare = parseFloat((amount / shared.length).toFixed(2));
-  const entry = { payer, amount: +amount.toFixed(2), shared, perShare };
+  
+  // Calculate perShare accurately, then convert back to number.
+  const perShare = parseFloat((amount / shared.length).toFixed(2)); 
+  
+  const entry = { 
+    payer, 
+    amount: +amount.toFixed(2), 
+    description,
+    date: new Date().toISOString(), // Timestamp
+    shared, 
+    perShare 
+  };
+  
   expenses.push(entry);
   const newIndex = expenses.length - 1;
   updateExpenseTable();
@@ -612,18 +785,23 @@ function highlightExpenseRow(idx){
 function updateExpenseTable() {
   const tbody = document.querySelector('#expenseTable tbody');
   tbody.innerHTML = '';
-  expenses.forEach((e, idx) => {
+  expenses.slice().reverse().forEach((e, originalIndex) => { // Reverse for latest first, originalIndex used for deletion
+    // Calculate the current index in the non-reversed array
+    const idx = expenses.length - 1 - expenses.findIndex(exp => exp === e); 
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td style="font-weight:600">${e.payer}</td>
+      <td style="font-weight:600" scope="row">${e.payer}</td>
       <td>${e.amount.toFixed(2)}</td>
+      <td style="color:var(--muted); font-size:13px;" title="${new Date(e.date).toLocaleString()}">${e.description.substring(0, 20)}${e.description.length > 20 ? '...' : ''}</td>
       <td>${e.perShare.toFixed(2)}</td>
       <td>${e.shared.join(', ')}</td>
       <td style="text-align:right">
-        <button class="table-btn" title="Remove" onclick="removeExpense(${idx})"><i class="fas fa-trash"></i></button>
+        <button class="table-btn" title="Remove" onclick="removeExpense(${idx})" aria-label="Remove expense ${e.description}"><i class="fas fa-trash"></i></button>
       </td>
     `;
-    tbody.appendChild(tr);
+    // We append to the front to show latest expense on top
+    tbody.prepend(tr); 
   });
   document.getElementById('expensesCount').textContent = `${expenses.length} entries`;
 }
@@ -643,102 +821,261 @@ function removeExpense(idx) {
 function openReportModal() { 
   document.getElementById('reportModal').classList.add('open'); 
   document.getElementById('reportModal').ariaHidden = 'false'; 
-  generateSmartSettlement(); // Default report
+  // 1. Generate the data (default to Balance Sheet)
+  generateToPayReport(); 
+  // 2. Ensure the table view is shown first
+  showReportView('table'); 
 }
-function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); document.getElementById('reportModal').ariaHidden = 'true'; }
+function closeReportModal() { 
+  document.getElementById('reportModal').classList.remove('open'); 
+  document.getElementById('reportModal').ariaHidden = 'true'; 
+  // Clean up the balance chart instance when closing
+  if (balanceChartInstance) {
+      balanceChartInstance.destroy(); 
+      balanceChartInstance = null;
+  }
+}
+
+// Helper to manage chart/table visibility
+function showReportView(type = 'table') {
+    const tableWrap = document.getElementById('reportTableWrap');
+    const chartContainer = document.getElementById('reportChartContainer');
+
+    if (type === 'chart') {
+        // Show chart, hide table, and render the chart (if data exists)
+        tableWrap.style.display = 'none';
+        chartContainer.style.display = 'block';
+        if (balanceData.length > 0 && currentReportType === 'toPay') {
+             // Only render chart if the current report type is the Balance Sheet
+             renderBalanceChart();
+        } else {
+             // If Balance Sheet is not generated, switch back to table and show a warning
+             showReportView('table');
+             showToast('error', 'Chart is only available for Balance Sheet report.');
+        }
+    } else {
+        // Show table, hide chart
+        tableWrap.style.display = 'block';
+        chartContainer.style.display = 'none';
+        if (balanceChartInstance) {
+            balanceChartInstance.destroy(); // Destroy chart when switching to table view
+            balanceChartInstance = null;
+        }
+    }
+}
 
 // 1. Full Expense List Report
 function generateExpenseReport() {
+  showReportView('table');
   currentReportType='expense'; 
   const table = document.getElementById('reportTable');
-  let thead='<tr><th>Payer</th><th>Amount</th><th>Shared Amount</th><th>Shared With</th></tr>';
+  let thead='<tr><th scope="col">Payer</th><th scope="col">Amount</th><th scope="col">Description</th><th scope="col">Shared Amount</th><th scope="col">Shared With</th></tr>';
   let tbody='';
   expenses.forEach(e=>{
     const per=(e.perShare).toFixed(2);
-    tbody+=`<tr><td style="font-weight:600">${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
+    tbody+=`<tr><td style="font-weight:600" scope="row">${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${e.description}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
   });
   table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
 }
 
-// 2. Balance Sheet (Paid vs Owed)
+// 2. Balance Sheet (Paid vs Owed) - Default View on Modal Open
 function generateToPayReport() {
   currentReportType='toPay';
   const rent = rentValue || 0;
   const paid = {}, owe = {};
+  balanceData = []; // Reset stored data
+
   people.forEach(p => { paid[p]=0; owe[p]=0; });
+  
+  // Calculate expenses paid and owed
   expenses.forEach(e => {
     const per = e.perShare;
-    e.shared.forEach(p => owe[p] += per);
+    // Only count as owed if the person is in the split
+    e.shared.forEach(p => owe[p] = (owe[p] || 0) + per);
     paid[e.payer] = (paid[e.payer] || 0) + e.amount;
   });
+  
   const rentShare = (people.length > 0) ? (rent / people.length) : 0;
   const table = document.getElementById('reportTable');
   
-  let thead='<tr><th>Name</th><th>Paid</th><th>Expenses Owed</th><th>Rent Share</th><th>Net Balance</th></tr>';
+  let thead='<tr><th scope="col">Name</th><th scope="col">Paid</th><th scope="col">Expenses Owed</th><th scope="col">Rent Share</th><th scope="col">Net Balance</th></tr>';
   let tbody='';
+
   people.forEach(p=>{
-    const netBalance=((paid[p]||0) - (owe[p]||0) - rentShare);
+    const totalPaid = (paid[p]||0);
+    const totalOwed = (owe[p]||0);
+    const netBalance = +(totalPaid - totalOwed - rentShare).toFixed(2); // Store as number for chart
+    
+    // Store data for PDF/Chart
+    balanceData.push({
+        name: p, 
+        paid: totalPaid.toFixed(2), 
+        owed: totalOwed.toFixed(2), 
+        rentShare: rentShare.toFixed(2), 
+        netBalance: netBalance
+    });
+
     const balanceClass = netBalance < 0 ? 'color:var(--danger)' : 'color:var(--success)';
-    tbody+=`<tr><td style="font-weight:600">${p}</td><td>${(paid[p]||0).toFixed(2)}</td><td>${(owe[p]||0).toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td style="${balanceClass}; font-weight:700">${netBalance.toFixed(2)}</td></tr>`;
+    tbody+=`<tr><td style="font-weight:600" scope="row">${p}</td><td>${totalPaid.toFixed(2)}</td><td>${totalOwed.toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td style="${balanceClass}; font-weight:700">${netBalance.toFixed(2)}</td></tr>`;
   });
+  
+  // Render table first
   table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+  
+  // Switch to table view
+  showReportView('table');
+}
+
+// Function to render the Chart.js Bar Chart
+function renderBalanceChart() {
+    if (balanceChartInstance) balanceChartInstance.destroy(); // Clear existing chart
+    
+    const ctx = document.getElementById('balanceChart').getContext('2d');
+    const labels = balanceData.map(d => d.name);
+    const netBalances = balanceData.map(d => d.netBalance);
+    
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Net Balance (AED)',
+            data: netBalances,
+            backgroundColor: netBalances.map(v => v >= 0 ? 'rgba(33, 203, 137, 0.7)' : 'rgba(255, 82, 82, 0.7)'),
+            borderColor: netBalances.map(v => v >= 0 ? '#1de9b6' : '#ff5252'),
+            borderWidth: 1
+        }]
+    };
+    
+    const config = {
+        type: 'bar',
+        data: data,
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: false,
+                    title: {
+                        display: true,
+                        text: 'AED',
+                        color: 'var(--text-light)'
+                    },
+                    grid: { color: 'rgba(255,255,255,0.08)' },
+                    ticks: { color: 'var(--muted)' }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: 'var(--muted)' }
+                }
+            },
+            plugins: {
+                legend: {
+                    labels: { color: 'var(--text-light)' }
+                },
+                title: {
+                    display: true,
+                    text: 'Member Net Balance (Paid - Owed - Rent)',
+                    color: 'var(--text-light)'
+                }
+            }
+        }
+    };
+    
+    balanceChartInstance = new Chart(ctx, config);
 }
 
 
 // 3. Smart Settlement (Minimum Transactions)
 function generateSmartSettlement() {
+  showReportView('table'); // Ensure table view is shown
   currentReportType='settlement';
-  let balances = {};
-  people.forEach(p => balances[p] = 0);
+  balanceData = []; // Clear previous data
 
+  // --- START: Calculate Net Balance (Including Rent) ---
+  const rent = rentValue || 0;
+  const paid = {}, owe = {};
+  let balances = {}; // This will hold the final net balance
+
+  people.forEach(p => { paid[p]=0; owe[p]=0; balances[p]=0; });
+  
+  // 1. Calculate expenses paid and owed
   expenses.forEach(e => {
-    balances[e.payer] += e.amount;
-    const splitAmount = e.amount / e.shared.length; 
-    e.shared.forEach(person => {
-      balances[person] -= splitAmount;
-    });
+    const per = e.perShare;
+    e.shared.forEach(p => owe[p] = (owe[p] || 0) + per);
+    paid[e.payer] = (paid[e.payer] || 0) + e.amount;
   });
+  
+  // 2. Calculate Rent Share
+  const rentShare = (people.length > 0) ? (rent / people.length) : 0;
+  
+  // 3. Calculate the FINAL NET BALANCE
+  people.forEach(p=>{
+    const totalPaid = (paid[p]||0);
+    const totalOwed = (owe[p]||0);
+    // Net Balance = (Paid - Expenses Owed - Rent Share)
+    const netBalance = +(totalPaid - totalOwed - rentShare).toFixed(2);
+    balances[p] = netBalance;
+  });
+  // --- END: Calculate Net Balance ---
 
+  const table = document.getElementById('reportTable');
+
+  // Check 1: Calculate the total absolute imbalance
+  const totalImbalance = Object.values(balances).reduce((sum, val) => sum + Math.abs(val), 0);
+  
+  // If the total imbalance is near zero, settlement is complete.
+  if (totalImbalance < 0.02) {
+    balanceData = []; // Clear stored data
+    table.innerHTML = `<tbody><tr><td style="text-align:center; padding:20px; color:var(--success); font-weight:700">🎉 All balances are settled, no one owes or is owed money!</td></tr></tbody>`;
+    return; // Exit the function early
+  }
+
+  // 4. Prepare Debtors and Creditors lists based on Net Balance
   let debtors = [];
   let creditors = [];
 
   for (const [person, amount] of Object.entries(balances)) {
+    // Negative balance = Ower/Debtor (owes money to the group)
+    // Use a small tolerance check (0.01) to ignore floating point errors
     if (amount < -0.01) debtors.push({ name: person, amount: amount }); 
+    // Positive balance = Receiver/Creditor (is owed money by the group)
     if (amount > 0.01) creditors.push({ name: person, amount: amount }); 
   }
 
-  debtors.sort((a, b) => a.amount - b.amount);
-  creditors.sort((a, b) => b.amount - a.amount);
+  debtors.sort((a, b) => a.amount - b.amount); // Most debt first (most negative)
+  creditors.sort((a, b) => b.amount - a.amount); // Most credit first (most positive)
 
   let transactions = [];
   let i = 0;
   let j = 0;
 
+  // 5. Find Minimum Transactions (Greedy Algorithm)
   while (i < debtors.length && j < creditors.length) {
     let debtor = debtors[i];
     let creditor = creditors[j];
+    
+    // Amount to transfer is the smaller of the absolute debt or the credit
     let amount = Math.min(Math.abs(debtor.amount), creditor.amount);
 
-    transactions.push(`${debtor.name} pays ${creditor.name}: ${amount.toFixed(2)} AED`);
+    transactions.push({ from: debtor.name, to: creditor.name, amount: amount });
 
+    // Update balances
     debtor.amount += amount;
     creditor.amount -= amount;
 
+    // Move to next debtor/creditor if their balance is settled (near zero)
     if (Math.abs(debtor.amount) < 0.01) i++;
     if (creditor.amount < 0.01) j++;
   }
+  
+  balanceData = transactions; // Store transactions for PDF/Share
 
-  const table = document.getElementById('reportTable');
-  if (transactions.length === 0) {
-    table.innerHTML = `<tbody><tr><td style="text-align:center; padding:20px; color:var(--success); font-weight:700">🎉 All expense debts are cleared!</td></tr></tbody>`;
-  } else {
-    let html = `<thead><tr><th>Settlement Plan (${transactions.length} Transactions)</th></tr></thead><tbody>`;
-    transactions.forEach(t => {
-      html += `<tr><td style="color:var(--accent); font-weight:600; padding:15px;">${t}</td></tr>`;
-    });
-    html += `</tbody>`;
-    table.innerHTML = html;
-  }
+  // 6. Render the transaction table
+  let html = `<thead><tr><th scope="col">Settlement Plan (${transactions.length} Transactions)</th></tr></thead><tbody>`;
+  transactions.forEach(t => {
+    html += `<tr><td style="color:var(--accent); font-weight:600; padding:15px;" scope="row">${t.from} pays ${t.to}: ${t.amount.toFixed(2)} AED</td></tr>`;
+  });
+  html += `</tbody>`;
+  table.innerHTML = html;
 }
 
 // 4. Confirmation to clear all expenses
@@ -764,21 +1101,105 @@ function confirmSettlement() {
 }
 
 
-/* PDF and WhatsApp share */
+/* PDF and WhatsApp share (Themed for Dark Mode) */
 function downloadReportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-  doc.text("🏠 Room Expense Tracker",10,10);
-  doc.text("Generated: "+new Date().toLocaleString(),10,16);
-  doc.autoTable({startY:26, html:"#reportTable"});
-  doc.save("Room_Expense_Tracker_Report.pdf");
+  
+  // Theme Variables
+  const LIGHT_TEXT = '#e0e0e0'; // Light text color
+  const ACCENT_COLOR = [0, 198, 255]; // Accent blue for headers (RGB)
+  
+  // Set default text color to light
+  doc.setTextColor(LIGHT_TEXT);
+  // Note: Applying full page background is complex in jspdf; styling focuses on table colors.
+  
+  // Set Title and Metadata
+  doc.setFontSize(16);
+  doc.text("🏠 Room Expense Report", 10, 18);
+  doc.setFontSize(10);
+  doc.text(`Report: ${currentReportType.toUpperCase()} | Generated: ${new Date().toLocaleDateString()}`, 10, 24);
+
+  // Define Dark Theme styles for the table
+  const darkTableStyles = {
+    startY: 32, // Start below the header text
+    headStyles: {
+      fillColor: ACCENT_COLOR, // Accent blue background for header
+      textColor: [0, 0, 0], // Black text for contrast
+      fontStyle: 'bold',
+    },
+    styles: {
+      fontSize: 10,
+      textColor: LIGHT_TEXT, // Light text for body
+      fillColor: '#203a43', // Slightly darker shade for row background
+      lineWidth: 0.1, // Small border
+      lineColor: '#2c5364' // Dark line color
+    },
+    alternateRowStyles: {
+      fillColor: '#2c5364', // Alternating row color (using a common background color)
+    },
+    // This allows custom styling based on row/cell content
+    didDrawCell: (data) => {
+        if (currentReportType === 'toPay' && data.column.dataKey === 4 && data.cell.section === 'body') {
+            const netBalance = parseFloat(data.cell.raw);
+            if (netBalance < 0) {
+                // Red for negative balance
+                doc.setTextColor(255, 82, 82); 
+            } else if (netBalance > 0) {
+                // Green for positive balance
+                doc.setTextColor(126, 240, 183); 
+            }
+        }
+    }
+  };
+
+
+  if (currentReportType === 'toPay') {
+      const head = [['Name', 'Paid (AED)', 'Owed (AED)', 'Rent Share (AED)', 'Net Balance (AED)']];
+      const body = balanceData.map(d => [d.name, d.paid, d.owed, d.rentShare, d.netBalance.toFixed(2)]);
+      doc.autoTable({ head: head, body: body, ...darkTableStyles });
+  } else if (currentReportType === 'settlement') {
+      const head = [['Payment Instruction', 'Amount (AED)']];
+      const body = balanceData.map(t => [`${t.from} pays ${t.to}`, t.amount.toFixed(2)]);
+      doc.autoTable({ head: head, body: body, ...darkTableStyles });
+  } else {
+      // For Expense Report (Reads from HTML, which is less ideal for styling, but still applies global styles)
+      doc.autoTable({ html: "#reportTable", ...darkTableStyles });
+  }
+
+  doc.save("Room_Expense_Report.pdf");
 }
+
 function shareReportWhatsApp() {
-  let text="🏠 Room Expense Tracker Report\n\n";
-  document.querySelectorAll("#reportTable tbody tr").forEach(tr=>{
-    text+=Array.from(tr.children).map(td=>td.textContent).join(" | ")+"\n";
-  });
-  text+="Generated on: "+new Date().toLocaleString();
+  let text="*🏠 Room Expense Report*\n\n";
+  
+  if (currentReportType === 'toPay') {
+      text += "*📊 BALANCE SHEET (Net Balance)*\n";
+      balanceData.forEach(d => {
+          const sign = d.netBalance >= 0 ? '+' : '';
+          text += `• *${d.name}*: ${sign}${d.netBalance.toFixed(2)} AED\n`;
+      });
+      text += "\n_Positive balance: Amount you are owed._\n_Negative balance: Amount you owe._";
+  } else if (currentReportType === 'settlement') {
+      if (balanceData.length === 0) {
+          text += "*🤝 SMART SETTLEMENT PLAN*\n🎉 All balances are settled, no one owes or is owed money! 🎉";
+      } else {
+          text += "*🤝 SMART SETTLEMENT PLAN*\n";
+          balanceData.forEach(t => {
+              text += `➡️ *${t.from}* pays *${t.to}*: ${t.amount.toFixed(2)} AED\n`;
+          });
+      }
+  } else {
+      text += "*📝 EXPENSE LIST*\n";
+      // Fallback to reading the visible table
+      document.querySelectorAll("#reportTable tbody tr").forEach(tr=>{
+        // Use a simple, readable format for the table rows
+        const cells = Array.from(tr.children).map(td=>td.textContent.trim());
+        text+=`\n- Payer: ${cells[0]}, Amount: ${cells[1]}, Description: ${cells[2]}`;
+      });
+  }
+  
+  text+="\n\n_Generated by Room Expense Tracker_";
   window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
 }
 
@@ -797,7 +1218,7 @@ function closeRentModal() {
 }
 function saveRent() {
   const val = parseFloat(document.getElementById('rentInput').value);
-  if (!val || val < 0 || isNaN(val)) { showToast('error','Enter a valid rent'); return; }
+  if (val < 0 || isNaN(val)) { showToast('error','Enter a valid rent (0 or positive)'); return; }
   rentValue = +val.toFixed(2);
   updateRentBox();
   closeRentModal();
@@ -809,11 +1230,11 @@ function saveRent() {
 function updateRentBox(){
   const rentBox = document.getElementById('rent');
   const perHead = people.length > 0 ? (rentValue / people.length) : 0;
-  if (rentValue && rentValue > 0) {
+  if (rentValue > 0) {
     rentBox.value = `Total: ${rentValue.toFixed(2)} AED  |  Per head: ${perHead.toFixed(2)} AED`;
     rentBox.dataset.value = rentValue;
   } else {
-    rentBox.value = '';
+    rentBox.value = 'Total Room Rent (AED)';
     rentBox.dataset.value = 0;
   }
 }
@@ -825,7 +1246,7 @@ function resetValues() {
   if(!confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.')) return;
   rentValue = 0;
   expenses=[];
-  people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+  people = []; // Reset to empty list
   updateUI();
   saveData();
   showToast('success','All data cleared');
@@ -846,10 +1267,11 @@ function saveData() {
 function loadData() {
   try {
     const data = JSON.parse(localStorage.getItem('roomExpenseData') || '{}');
-    if (data.people) people = data.people;
-    if (data.expenses) expenses = data.expenses;
-    if (data.rent) rentValue = data.rent;
-  } catch(e){ console.warn('Load failed', e); }
+    // Schema check for robustness
+    if (data.people && Array.isArray(data.people)) people = data.people;
+    if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
+    if (data.rent || data.rent === 0) rentValue = data.rent;
+  } catch(e){ console.warn('Load failed, resetting to default.', e); }
   updateUI();
 }
 
@@ -865,14 +1287,17 @@ function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* Event saves */
 window.addEventListener('DOMContentLoaded', loadData);
-window.addEventListener('beforeunload', saveData);
+// Note: Removed beforeunload save as it can be unreliable on mobile/single page apps. saveData() is called after every major action.
 
 /* small enhancement: close modal on backdrop click */
 document.querySelectorAll('.modal').forEach(mod => {
   mod.addEventListener('click', (e) => {
     if (e.target === mod) {
-      mod.classList.remove('open');
-      mod.ariaHidden = 'true';
+      // Check which modal is open and call its specific close function
+      if (mod.id === 'expenseModal') closeAddExpenseModal();
+      else if (mod.id === 'memberModal') closeMemberEditor();
+      else if (mod.id === 'reportModal') closeReportModal();
+      else if (mod.id === 'rentModal') closeRentModal();
     }
   });
 });
