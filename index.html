@@ -326,6 +326,33 @@ tbody tr:hover td {
 </style>
 </head>
 <body>
+<script type="module">
+  // Import the functions you need from the SDKs you need
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-app.js";
+  import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-analytics.js";
+  
+  // 🔥 NEW: Import Firestore services
+  import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore.js";
+
+  // Your web app's Firebase configuration
+  const firebaseConfig = {
+    apiKey: "AIzaSyDc113ArrZa-bBCvKl-3UEwi4pIAdtwmIA",
+    authDomain: "tharavad336.firebaseapp.com",
+    projectId: "tharavad336",
+    storageBucket: "tharavad336.firebasestorage.app",
+    messagingSenderId: "124534840254",
+    appId: "1:124534840254:web:825d9c694eea1934d977ef",
+    measurementId: "G-XZ92F73DVT"
+  };
+
+  // Initialize Firebase
+  const app = initializeApp(firebaseConfig);
+  // const analytics = getAnalytics(app); // Optional Analytics initialization
+
+  // 🔥 NEW: Initialize Firestore and make it available globally
+  window.db = getFirestore(app);
+</script>
+
 <div class="app">
   <div class="header">
     <div class="title">
@@ -503,6 +530,10 @@ let balanceChartInstance = null; // Variable to hold the Report Chart.js instanc
 let splitChartInstance = null; // Variable to hold the Expense Split Chart.js instance
 
 const chartColors = ['var(--color-1)', 'var(--color-2)', 'var(--color-3)', 'var(--color-4)', 'var(--color-5)'];
+
+// 🔥 NEW: Firestore constants
+const DATA_COLLECTION = 'roomData';
+const DATA_DOC_ID = 'main';
 
 /* set copyright year */
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -1240,7 +1271,7 @@ function updateRentBox(){
 }
 
 /* ---------------------------
-   Reset / Save / Load
+   Reset / Save / Load (UPDATED FOR FIREBASE)
    --------------------------- */
 function resetValues() {
   if(!confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.')) return;
@@ -1252,27 +1283,68 @@ function resetValues() {
   showToast('success','All data cleared');
 }
 
-/* Save to localStorage */
-function saveData() {
+/* Save to Firestore (replaces localStorage saveData) */
+async function saveData() {
+  // Check if Firebase is initialized (db is set on the window object)
+  if (!window.db) {
+    console.error("Firestore not initialized.");
+    showToast('error', 'Database connection failed. Please reload.');
+    return;
+  }
+  
+  // Construct the document reference
+  const dataDocRef = doc(window.db, DATA_COLLECTION, DATA_DOC_ID);
+  
   try {
-    localStorage.setItem('roomExpenseData', JSON.stringify({
-      people, expenses, rent: rentValue
-    }));
+    await setDoc(dataDocRef, {
+      people, 
+      expenses, 
+      rentValue,
+      lastUpdated: new Date().toISOString() // Optional timestamp
+    });
+    // showToast('success', 'Data saved to cloud!'); // Too frequent for every save
   } catch(e) {
-    console.error('Save failed', e);
+    console.error('Save failed to Firestore', e);
+    showToast('error', 'Cloud save failed!');
   }
 }
 
-/* Load from localStorage */
+/* Load from Firestore (replaces localStorage loadData) */
 function loadData() {
-  try {
-    const data = JSON.parse(localStorage.getItem('roomExpenseData') || '{}');
-    // Schema check for robustness
-    if (data.people && Array.isArray(data.people)) people = data.people;
-    if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
-    if (data.rent || data.rent === 0) rentValue = data.rent;
-  } catch(e){ console.warn('Load failed, resetting to default.', e); }
-  updateUI();
+  if (!window.db) {
+    // If db is not ready, exit and wait for the setTimeout call from DOMContentLoaded
+    return; 
+  }
+  
+  const dataDocRef = doc(window.db, DATA_COLLECTION, DATA_DOC_ID);
+
+  // Set up a real-time listener (onSnapshot)
+  onSnapshot(dataDocRef, (docSnap) => {
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      
+      // Update local variables with cloud data
+      people = data.people || [];
+      expenses = data.expenses || [];
+      rentValue = data.rentValue || 0;
+      
+      // Update the UI after loading new data
+      updateUI();
+      // Only show toast on the initial load
+      if (!window.initialLoadComplete) {
+          showToast('success', 'Data loaded from Firebase!');
+          window.initialLoadComplete = true; 
+      }
+    } else {
+      // Document doesn't exist (first run or data cleared)
+      console.log("No initial data found, starting fresh.");
+      showToast('warning', 'Starting a new room group.');
+      updateUI(); // Render empty UI
+    }
+  }, (error) => {
+    console.error("Firestore listener failed:", error);
+    showToast('error', 'Error connecting to database.');
+  });
 }
 
 /* update UI pieces */
@@ -1286,8 +1358,10 @@ function updateUI() {
 function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* Event saves */
-window.addEventListener('DOMContentLoaded', loadData);
-// Note: Removed beforeunload save as it can be unreliable on mobile/single page apps. saveData() is called after every major action.
+// 🔥 NEW: Wait for a brief moment after DOMContentLoaded to ensure the module script (which sets window.db) has run
+window.addEventListener('DOMContentLoaded', () => {
+    setTimeout(loadData, 100); 
+});
 
 /* small enhancement: close modal on backdrop click */
 document.querySelectorAll('.modal').forEach(mod => {
