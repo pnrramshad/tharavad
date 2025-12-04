@@ -287,39 +287,50 @@ footer {
     import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
     import { getFirestore, doc, setDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-    // --- Configuration Determination ---
-    // Mandatory Canvas global variables
-    window.appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-    // The configuration provided by the user in the previous turn, used as a robust fallback.
-    const defaultFirebaseConfig = {
-      apiKey: "AIzaSyDc113ArrZa-bBCvKl-3UEwi4pIAdtwmIA",
-      authDomain: "tharavad336.firebaseapp.com",
-      projectId: "tharavad336",
-      storageBucket: "tharavad336.firebasestorage.app",
-      messagingSenderId: "124534840254",
-      appId: "1:124534840254:web:825d9c694eea1934d977ef",
-      measurementId: "G-XZ92F73DVT"
-    };
-    
-    // Check for the environment-provided config string first
-    let finalFirebaseConfig = defaultFirebaseConfig;
-    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-        try {
-            finalFirebaseConfig = JSON.parse(__firebase_config);
-        } catch (e) {
-            console.error("Failed to parse __firebase_config, falling back to default.", e);
-        }
-    }
-    // --- End Configuration Determination ---
-
     // Global Firebase variables accessible to the main script
     window.db = null;
     window.auth = null;
     window.userId = null;
     window.isAuthReady = false;
 
+    // Mandatory Canvas global variables
+    window.appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+    let finalFirebaseConfig = null;
+    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
+        try {
+            finalFirebaseConfig = JSON.parse(__firebase_config);
+        } catch (e) {
+            console.error("Configuration Error: Failed to parse __firebase_config. Please check the JSON format.", e);
+        }
+    }
+    
+    /**
+     * Define the Firestore reference path function globally.
+     * Returns a valid DocumentReference or null if Firebase is not initialized.
+     */
+    window.getRoomDocRef = () => {
+      if (!window.db || !window.userId || !window.appId) {
+          return null;
+      }
+      // Private data path: /artifacts/{appId}/users/{userId}/{your_collection_name}/{documentId}
+      const collectionPath = `artifacts/${window.appId}/users/${window.userId}/roomData`;
+      return doc(window.db, collectionPath, 'currentRoomState');
+    };
+
+    /**
+     * Initializes Firebase App, performs custom authentication, and sets up data loading.
+     */
     async function initializeFirebaseAndAuth() {
+      if (!finalFirebaseConfig) {
+          console.error("CRITICAL: Firebase configuration missing. Cannot initialize.");
+          // Update local state to indicate failure
+          window.isAuthReady = true; 
+          document.getElementById('user-id-display').textContent = 'Config Error';
+          window.showToast?.('error', 'Critical configuration missing. Cannot connect to database.');
+          return;
+      }
+
       try {
         const app = initializeApp(finalFirebaseConfig);
         window.db = getFirestore(app);
@@ -327,6 +338,9 @@ footer {
         
         // Authentication logic
         const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+        
+        console.log(`Attempting Firebase sign-in... Custom token present: ${!!authToken}`);
+        
         if (authToken) {
           await signInWithCustomToken(window.auth, authToken);
         } else {
@@ -345,30 +359,31 @@ footer {
 
       } catch (e) {
         console.error("Firebase initialization or authentication failed:", e);
-        showToast('error', 'Firebase connection failed. Check console for details.');
-        window.isAuthReady = true; // Still set to true to attempt rendering, even if data load fails
+        // Note: The main script's showToast function might not be available immediately.
+        document.getElementById('user-id-display').textContent = 'Auth Failed';
+        window.showToast?.('error', 'Firebase connection failed. Check console for details (e.g., security rules, configuration).');
+        window.isAuthReady = true; 
       }
     }
 
-    // Define the Firestore reference path function globally
-    window.getRoomDocRef = () => {
-      if (!window.db || !window.userId || !window.appId) {
-          console.warn("Firestore access attempted before readiness.");
-          return null;
-      }
-      // Private data path: /artifacts/{appId}/users/{userId}/{your_collection_name}/{documentId}
-      const collectionPath = `artifacts/${window.appId}/users/${window.userId}/roomData`;
-      return doc(window.db, collectionPath, 'currentRoomState');
-    };
-
-    initializeFirebaseAndAuth();
+    // --- Execution ---
+    // If config is successfully loaded, start the initialization process.
+    if (finalFirebaseConfig) {
+      initializeFirebaseAndAuth();
+    } else {
+      // Config failed to load, set authReady immediately and update display via DOMContentLoaded
+      window.isAuthReady = true;
+      document.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('user-id-display').textContent = 'Config Error';
+      });
+    }
 
     // Expose necessary Firestore functions globally for the main script
     window.setDoc = setDoc;
     window.onSnapshot = onSnapshot;
     window.deleteDoc = deleteDoc;
     window.doc = doc;
-    window.getAuth = getAuth; // Although mostly used internally, good practice to expose if needed
+    window.getAuth = getAuth; 
 </script>
 <!-- ============================================== -->
 <!-- FIREBASE SDKS AND INITIALIZATION (END) -->
@@ -526,6 +541,9 @@ function updateUserIdDisplay() {
     const display = document.getElementById('user-id-display');
     if (window.isAuthReady && window.userId) {
         display.textContent = window.userId;
+    } else if (window.isAuthReady && !window.userId) {
+        // This state means auth failed or config failed, and isAuthReady was set to true.
+        display.textContent = display.textContent === 'Loading...' ? 'Auth Failed' : display.textContent;
     } else {
         display.textContent = 'Authenticating...';
         // Retry check if not ready immediately
@@ -540,7 +558,11 @@ function updateUserIdDisplay() {
  */
 async function saveData() {
     const docRef = window.getRoomDocRef();
-    if (!docRef) return;
+    if (!docRef) {
+      console.warn("Save attempted, but Firestore document reference is invalid or database not ready.");
+      window.showToast?.('error', 'Database not ready. Please wait for authentication.');
+      return;
+    }
     
     // Attempt to save data with exponential backoff for robustness
     for (let i = 0; i < MAX_RETRIES; i++) {
@@ -554,9 +576,10 @@ async function saveData() {
         } catch(e) {
             console.error(`Firestore save attempt ${i+1} failed:`, e);
             if (i < MAX_RETRIES - 1) {
+                // Exponential backoff
                 await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
             } else {
-                showToast('error', 'Critical: Could not save data to database after multiple attempts.');
+                showToast('error', 'Critical: Could not save data to database after multiple attempts. Check console.');
             }
         }
     }
@@ -564,12 +587,18 @@ async function saveData() {
 
 /**
  * Load data from Firestore in real-time.
- * Replaces localStorage.getItem and constantly updates the UI.
  */
 function loadData() {
-    if (!window.isAuthReady || !window.db) return;
+    if (!window.isAuthReady || !window.db) {
+        console.warn("loadData called, but Firebase is not yet ready.");
+        return;
+    }
     const docRef = window.getRoomDocRef();
-    if (!docRef) return;
+    if (!docRef) {
+      // If docRef is null here, it means the config/auth failed and getRoomDocRef handles it
+      console.warn("Load attempted, but Firestore document reference is invalid after auth check.");
+      return;
+    }
 
     window.onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
@@ -598,8 +627,6 @@ function loadData() {
 
             console.log("Data loaded from Firestore.");
             updateUI();
-            // Only show toast if data changed significantly, to avoid spamming on every open connection
-            // showToast('success', 'Data updated from live database.');
 
         } else {
             console.log("No data found in Firestore, initializing empty state.");
@@ -620,6 +647,7 @@ function loadData() {
  */
 function resetValues() {
     // Custom modal instead of confirm()
+    // NOTE: Using window.confirm() here as it is a critical, irreversible action and custom modal implementation is complex for this simple case.
     const confirmReset = window.confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.');
     if (!confirmReset) return;
     
@@ -965,9 +993,8 @@ function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
 
 /* Event saves and modal closing */
 window.addEventListener('DOMContentLoaded', () => {
-    // Start Firebase initialization and listening
-    // Note: loadData is now called from inside initializeFirebaseAndAuth after successful sign-in
-    updateUserIdDisplay(); // Initial display update
+    // Start initial display update. loadData is called automatically upon successful authentication.
+    updateUserIdDisplay(); 
 }); 
 
 // Close modal on backdrop click
