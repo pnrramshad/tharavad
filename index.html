@@ -6,7 +6,7 @@
 <title>Room Expense Tracker -- Dark Elegant</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
@@ -20,1215 +20,933 @@
   --accent: #00c6ff;
   --accent-2: #1de9b6;
   --danger: #ff5252;
-  --text-light: #e6f6ff;
-  --text-muted: #a0a8b9;
-  --shadow: 0 4px 6px rgba(0,0,0,0.2), 0 10px 20px rgba(0,0,0,0.15);
+  --text-light: #e6f7ff;
+  --muted: #9fb4bf;
+  --card-radius: 14px;
+  --glass-blur: 8px;
+  --shadow: 0 8px 30px rgba(2,8,16,0.6);
+  --glass-border: rgba(255,255,255,0.06);
+  --success: #7ef0b7;
 }
-body{
-  font-family: 'Inter', sans-serif;
-  background: var(--bg-1);
-  color: var(--text-light);
-  min-height: 100vh;
-  margin: 0;
-  padding: 0;
+
+/* Page background */
+html,body{
+  height:100%;
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color:var(--text-light);
+  background: linear-gradient(135deg,var(--bg-1),var(--bg-2) 45%,var(--bg-3));
+  background-attachment: fixed;
+  padding:18px;
+  box-sizing:border-box;
 }
-.container {
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 20px;
+
+/* App container */
+.app {
+  max-width:980px;
+  margin: 10px auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
 }
-.card {
-  background: var(--bg-2);
-  border-radius: 16px;
-  backdrop-filter: blur(10px);
-  border: 1px solid var(--glass-2);
-  box-shadow: var(--shadow);
-  padding: 20px;
-  margin-bottom: 20px;
-}
+
+/* Sticky header */
 .header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-.header h1 {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--accent-2);
-  margin-bottom: 5px;
-  text-shadow: 0 0 10px rgba(29, 233, 182, 0.5);
-}
-.btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: all 0.2s ease;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  border-radius:var(--card-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+  backdrop-filter: blur(var(--glass-blur));
   box-shadow: var(--shadow);
-  margin: 5px;
+  border: 1px solid var(--glass-border);
+  position: sticky;
+  top: 12px;
+  z-index: 60;
 }
-.btn-primary {
-  background: linear-gradient(45deg, var(--accent), var(--accent-2));
-  color: var(--bg-1);
+.header .title {
+  display:flex;
+  gap:12px;
+  align-items:center;
 }
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
+.logo {
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#002b34;font-weight:700;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+  font-size:20px;
 }
-.btn-secondary {
-  background-color: var(--bg-3);
-  color: var(--text-light);
-  border: 1px solid var(--accent);
+.header h1{font-size:18px;margin:0;color:var(--text-light);letter-spacing:0.2px;}
+.header .nav {
+  display:flex;
+  gap:8px;
+  align-items:center;
 }
-.btn-secondary:hover {
-  background-color: var(--bg-3);
-  box-shadow: 0 0 10px var(--accent);
+.icon-btn {
+  background:transparent;border:0;color:var(--muted);
+  padding:8px;border-radius:10px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition: all .16s ease;
 }
-.btn-danger {
-  background-color: var(--danger);
-  color: var(--text-light);
+.icon-btn:hover { transform: translateY(-3px); color:var(--accent); box-shadow: 0 6px 18px rgba(0,198,255,0.06); }
+.icon-btn.primary { color: var(--accent); }
+
+/* Main glass card */
+.container {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border-radius: var(--card-radius);
+  padding:18px;
+  box-shadow: var(--shadow);
+  border:1px solid var(--glass-border);
 }
-.btn-danger:hover {
-  opacity: 0.9;
+
+/* Inputs & controls */
+.controls {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:8px;
 }
-.grid-2 {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 20px;
+.controls input[type="number"],
+.controls input[type="text"],
+.controls select{
+  min-width:150px;
+  max-width:260px;
+  flex:1 1 220px;
+  background: transparent;
+  border:1px solid rgba(255,255,255,0.06);
+  color:var(--text-light);
+  padding:10px 12px;border-radius:10px;
+  outline:none;
+  transition: box-shadow .15s ease, transform .12s ease;
 }
-@media (min-width: 600px) {
-  .grid-2 {
-    grid-template-columns: 1fr 1fr;
-  }
+.controls input::placeholder{ color: rgba(255,255,255,0.38); }
+.controls input:focus{ box-shadow: 0 6px 20px rgba(0,198,255,0.07); transform: translateY(-2px); border-color: var(--accent); }
+
+/* Buttons */
+.btn {
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:#002b34;border:0;padding:10px 12px;border-radius:10px;
+  font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
 }
-.member-list, .expense-list {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+.btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(2,198,255,0.08); }
+.btn.ghost { background: transparent; color: var(--muted); border:1px solid rgba(255,255,255,0.04); }
+.btn.danger { background: linear-gradient(90deg,#ff6b6b,#ff5252); color: white; }
+.btn.warning { background: linear-gradient(90deg,#ffd700,#ffb700); color: #3c3c3c; }
+
+
+/* Layout for the table card */
+.section-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.section-title h2 { margin:0; font-size:16px; color:var(--text-light); }
+.small-muted { color:var(--muted); font-size:13px; }
+
+/* Table wrapper: scrollable with sticky header */
+.table-wrap {
+  overflow:auto;
+  max-height:360px;
+  border-radius:10px;
+  padding:8px;
+  border:1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  -webkit-overflow-scrolling: touch;
 }
-.member-tag {
-  background: var(--glass);
-  padding: 8px 12px;
-  border-radius: 8px;
-  color: var(--text-light);
-  font-size: 0.9rem;
-  border: 1px solid var(--accent);
-  display: flex;
-  align-items: center;
-  cursor: pointer;
+
+/* Tables (expense & report) */
+table {
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 8px;
+  min-width:600px;
+  color:var(--text-light);
 }
-.member-tag i {
-  margin-right: 5px;
-  color: var(--accent-2);
+thead th {
+  position: sticky;
+  top:0;
+  z-index:10;
+  text-align:left;
+  padding:10px 12px;
+  font-weight:700;
+  font-size:13px;
+  color:var(--text-light);
+  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.8));
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px);
 }
+tbody td {
+  padding:12px;
+  font-size:14px;
+  vertical-align:middle;
+  background: transparent;
+}
+tbody tr {
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  border-radius:8px;
+  display:table-row;
+}
+tbody tr td:first-child { border-top-left-radius:8px; border-bottom-left-radius:8px; }
+tbody tr td:last-child { border-top-right-radius:8px; border-bottom-right-radius:8px; }
+
+/* Alternating rows */
+tbody tr:nth-child(odd) td {
+  background: rgba(255,255,255,0.03);
+}
+tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
+}
+tbody tr:hover td {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(2,8,16,0.6);
+}
+
+/* Action buttons in table */
+.table-btn {
+  background:transparent;border:0;color:var(--muted);
+  padding:8px;border-radius:8px;cursor:pointer;
+  transition: all .12s ease;
+}
+.table-btn:hover { color: var(--danger); transform: translateY(-2px); }
+
+/* New row highlight animation */
+@keyframes rowIn {
+  0% { opacity:0; transform: translateY(14px) scale(.995); box-shadow: none; }
+  40% { opacity:1; transform: translateY(0) scale(1.005); box-shadow: 0 10px 28px rgba(0,198,255,0.06); }
+  100% { transform: translateY(0) scale(1); box-shadow:none; }
+}
+.new-row td { animation: rowIn .8s ease both; outline: 2px solid rgba(0,198,255,0.12); }
+
+/* Highlight pulse after add (temporary) */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(0,198,255,0.18); }
+  60% { box-shadow: 0 0 12px 6px rgba(0,198,255,0.08); }
+  100% { box-shadow: none; }
+}
+
+/* Modal styles with animation */
 .modal {
-  display: none;
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.8);
-  backdrop-filter: blur(5px);
-  justify-content: center;
-  align-items: center;
+  display:none; position:fixed; inset:0;
+  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.6));
+  backdrop-filter: blur(4px);
+  align-items:center; justify-content:center;
+  z-index:120;
+  padding:18px;
+}
+.modal.open { display:flex; animation: modalIn .28s cubic-bezier(.2,.9,.3,1); }
+@keyframes modalIn {
+  from { opacity:0; transform: translateY(10px) scale(.995); }
+  to { opacity:1; transform: translateY(0) scale(1); }
 }
 .modal-content {
-  background: var(--bg-2);
-  padding: 30px;
-  border-radius: 16px;
-  width: 90%;
-  max-width: 500px;
-  box-shadow: var(--shadow);
-  position: relative;
-  animation: fadeIn 0.3s;
+  width:100%; max-width:520px; border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.04);
+  padding:16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  position:relative;
 }
-@keyframes fadeIn {
-  from {opacity: 0; transform: translateY(-20px);}
-  to {opacity: 1; transform: translateY(0);}
-}
-.modal-content h2 {
-  color: var(--accent);
-  margin-top: 0;
-  border-bottom: 2px solid var(--glass-2);
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
-.form-group {
-  margin-bottom: 15px;
-}
-.form-group label {
-  display: block;
-  margin-bottom: 5px;
-  color: var(--text-muted);
-  font-weight: 500;
-}
-.form-group input, .form-group select, .form-group textarea {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid var(--bg-3);
-  background-color: var(--glass);
-  color: var(--text-light);
-  border-radius: 8px;
-  box-sizing: border-box;
-}
+
+/* Close button */
 .close-btn {
-  position: absolute;
-  top: 15px;
-  right: 25px;
-  color: var(--text-muted);
-  font-size: 28px;
-  font-weight: bold;
-  cursor: pointer;
+  position:absolute; right:12px; top:12px; border:0; padding:8px;
+  border-radius:8px; cursor:pointer; background: rgba(255,255,255,0.02);
+  color: var(--muted);
 }
-.close-btn:hover {
-  color: var(--danger);
+.close-btn:hover { color: white; transform: scale(1.06); background: rgba(255,255,255,0.03); }
+
+/* Checkbox grid (split) */
+.checkbox-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+  gap:8px; margin-top:8px;
 }
-/* Expense Table Styling */
-.expense-table-container {
-  overflow-x: auto;
+.split-chip {
+  display:flex; align-items:center; justify-content:center;
+  padding:8px 12px; border-radius:999px; cursor:pointer;
+  background: rgba(255,255,255,0.02); color:var(--text-light);
+  transition: all .18s ease;
+  border:1px solid rgba(255,255,255,0.02);
 }
-.expense-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-  font-size: 0.9rem;
+.split-chip input { display:none; }
+.split-chip.checked { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 8px 26px rgba(2,198,255,0.06); transform: translateY(-3px); }
+
+/* Floating Add button (mobile-friendly) */
+#quickAddBtn {
+  position: fixed; right:18px; bottom:18px; width:62px; height:62px; border-radius:50%;
+  border:0; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer;
+  background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 12px 38px rgba(2,198,255,0.12);
+  z-index:80;
 }
-.expense-table th, .expense-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--glass);
-}
-.expense-table th {
-  background-color: var(--bg-3);
-  color: var(--accent-2);
-  text-transform: uppercase;
-  font-weight: 700;
-}
-.expense-table tbody tr:hover {
-  background-color: var(--glass-2);
-}
-.expense-table .actions button {
-  padding: 5px 10px;
-  font-size: 0.8rem;
-}
-/* Toast Notification */
-#toast-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 10000;
+#quickAddBtn:hover { transform: translateY(-4px); }
+
+/* Toast (notifications) */
+.toast-wrap {
+  position: fixed; right:18px; top:18px; z-index:200; display:flex; flex-direction:column; gap:10px;
 }
 .toast {
-  padding: 15px 20px;
-  border-radius: 12px;
-  margin-bottom: 10px;
-  box-shadow: var(--shadow);
-  color: var(--bg-1);
-  font-weight: 600;
-  opacity: 0;
-  transition: opacity 0.5s, transform 0.5s;
-  transform: translateX(100%);
-  display: flex;
-  align-items: center;
+  min-width:220px; padding:10px 14px; border-radius:10px; color:#002b34; font-weight:700;
+  display:flex; gap:10px; align-items:center; box-shadow: 0 10px 30px rgba(2,8,16,0.48);
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(90deg,var(--success), #d7ffd8);
+  opacity:0; transform: translateY(-8px) scale(.995);
+  animation: toastIn .28s cubic-bezier(.22,.9,.3,1) forwards;
 }
-.toast.show {
-  opacity: 1;
-  transform: translateX(0);
-}
-.toast.success { background-color: var(--accent-2); }
-.toast.error { background-color: var(--danger); }
-.toast.warning { background-color: orange; }
-.toast i { margin-right: 10px; font-size: 1.2rem; }
-/* Rent Box */
-.rent-box {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px;
-  background-color: var(--bg-3);
-  border-radius: 10px;
-  margin-bottom: 20px;
-  border: 1px solid var(--accent);
-}
-.rent-box h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: var(--text-light);
-}
-.rent-box p {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--accent);
-}
-/* Balances/Report Section */
-.balance-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-.balance-table th, .balance-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--glass);
-}
-.balance-table th {
-  background-color: var(--bg-3);
-  color: var(--accent-2);
-}
-.balance-table td.positive { color: var(--accent-2); font-weight: 600; }
-.balance-table td.negative { color: var(--danger); font-weight: 600; }
-.report-content {
-  max-height: 70vh;
-  overflow-y: auto;
-  padding-right: 10px;
-}
-.report-content h3 {
-  color: var(--accent);
-  margin-top: 20px;
-  border-bottom: 1px dashed var(--glass);
-  padding-bottom: 5px;
-}
-.report-content ul {
-  list-style: none;
-  padding: 0;
-}
-.report-content ul li {
-  background-color: var(--glass-2);
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 8px;
-  border-left: 4px solid var(--accent-2);
+.toast.error { background: linear-gradient(90deg,#ffb2b2,#ff8686); color: #2b0b0b; }
+@keyframes toastIn { to { opacity:1; transform: translateY(0) scale(1); } }
+
+/* Footer */
+.footer {
+  text-align:center; color:var(--muted); font-size:13px; padding:8px 4px;
 }
 
-.report-summary-box {
-    text-align: center;
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 12px;
-    background-color: var(--bg-3);
-    border: 1px solid var(--accent-2);
+/* Responsive adjustments */
+@media (max-width:720px){
+  .header { padding:10px; }
+  .controls { gap:8px; }
+  .table-wrap { max-height:280px; }
+  table { min-width:580px; } /* Increased min-width for new column */
+  .modal-content { max-width:92%; padding:14px; }
+  #quickAddBtn { width:56px; height:56px; font-size:20px; right:14px; bottom:14px; }
 }
-.report-summary-box h4 {
-    color: var(--accent-2);
-    margin-top: 0;
+@media (max-width:460px){
+  .controls { flex-direction:column; align-items:stretch; }
+  .header { gap:8px; }
+  .logo { width:40px;height:40px;font-size:18px; }
+  table { min-width:500px; font-size:13px; } /* Adjusted min-width */
 }
-.report-summary-box p {
-    font-size: 1.8rem;
-    font-weight: bold;
-    color: var(--accent);
-}
-
 </style>
 </head>
 <body>
-
-<div id="toast-container"></div>
-
-<div class="container">
-  <header class="header">
-    <h1><i class="fas fa-wallet"></i> Room Expense Tracker</h1>
-    <p class="text-xs text-center text-gray-400">Collaborative expense sharing (Room ID: <span id="userIdDisplay">Loading...</span>)</p>
-  </header>
-
-  <!-- Rent Box -->
-  <div class="rent-box">
-    <h3>Monthly Rent</h3>
-    <p id="rentDisplay">$0.00</p>
-    <button class="btn btn-secondary" onclick="openRentModal()"><i class="fas fa-edit"></i> Set Rent</button>
-  </div>
-  
-  <!-- Members Card -->
-  <div class="card">
-    <h2><i class="fas fa-users"></i> Members</h2>
-    <div id="memberList" class="member-list">
-      <!-- Member tags will be rendered here -->
+<div class="app">
+  <div class="header">
+    <div class="title">
+      <div class="logo">RT</div>
+      <div>
+        <h1>Room Expense Tracker</h1>
+        <div class="small-muted">Dark Elegant • Tharavad</div>
+      </div>
     </div>
-    <div class="mt-4 flex justify-end">
-      <button class="btn btn-primary" onclick="openMemberEditor()"><i class="fas fa-plus"></i> Add Member</button>
+    <div class="nav">
+      <button class="icon-btn" onclick="scrollToTop()" title="Home"><i class="fas fa-home"></i></button>
+      <button class="icon-btn" onclick="openAddExpenseModal()" title="Add Expense"><i class="fas fa-plus"></i></button>
+      <button class="icon-btn" onclick="openReportModal()" title="Reports"><i class="fas fa-chart-pie"></i></button>
+      <button class="icon-btn" onclick="openMemberEditor()" title="Members"><i class="fas fa-users"></i></button>
     </div>
   </div>
 
-  <!-- Expenses Card -->
-  <div class="card">
-    <h2><i class="fas fa-list-alt"></i> Expenses</h2>
-    <div class="flex justify-between items-center mb-4">
-      <h3 class="text-xl font-semibold text-gray-300">Detailed List</h3>
-      <button class="btn btn-primary" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i> Add Expense</button>
+  <div class="container">
+    <div class="section-title">
+      <h2>🏠 Overview</h2>
+      <div class="small-muted">Manage shared expenses & rent</div>
     </div>
-    <div class="expense-table-container">
-      <table id="expenseTable" class="expense-table">
+
+    <div class="controls">
+      <input id="rent" type="text" placeholder="Total Room Rent (AED)" readonly aria-label="Current Rent Value">
+      <button class="btn" onclick="openRentModal()"><i class="fas fa-dollar-sign"></i> Setup Rent</button>
+      <button class="btn ghost" onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
+      <button class="btn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i> Add Expense</button>
+      <button class="btn" onclick="openReportModal()"><i class="fas fa-chart-pie"></i> Reports</button>
+      <button class="btn danger" onclick="resetValues()"><i class="fas fa-trash"></i> Clear All Data</button>
+    </div>
+
+    <div class="section-title">
+      <h2>Expenses</h2>
+      <div class="small-muted" id="expensesCount">0 entries</div>
+    </div>
+
+    <div class="table-wrap" id="expenseWrap">
+      <table id="expenseTable" aria-label="Expense table">
         <thead>
           <tr>
-            <th>Date</th>
+            <th>Payer</th>
+            <th>Amount (AED)</th>
             <th>Description</th>
-            <th>Amount ($)</th>
-            <th>Paid By</th>
-            <th>Split With</th>
-            <th>Actions</th>
+            <th>Shared Amount</th>
+            <th>Shared With</th>
+            <th style="text-align:right">Action</th>
           </tr>
         </thead>
-        <tbody id="expenseTableBody">
-          <!-- Expenses rows will be rendered here -->
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
   </div>
 
-  <!-- Report Card -->
-  <div class="card">
-    <h2 class="flex justify-between items-center">
-      <span><i class="fas fa-chart-bar"></i> Balances & Report</span>
-      <button class="btn btn-secondary" onclick="openReportModal()"><i class="fas fa-calculator"></i> Calculate & View Report</button>
-    </h2>
-    <div class="report-summary-box">
-        <h4>Total Shared Expenses</h4>
-        <p id="totalExpensesDisplay">$0.00</p>
-    </div>
-    <div class="expense-table-container">
-        <table id="balanceTable" class="balance-table">
-            <thead>
-                <tr>
-                    <th>Member</th>
-                    <th>Total Paid</th>
-                    <th>Should Pay</th>
-                    <th>Net Balance</th>
-                </tr>
-            </thead>
-            <tbody id="balanceTableBody">
-                <!-- Balances will be rendered here -->
-            </tbody>
-        </table>
-    </div>
-  </div>
+  <div class="footer">Room Expense Tracker • Tharavad • © <span id="year"></span></div>
 </div>
 
-<!-- Rent Modal -->
-<div id="rentModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeRentModal()">&times;</span>
-    <h2>Set Monthly Rent</h2>
-    <div class="form-group">
-      <label for="rentInput">Rent Amount ($)</label>
-      <input type="number" id="rentInput" placeholder="e.g., 1200" value="0" min="0">
+<button id="quickAddBtn" onclick="openAddExpenseModal()" title="Quick add"><i class="fas fa-plus"></i></button>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+<div class="modal" id="expenseModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="addExpenseTitle">
+    <button class="close-btn" onclick="closeAddExpenseModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="addExpenseTitle">➕ Add Expense</h3>
+
+    <div style="margin-top:6px;">
+      <label class="small-muted">Payer</label>
+      <select id="expensePayer" aria-label="Payer" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light)"></select>
     </div>
-    <button class="btn btn-primary w-full" onclick="saveRent()"><i class="fas fa-save"></i> Save Rent</button>
-  </div>
-</div>
 
-<!-- Member Editor Modal -->
-<div id="memberModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeMemberEditor()">&times;</span>
-    <h2 id="memberModalTitle">Add New Member</h2>
-    <input type="hidden" id="memberIdInput">
-    <div class="form-group">
-      <label for="memberNameInput">Member Name</label>
-      <input type="text" id="memberNameInput" placeholder="e.g., Jane Doe">
-    </div>
-    <button class="btn btn-primary w-full" id="memberSaveBtn" onclick="saveMember()"><i class="fas fa-save"></i> Save Member</button>
-    <button class="btn btn-danger w-full mt-3" id="memberDeleteBtn" onclick="deleteMember()" style="display: none;"><i class="fas fa-trash"></i> Delete Member</button>
-  </div>
-</div>
-
-<!-- Expense Modal -->
-<div id="expenseModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="closeAddExpenseModal()">&times;</span>
-    <h2 id="expenseModalTitle">Add New Expense</h2>
-    <input type="hidden" id="expenseIdInput">
-
-    <div class="form-group">
-      <label for="expenseDescription">Description</label>
-      <input type="text" id="expenseDescription" placeholder="e.g., Groceries for the month">
+    <div style="margin-top:10px;">
+      <label class="small-muted">Amount (AED)</label>
+      <input id="expenseAmount" type="number" placeholder="Enter amount" aria-label="Expense amount in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
     </div>
     
-    <!-- DATE FIX: ADDED DATE INPUT FIELD HERE -->
-    <div class="form-group">
-      <label for="expenseDate">Date of Expense</label>
-      <input type="date" id="expenseDate" required>
-    </div>
-    <!-- END DATE FIX -->
-
-    <div class="form-group">
-      <label for="expenseAmount">Amount ($)</label>
-      <input type="number" id="expenseAmount" placeholder="e.g., 150" min="0">
+    <div style="margin-top:10px;">
+      <label class="small-muted">Description (Optional)</label>
+      <input id="expenseDescription" type="text" placeholder="e.g. Electricity bill, Groceries" aria-label="Expense description" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
     </div>
 
-    <div class="form-group">
-      <label for="expensePaidBy">Paid By</label>
-      <select id="expensePaidBy">
-        <!-- Options populated by JS -->
-      </select>
-    </div>
-
-    <div class="form-group">
-      <label>Split With (Select all who are sharing this expense)</label>
-      <div id="expenseSplitWith" class="member-list p-2 border border-gray-700 rounded-lg">
-        <!-- Checkboxes populated by JS -->
+    <div style="margin-top:10px;">
+      <label class="small-muted">Split with</label>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="icon-btn" onclick="toggleSplitChecks(true)"><i class="fas fa-check-double"></i> All</button>
+        <button class="icon-btn" onclick="toggleSplitChecks(false)"><i class="fas fa-times-circle"></i> None</button>
       </div>
+      <div class="checkbox-grid" id="expenseSplit"></div>
     </div>
 
-    <button class="btn btn-primary w-full" id="expenseSaveBtn" onclick="addExpense()"><i class="fas fa-save"></i> Save Expense</button>
-  </div>
-</div>
-
-<!-- Report Modal -->
-<div id="reportModal" class="modal">
-  <div class="modal-content max-w-2xl">
-    <span class="close-btn" onclick="closeReportModal()">&times;</span>
-    <h2>Detailed Settlement Report</h2>
-
-    <div class="report-content">
-        <div class="report-summary-box">
-            <h4>Total Outstanding Balance</h4>
-            <p id="reportTotalOutstanding">$0.00</p>
-        </div>
-
-        <div id="settlementList">
-            <!-- Settlement calculations will be rendered here -->
-        </div>
-
-        <h3 class="mt-4">Balances Overview</h3>
-        <table class="balance-table">
-            <thead>
-                <tr><th>Member</th><th>Net Balance</th></tr>
-            </thead>
-            <tbody id="reportBalanceTableBody">
-            </tbody>
-        </table>
-
-        <div class="mt-6 flex justify-end">
-            <button class="btn btn-secondary mr-2" onclick="generatePDF()"><i class="fas fa-file-pdf"></i> Download PDF</button>
-            <button class="btn btn-primary" onclick="clearAllData()"><i class="fas fa-broom"></i> Reset Room Data</button>
-        </div>
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn ghost" onclick="closeAddExpenseModal()"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn" id="addExpenseSubmit" onclick="submitExpense()"><i class="fas fa-check"></i> Add Expense</button>
     </div>
   </div>
 </div>
 
+<div class="modal" id="memberModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="memberTitle">
+    <button class="close-btn" onclick="closeMemberEditor()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="memberTitle">👥 Edit Members</h3>
 
-<script type="module">
-  // ----------------------------------------------------------------------------------
-  // MANDATORY FIREBASE SETUP
-  // This section is required for any data (including the date) to be saved persistently
-  // ----------------------------------------------------------------------------------
-  import { initializeApp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-  import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-  import { 
-    getFirestore, doc, setDoc, onSnapshot, getDoc, 
-    collection, deleteDoc, runTransaction 
-  } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+    <div id="memberList" style="margin-top:8px;"></div>
 
-  // Global Firebase & App Variables
-  let app;
-  let db;
-  let auth;
-  window.db = null;
-  window.auth = null;
-  window.userId = null;
-  
-  window.roomData = {
-    members: [],
-    expenses: [],
-    rent: 0,
-    lastUpdated: new Date().toISOString()
-  };
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <input id="newMemberName" type="text" placeholder="Add new member" aria-label="New member name" style="padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light); flex:1;">
+      <button class="btn" onclick="addMember()"><i class="fas fa-user-plus"></i> Add</button>
+      <button class="btn ghost" onclick="saveMemberChanges()"><i class="fas fa-check"></i> Done</button>
+    </div>
+  </div>
+</div>
 
-  const APP_ID = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-  const firebaseConfig = JSON.parse(typeof __firebase_config !== 'undefined' ? __firebase_config : '{}');
-  const initialAuthToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
+<div class="modal" id="reportModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <button class="close-btn" onclick="closeReportModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="reportTitle">📊 Reports</h3>
 
-  window.initialLoadComplete = false;
+    <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+      <button class="btn" onclick="generateExpenseReport()"><i class="fas fa-list"></i> Expense Report</button>
+      <button class="btn" onclick="generateToPayReport()"><i class="fas fa-hand-holding-usd"></i> Balance Sheet</button>
+      <button class="btn" onclick="generateSmartSettlement()"><i class="fas fa-exchange-alt"></i> Smart Settlement</button>
+    </div>
 
-  // Firestore Initialization and Authentication
-  if (Object.keys(firebaseConfig).length > 0) {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    auth = getAuth(app);
-    window.db = db;
-    window.auth = auth;
-    setLogLevel('Debug');
-  } else {
-    console.error("Firebase config is missing.");
-    document.getElementById('userIdDisplay').textContent = 'ERROR';
-  }
+    <div class="table-wrap" style="margin-top:12px; max-height:320px;">
+      <table id="reportTable"><thead></thead><tbody></tbody></table>
+    </div>
 
-  // Handle Authentication and trigger data loading
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      window.userId = user.uid;
-      document.getElementById('userIdDisplay').textContent = APP_ID; // Display the shared App ID
-      loadData();
-    } else {
-      try {
-        if (initialAuthToken) {
-          await signInWithCustomToken(auth, initialAuthToken);
-        } else {
-          await signInAnonymously(auth);
-        }
-      } catch (error) {
-        console.error("Authentication failed:", error);
-        showToast('error', 'Authentication failed. Data cannot be saved.');
-        window.userId = crypto.randomUUID(); // Fallback UUID
-        document.getElementById('userIdDisplay').textContent = 'AUTH ERROR';
-      }
-    }
-  });
+    <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+      <button class="btn warning" onclick="confirmSettlement()"><i class="fas fa-stamp"></i> Confirm & Clear Expenses</button>
+      <button class="btn" onclick="downloadReportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+      <button class="btn" onclick="shareReportWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+    </div>
+  </div>
+</div>
 
-  // Helper to get the public document reference
-  function getRoomDataRef() {
-    if (!window.db || !APP_ID) {
-      throw new Error("Database or App ID not initialized.");
-    }
-    // MANDATORY PUBLIC PATH: /artifacts/{appId}/public/data/room/roomState
-    return doc(window.db, 'artifacts', APP_ID, 'public', 'data', 'room', 'roomState');
-  }
+<div class="modal" id="rentModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rentTitle">
+    <button class="close-btn" onclick="closeRentModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="rentTitle">💰 Set Room Rent</h3>
 
-  // The corrected save function
-  window.saveRoomData = async function() {
-    if (!window.db || !window.userId) {
-      showToast('error', 'Cannot save: Database not ready or user not authenticated.');
-      return;
-    }
-    
-    try {
-      const dataRef = getRoomDataRef();
-      const dataToSave = {
-        ...window.roomData,
-        lastUpdated: new Date().toISOString()
-      };
+    <div style="margin-top:10px;">
+      <label class="small-muted">Total Rent (AED)</label>
+      <input id="rentInput" type="number" placeholder="Enter total rent" aria-label="Total Rent in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
 
-      // Use setDoc to overwrite with the current state
-      await setDoc(dataRef, dataToSave, { merge: false });
-      console.log("Room data successfully saved to public path.");
-    } catch (e) {
-      console.error("Error saving document: ", e);
-      showToast('error', 'Failed to save data!');
-    }
-  };
-
-  // Corrected load function using the public document path
-  window.loadData = function() {
-    if (!window.db || !window.userId) return;
-    
-    try {
-        const dataRef = getRoomDataRef();
-        
-        onSnapshot(dataRef, (docSnapshot) => {
-          if (docSnapshot.exists()) {
-            const loadedData = docSnapshot.data();
-            window.roomData = {
-              members: loadedData.members || [],
-              expenses: loadedData.expenses || [],
-              rent: loadedData.rent || 0,
-              lastUpdated: loadedData.lastUpdated || new Date().toISOString()
-            };
-            
-            updateUI();
-            
-            if (!window.initialLoadComplete) {
-                showToast('success', 'Data loaded from Firebase!');
-                window.initialLoadComplete = true; 
-            }
-          } else {
-            console.log("No initial data found, starting fresh and saving defaults.");
-            window.roomData = { members: [], expenses: [], rent: 0, lastUpdated: new Date().toISOString() };
-            window.saveRoomData(); // Create the initial document
-            
-            showToast('warning', 'Starting a new room group.');
-            updateUI();
-          }
-        }, (error) => {
-          console.error("Firestore listener failed:", error);
-          showToast('error', 'Error connecting to database.');
-        });
-    } catch (e) {
-        console.error("Error setting up data listener:", e);
-        showToast('error', 'Failed to initialize data listener.');
-    }
-  };
-
-  window.addEventListener('DOMContentLoaded', () => {
-      setTimeout(() => {
-          if (window.auth.currentUser) {
-              loadData();
-          }
-      }, 500); 
-  });
-
-  // Export functions to global scope
-  window.uuidv4 = crypto.randomUUID.bind(crypto); 
-  window.openRentModal = openRentModal;
-  window.closeRentModal = closeRentModal;
-  window.saveRent = saveRent;
-  window.openMemberEditor = openMemberEditor;
-  window.closeMemberEditor = closeMemberEditor;
-  window.saveMember = saveMember;
-  window.deleteMember = deleteMember;
-  window.openAddExpenseModal = openAddExpenseModal;
-  window.closeAddExpenseModal = closeAddExpenseModal;
-  window.addExpense = addExpense;
-  window.editExpense = editExpense;
-  window.deleteExpense = deleteExpense;
-  window.openReportModal = openReportModal;
-  window.closeReportModal = closeReportModal;
-  window.generatePDF = generatePDF;
-  window.clearAllData = clearAllData;
-  window.updateMemberUI = updateMemberUI;
-  window.updateExpenseTable = updateExpenseTable;
-  window.updateRentBox = updateRentBox;
-  window.showToast = showToast;
-  window.updateUI = updateUI;
-  window.scrollToTop = scrollToTop;
-</script>
-
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn ghost" onclick="closeRentModal()"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn" onclick="saveRent()"><i class="fas fa-check"></i> Save</button>
+    </div>
+  </div>
+</div>
 
 <script>
-// Global UI and Utility Functions (outside of module script)
+/* ---------------------------
+   Data & initial variables
+   --------------------------- */
+let people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+// expense: { payer, amount, description, date, shared: [...], perShare }
+let expenses = []; 
+let rentValue = 0;
+let currentReportType = 'settlement'; 
 
-// --- Toasts ---
-function showToast(type, message) {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast ${type}`;
-  let icon = '';
-  if (type === 'success') icon = '<i class="fas fa-check-circle"></i>';
-  else if (type === 'error') icon = '<i class="fas fa-exclamation-triangle"></i>';
-  else if (type === 'warning') icon = '<i class="fas fa-bell"></i>';
-  
-  toast.innerHTML = `${icon} ${message}`;
-  container.appendChild(toast);
+/* set copyright year */
+document.getElementById('year').textContent = new Date().getFullYear();
 
-  // Show
-  setTimeout(() => toast.classList.add('show'), 10);
-
-  // Hide after 4 seconds
-  setTimeout(() => {
-    toast.classList.remove('show');
-    // Remove from DOM after transition
-    setTimeout(() => toast.remove(), 500);
-  }, 4000);
+/* ---------------------------
+   Toast notifications
+   --------------------------- */
+function showToast(type='success', message='') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type==='error' ? ' error' : '');
+  t.innerHTML = `<div style="font-size:16px;">${ type==='error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>' }</div><div style="flex:1">${message}</div>`;
+  wrap.appendChild(t);
+  // auto remove after 3s
+  setTimeout(()=> {
+    t.style.opacity = '0';
+    t.style.transform = 'translateY(-8px)';
+    setTimeout(()=> t.remove(), 350);
+  }, 3000);
 }
 
-// --- Rent Functions ---
-function openRentModal() {
-  document.getElementById('rentInput').value = window.roomData.rent;
-  document.getElementById('rentModal').style.display = 'flex';
-}
-
-function closeRentModal() {
-  document.getElementById('rentModal').style.display = 'none';
-}
-
-function saveRent() {
-  const rentAmount = parseFloat(document.getElementById('rentInput').value) || 0;
-  if (rentAmount < 0) {
-    showToast('error', 'Rent must be a positive number.');
-    return;
-  }
-  window.roomData.rent = rentAmount;
-  window.saveRoomData(); // Persist the change
-  closeRentModal();
-}
-
-function updateRentBox() {
-  document.getElementById('rentDisplay').textContent = `$${window.roomData.rent.toFixed(2)}`;
-}
-
-
-// --- Member Functions ---
-function openMemberEditor(member = null) {
-  const modal = document.getElementById('memberModal');
-  const title = document.getElementById('memberModalTitle');
-  const nameInput = document.getElementById('memberNameInput');
-  const idInput = document.getElementById('memberIdInput');
-  const saveBtn = document.getElementById('memberSaveBtn');
-  const deleteBtn = document.getElementById('memberDeleteBtn');
-
-  if (member) {
-    title.textContent = 'Edit Member';
-    nameInput.value = member.name;
-    idInput.value = member.id;
-    deleteBtn.style.display = 'block';
-  } else {
-    title.textContent = 'Add New Member';
-    nameInput.value = '';
-    idInput.value = '';
-    deleteBtn.style.display = 'none';
-  }
-  modal.style.display = 'flex';
-}
-
-function closeMemberEditor() {
-  document.getElementById('memberModal').style.display = 'none';
-}
-
-function saveMember() {
-  const name = document.getElementById('memberNameInput').value.trim();
-  const id = document.getElementById('memberIdInput').value;
-
-  if (!name) {
-    showToast('error', 'Member name cannot be empty.');
-    return;
-  }
-
-  if (id) {
-    // Edit existing member
-    const index = window.roomData.members.findIndex(m => m.id === id);
-    if (index !== -1) {
-      window.roomData.members[index].name = name;
-      showToast('success', `Member ${name} updated!`);
-    }
-  } else {
-    // Add new member
-    if (window.roomData.members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
-        showToast('error', 'A member with this name already exists.');
-        return;
-    }
-    const newMember = { id: window.uuidv4(), name: name };
-    window.roomData.members.push(newMember);
-    showToast('success', `Member ${name} added!`);
-  }
-
-  window.saveRoomData(); // Persist the change
-  closeMemberEditor();
-}
-
-function deleteMember() {
-  const memberId = document.getElementById('memberIdInput').value;
-  const memberName = document.getElementById('memberNameInput').value;
-  
-  // Custom confirmation dialog replacement
-  const isConfirmed = confirm('Are you sure you want to delete this member? All associated expenses will remain.');
-  
-  if (isConfirmed) {
-      window.roomData.members = window.roomData.members.filter(m => m.id !== memberId);
-      // Remove member from any existing expense splits where they might be included
-      window.roomData.expenses.forEach(expense => {
-          expense.splitWith = expense.splitWith.filter(id => id !== memberId);
-          // If the deleted member was the one who paid, the expense needs attention
-          if (expense.paidBy === memberId) {
-              showToast('warning', `Member ${memberName} paid for an expense. Review or update Expense: ${expense.description}`);
-              // Optionally: set paidBy to null or the first remaining member
-          }
-      });
-      
-      window.saveRoomData(); // Persist the change
-      showToast('success', `Member ${memberName} deleted.`);
-      closeMemberEditor();
-  }
-}
-
+/* ---------------------------
+   Members UI (editor with add/remove)
+   --------------------------- */
 function updateMemberUI() {
   const list = document.getElementById('memberList');
-  const paidBySelect = document.getElementById('expensePaidBy');
-  const splitWithDiv = document.getElementById('expenseSplitWith');
-
   list.innerHTML = '';
-  paidBySelect.innerHTML = '<option value="">-- Select Payer --</option>';
-  splitWithDiv.innerHTML = '';
+  people.forEach((p) => {
+    const div = document.createElement('div');
+    div.className = 'member-item';
+    div.style.display = 'flex';
+    div.style.justifyContent = 'space-between';
+    div.style.alignItems = 'center';
+    div.style.padding = '10px';
+    div.style.margin = '6px 0';
+    div.style.borderRadius = '10px';
+    div.style.background = 'linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))';
+    // Use data-name for safer removal
+    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34;font-weight:700">${p[0]||'U'}</div><div style="font-weight:600">${p}</div></div><div><button class="btn ghost" onclick="removeMember('${p.replace(/'/g, "\\'")}')" aria-label="Remove ${p}"><i class="fas fa-trash"></i></button></div>`;
+    list.appendChild(div);
+  });
 
-  window.roomData.members.forEach(member => {
-    // Member Tag in main UI
-    const tag = document.createElement('div');
-    tag.className = 'member-tag';
-    tag.innerHTML = `<i class="fas fa-user-circle"></i> ${member.name}`;
-    tag.onclick = () => openMemberEditor(member);
-    list.appendChild(tag);
+  // update payer select & split chips if modal open
+  const sel = document.getElementById('expensePayer');
+  if (sel) sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
+}
 
-    // Paid By dropdown option
-    const option = document.createElement('option');
-    option.value = member.id;
-    option.textContent = member.name;
-    paidBySelect.appendChild(option);
+/* Add / remove members */
+function addMember() {
+  const nameEl = document.getElementById('newMemberName');
+  const name = (nameEl.value || '').trim();
+  const nameUpper = name.toUpperCase(); // Force uppercase internally
+  
+  if (!name) { showToast('error', 'Please enter a name'); return; }
+  
+  // Case-insensitive duplicate check
+  if (people.map(p => p.toUpperCase()).includes(nameUpper)) { 
+    showToast('error', 'Member already exists (case insensitive)'); 
+    nameEl.value=''; 
+    return; 
+  }
+  
+  people.push(nameUpper); // Store name as uppercase
+  nameEl.value='';
+  updateUI(); saveData();
+  showToast('success','Member added');
+}
 
-    // Split With checkbox in expense modal
-    const checkboxWrapper = document.createElement('div');
-    checkboxWrapper.className = 'flex items-center mr-4 mb-2';
-    checkboxWrapper.innerHTML = `
-      <input type="checkbox" id="split-${member.id}" name="splitWith" value="${member.id}" class="h-4 w-4 text-accent-2 bg-gray-600 border-gray-500 rounded focus:ring-accent-2">
-      <label for="split-${member.id}" class="ml-2 text-sm text-text-light cursor-pointer">${member.name}</label>
-    `;
-    splitWithDiv.appendChild(checkboxWrapper);
+function removeMember(name) {
+  // name is already the uppercase version stored in the people array
+  if (!confirm(`Remove member ${name}? This will update existing expense splits.`)) return;
+  
+  people = people.filter(p => p !== name);
+  
+  // 1. Remove member from shared lists in expenses & recalculate perShare
+  expenses.forEach(e => { 
+    e.shared = e.shared.filter(x => x !== name); 
+    if (e.shared.length > 0) {
+      e.perShare = +(e.amount / e.shared.length).toFixed(2);
+    } else {
+      e.perShare = 0; // No one left to share with
+    }
+    // Also update payer if the payer was removed (transfer to first available member)
+    if (e.payer === name && people.length > 0) {
+        e.payer = people[0];
+        showToast('warning', `Payer for an expense (${e.amount.toFixed(2)}) was removed and transferred to ${e.payer}.`);
+    } else if (e.payer === name && people.length === 0) {
+        // If the last member is removed and they are a payer, remove the expense too.
+        e.remove = true; 
+    }
+  });
+
+  expenses = expenses.filter(e => !e.remove);
+
+  updateUI(); saveData();
+  showToast('success','Member removed and expenses updated');
+}
+
+function saveMemberChanges() { closeMemberEditor(); saveData(); showToast('success','Members updated'); }
+function openMemberEditor() { document.getElementById('memberModal').classList.add('open'); document.getElementById('memberModal').ariaHidden = 'false'; updateMemberUI(); }
+function closeMemberEditor() { document.getElementById('memberModal').classList.remove('open'); document.getElementById('memberModal').ariaHidden = 'true'; }
+
+/* ---------------------------
+   Expense Modal
+   --------------------------- */
+function openAddExpenseModal() {
+  document.getElementById('expenseModal').classList.add('open');
+  document.getElementById('expenseModal').ariaHidden = 'false';
+  
+  const sel = document.getElementById('expensePayer');
+  sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
+  
+  // Reset other fields
+  document.getElementById('expenseAmount').value = '';
+  document.getElementById('expenseDescription').value = '';
+  
+  const split = document.getElementById('expenseSplit');
+  split.innerHTML = '';
+  
+  people.forEach(p => {
+    const id = 'chk_'+p;
+    const label = document.createElement('label');
+    label.className = 'split-chip checked'; // default checked
+    label.innerHTML = `<input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span>`;
+    label.onclick = function(){
+      const cb = this.querySelector('input');
+      // Use requestAnimationFrame to ensure we read the intended new state
+      requestAnimationFrame(() => {
+        this.classList.toggle('checked', cb.checked);
+      });
+    };
+    split.appendChild(label);
   });
 }
 
-
-// --- Expense Functions ---
-function openAddExpenseModal(expense = null) {
-  const modal = document.getElementById('expenseModal');
-  const title = document.getElementById('expenseModalTitle');
-  const idInput = document.getElementById('expenseIdInput');
-  const descInput = document.getElementById('expenseDescription');
-  const dateInput = document.getElementById('expenseDate'); // <-- DATE FIX: Get date input element
-  const amountInput = document.getElementById('expenseAmount');
-  const paidBySelect = document.getElementById('expensePaidBy');
-  const splitCheckboxes = document.querySelectorAll('#expenseSplitWith input[type="checkbox"]');
-  const saveBtn = document.getElementById('expenseSaveBtn');
-
-  const today = new Date().toISOString().substring(0, 10);
-
-  // Reset all
-  descInput.value = '';
-  amountInput.value = '';
-  paidBySelect.value = '';
-  idInput.value = '';
-  dateInput.value = today; // <-- DATE FIX: Set default date to today
-  splitCheckboxes.forEach(cb => cb.checked = false);
-
-  if (expense) {
-    title.textContent = 'Edit Expense';
-    idInput.value = expense.id;
-    descInput.value = expense.description;
-    dateInput.value = expense.date; // <-- DATE FIX: Load existing date
-    amountInput.value = expense.amount;
-    paidBySelect.value = expense.paidBy;
-
-    // Set split with checkboxes
-    expense.splitWith.forEach(memberId => {
-      const checkbox = document.getElementById(`split-${memberId}`);
-      if (checkbox) checkbox.checked = true;
+function toggleSplitChecks(check) {
+    document.querySelectorAll('#expenseSplit input[type="checkbox"]').forEach(cb => {
+        cb.checked = check;
+        cb.closest('.split-chip').classList.toggle('checked', check);
     });
-    saveBtn.textContent = 'Save Changes';
-  } else {
-    title.textContent = 'Add New Expense';
-    saveBtn.textContent = 'Save Expense';
-    // Default split: all members
-    document.getElementById('expenseSplitWith').querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = true);
-  }
-
-  modal.style.display = 'flex';
 }
 
 function closeAddExpenseModal() {
-  document.getElementById('expenseModal').style.display = 'none';
+  document.getElementById('expenseModal').classList.remove('open');
+  document.getElementById('expenseModal').ariaHidden = 'true';
 }
 
-function addExpense() {
-  const id = document.getElementById('expenseIdInput').value;
-  const description = document.getElementById('expenseDescription').value.trim();
-  const date = document.getElementById('expenseDate').value; // <-- DATE FIX: Get the date value
-  const amount = parseFloat(document.getElementById('expenseAmount').value);
-  const paidBy = document.getElementById('expensePaidBy').value;
-  const splitWith = Array.from(document.querySelectorAll('#expenseSplitWith input[type="checkbox"]:checked')).map(cb => cb.value);
-
-  // DATE FIX: Added date validation
-  if (!description || !date || !amount || amount <= 0 || !paidBy || splitWith.length === 0) {
-    showToast('error', 'Please fill all fields (including date), ensure amount is positive, and select at least one person to split with.');
+/* Submit expense (with validation + toasts + highlight) */
+function submitExpense() {
+  const payer = document.getElementById('expensePayer').value;
+  const amountRaw = document.getElementById('expenseAmount').value;
+  const description = document.getElementById('expenseDescription').value || 'General Expense';
+  const amount = parseFloat(amountRaw);
+  
+  if (!amount || amount <= 0 || isNaN(amount)) {
+    showToast('error','Please enter a valid amount');
     return;
   }
-
-  const newExpense = {
-    id: id || window.uuidv4(),
+  
+  const shared = [...document.querySelectorAll('#expenseSplit input')].filter(i=>i.checked).map(c => c.value);
+  if (shared.length === 0) { showToast('error','Select at least one member'); return; }
+  
+  const perShare = parseFloat((amount / shared.length).toFixed(2));
+  
+  const entry = { 
+    payer, 
+    amount: +amount.toFixed(2), 
     description,
-    amount,
-    paidBy,
-    splitWith,
-    date: date // <-- DATE FIX: Save the date from the input
+    date: new Date().toISOString(), // Timestamp
+    shared, 
+    perShare 
   };
-
-  if (id) {
-    // Edit existing
-    const index = window.roomData.expenses.findIndex(e => e.id === id);
-    if (index !== -1) {
-      window.roomData.expenses[index] = newExpense;
-      showToast('success', 'Expense updated!');
-    }
-  } else {
-    // Add new
-    window.roomData.expenses.push(newExpense);
-    showToast('success', 'Expense added!');
-  }
-
-  window.saveRoomData(); // Persist the change
+  
+  expenses.push(entry);
+  const newIndex = expenses.length - 1;
+  updateExpenseTable();
   closeAddExpenseModal();
+  saveData();
+  // highlight last row
+  highlightExpenseRow(newIndex);
+  showToast('success','Expense added successfully');
 }
 
-function editExpense(expenseId) {
-  const expense = window.roomData.expenses.find(e => e.id === expenseId);
-  if (expense) {
-    openAddExpenseModal(expense);
-  }
+/* highlight a row by index (temporary) */
+function highlightExpenseRow(idx){
+  const tbody = document.querySelector('#expenseTable tbody');
+  const row = tbody.children[idx];
+  if (!row) return;
+  row.classList.add('new-row');
+  setTimeout(()=> {
+    row.style.animation = 'pulseGlow .9s ease';
+  }, 350);
+  setTimeout(()=> {
+    row.classList.remove('new-row');
+    row.style.animation = '';
+  }, 2200);
 }
 
-function deleteExpense(expenseId) {
-  // Custom confirmation dialog replacement
-  const isConfirmed = confirm('Are you sure you want to delete this expense?');
-
-  if (isConfirmed) {
-    window.roomData.expenses = window.roomData.expenses.filter(e => e.id !== expenseId);
-    window.saveRoomData(); // Persist the change
-    showToast('success', 'Expense deleted!');
-  }
-}
-
+/* ---------------------------
+   Expense Table rendering
+   --------------------------- */
 function updateExpenseTable() {
-  const tbody = document.getElementById('expenseTableBody');
+  const tbody = document.querySelector('#expenseTable tbody');
   tbody.innerHTML = '';
-  
-  let totalExpenses = window.roomData.rent;
-  
-  // Sort expenses by date descending
-  const sortedExpenses = [...window.roomData.expenses].sort((a, b) => new Date(b.date) - new Date(a.date));
+  expenses.slice().reverse().forEach((e, originalIndex) => { // Reverse for latest first, originalIndex used for deletion
+    // Calculate the current index in the non-reversed array
+    const idx = expenses.length - 1 - expenses.findIndex(exp => exp === e); 
 
-  sortedExpenses.forEach(expense => {
-    totalExpenses += expense.amount;
-    const paidByName = window.roomData.members.find(m => m.id === expense.paidBy)?.name || 'Unknown';
-    const splitWithNames = expense.splitWith.map(id => window.roomData.members.find(m => m.id === id)?.name || '?').join(', ');
-    
-    const row = tbody.insertRow();
-    row.innerHTML = `
-      <td>${expense.date}</td> <!-- <-- DATE FIX: Date display confirmed -->
-      <td>${expense.description}</td>
-      <td>$${expense.amount.toFixed(2)}</td>
-      <td>${paidByName}</td>
-      <td>${splitWithNames}</td>
-      <td class="actions">
-        <button class="btn btn-secondary" onclick="editExpense('${expense.id}')"><i class="fas fa-edit"></i></button>
-        <button class="btn btn-danger" onclick="deleteExpense('${expense.id}')"><i class="fas fa-trash"></i></button>
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600" scope="row">${e.payer}</td>
+      <td>${e.amount.toFixed(2)}</td>
+      <td style="color:var(--muted); font-size:13px;" title="${new Date(e.date).toLocaleString()}">${e.description.substring(0, 20)}...</td>
+      <td>${e.perShare.toFixed(2)}</td>
+      <td>${e.shared.join(', ')}</td>
+      <td style="text-align:right">
+        <button class="table-btn" title="Remove" onclick="removeExpense(${idx})" aria-label="Remove expense ${e.description}"><i class="fas fa-trash"></i></button>
       </td>
     `;
+    // We append to the front to show latest expense on top
+    tbody.prepend(tr); 
   });
-  
-  document.getElementById('totalExpensesDisplay').textContent = `$${totalExpenses.toFixed(2)}`;
-  updateBalanceTable(); // Update balances whenever expenses change
+  document.getElementById('expensesCount').textContent = `${expenses.length} entries`;
 }
 
+/* remove expense */
+function removeExpense(idx) {
+  if(!confirm('Delete this expense?')) return;
+  expenses.splice(idx,1);
+  updateExpenseTable();
+  saveData();
+  showToast('success','Expense removed');
+}
 
-// --- Report/Balance Functions ---
+/* ---------------------------
+   Reports
+   --------------------------- */
+function openReportModal() { 
+  document.getElementById('reportModal').classList.add('open'); 
+  document.getElementById('reportModal').ariaHidden = 'false'; 
+  generateSmartSettlement(); // Default report
+}
+function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); document.getElementById('reportModal').ariaHidden = 'true'; }
 
-function calculateBalances() {
-  const { members, expenses, rent } = window.roomData;
-  const balances = members.reduce((acc, m) => {
-    acc[m.id] = {
-      name: m.name,
-      paid: 0,
-      shouldPay: 0,
-      netBalance: 0,
-      expensesPaid: 0,
-      rentShare: 0
-    };
-    return acc;
-  }, {});
+// 1. Full Expense List Report
+function generateExpenseReport() {
+  currentReportType='expense'; 
+  const table = document.getElementById('reportTable');
+  let thead='<tr><th scope="col">Payer</th><th scope="col">Amount</th><th scope="col">Description</th><th scope="col">Shared Amount</th><th scope="col">Shared With</th></tr>';
+  let tbody='';
+  expenses.forEach(e=>{
+    const per=(e.perShare).toFixed(2);
+    tbody+=`<tr><td style="font-weight:600" scope="row">${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${e.description}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
+  });
+  table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+}
 
-  // 1. Calculate Rent Share
-  const totalMembers = members.length;
-  if (totalMembers > 0 && rent > 0) {
-      const rentPerMember = rent / totalMembers;
-      members.forEach(m => {
-          balances[m.id].shouldPay += rentPerMember;
-          balances[m.id].rentShare = rentPerMember;
-      });
-  }
+// 2. Balance Sheet (Paid vs Owed)
+function generateToPayReport() {
+  currentReportType='toPay';
+  const rent = rentValue || 0;
+  const paid = {}, owe = {};
+  people.forEach(p => { paid[p]=0; owe[p]=0; });
   
-  // 2. Calculate Expense Balances
+  // Calculate expenses paid and owed
   expenses.forEach(e => {
-    const splitCount = e.splitWith.length;
-    if (splitCount === 0) return;
+    const per = e.perShare;
+    // Only count as owed if the person is in the split
+    e.shared.forEach(p => owe[p] = (owe[p] || 0) + per);
+    paid[e.payer] = (paid[e.payer] || 0) + e.amount;
+  });
+  
+  const rentShare = (people.length > 0) ? (rent / people.length) : 0;
+  const table = document.getElementById('reportTable');
+  
+  let thead='<tr><th scope="col">Name</th><th scope="col">Paid</th><th scope="col">Expenses Owed</th><th scope="col">Rent Share</th><th scope="col">Net Balance</th></tr>';
+  let tbody='';
+  people.forEach(p=>{
+    const totalPaid = (paid[p]||0);
+    const totalOwed = (owe[p]||0);
+    const netBalance = (totalPaid - totalOwed - rentShare);
+    const balanceClass = netBalance < 0 ? 'color:var(--danger)' : 'color:var(--success)';
+    tbody+=`<tr><td style="font-weight:600" scope="row">${p}</td><td>${totalPaid.toFixed(2)}</td><td>${totalOwed.toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td style="${balanceClass}; font-weight:700">${netBalance.toFixed(2)}</td></tr>`;
+  });
+  table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+}
 
-    const share = e.amount / splitCount;
+
+// 3. Smart Settlement (Minimum Transactions)
+function generateSmartSettlement() {
+  currentReportType='settlement';
+  let balances = {};
+  people.forEach(p => balances[p] = 0);
+
+  // 1. Calculate Balances from Expenses
+  expenses.forEach(e => {
+    // Payer's balance increases by the total amount paid
+    balances[e.payer] += e.amount;
     
-    // Add to paid amount for the payer
-    balances[e.paidBy].paid += e.amount;
-    balances[e.paidBy].expensesPaid += e.amount;
-
-    // Add to shouldPay for all members in the split
-    e.splitWith.forEach(memberId => {
-      balances[memberId].shouldPay += share;
+    // Each person in the split (including the payer) reduces their balance by their share
+    const splitAmount = e.perShare; 
+    e.shared.forEach(person => {
+      balances[person] -= splitAmount;
     });
   });
 
-  // 3. Calculate Net Balance
-  Object.values(balances).forEach(b => {
-    // Net Balance is what they Paid minus what they Should Pay
-    b.netBalance = b.paid - b.shouldPay;
-  });
+  // 2. Prepare Debtors and Creditors lists (ignore near-zero balances)
+  let debtors = [];
+  let creditors = [];
 
-  return balances;
-}
-
-function updateBalanceTable(isReport = false) {
-  const balances = calculateBalances();
-  const tbody = isReport ? document.getElementById('reportBalanceTableBody') : document.getElementById('balanceTableBody');
-  tbody.innerHTML = '';
-
-  Object.values(balances).sort((a, b) => b.netBalance - a.netBalance).forEach(b => {
-    const balanceClass = b.netBalance >= 0 ? 'positive' : 'negative';
-    const balanceText = b.netBalance >= 0 ? `$${b.netBalance.toFixed(2)} (Owes you)` : `$${(b.netBalance * -1).toFixed(2)} (You owe)`;
-
-    const row = tbody.insertRow();
-    row.innerHTML = `
-      <td>${b.name}</td>
-      ${isReport ? '' : `
-        <td>$${b.paid.toFixed(2)}</td>
-        <td>$${b.shouldPay.toFixed(2)}</td>
-      `}
-      <td class="${balanceClass}">${balanceText}</td>
-    `;
-  });
-
-  return balances;
-}
-
-function calculateSettlements(balances) {
-  let payers = Object.values(balances).filter(b => b.netBalance > 0);
-  let receivers = Object.values(balances).filter(b => b.netBalance < 0);
-  let settlements = [];
-  let totalOutstanding = 0;
-
-  payers.sort((a, b) => b.netBalance - a.netBalance); // Highest payer first
-  receivers.sort((a, b) => a.netBalance - b.netBalance); // Lowest receiver (highest debt) first
-
-  let pIndex = 0;
-  let rIndex = 0;
-
-  while (pIndex < payers.length && rIndex < receivers.length) {
-    let payer = payers[pIndex];
-    let receiver = receivers[rIndex];
-    
-    // Note: receiver's netBalance is negative, so use Math.abs()
-    let amountToSettle = Math.min(payer.netBalance, Math.abs(receiver.netBalance));
-
-    if (amountToSettle > 0.01) { // Check for a non-negligible amount
-      settlements.push({
-        from: receiver.name,
-        to: payer.name,
-        amount: amountToSettle
-      });
-
-      payer.netBalance -= amountToSettle;
-      receiver.netBalance += amountToSettle; // Adds back the negative amount
-
-      totalOutstanding += amountToSettle;
-    }
-    
-    // Move pointers
-    if (payer.netBalance < 0.01) {
-      pIndex++; // Payer is done paying
-    }
-    if (receiver.netBalance > -0.01) {
-      rIndex++; // Receiver is done receiving
-    }
+  for (const [person, amount] of Object.entries(balances)) {
+    if (amount < -0.01) debtors.push({ name: person, amount: amount }); // Negative balance = Ower
+    if (amount > 0.01) creditors.push({ name: person, amount: amount }); // Positive balance = Receiver
   }
-  
-  // Update total outstanding display
-  document.getElementById('reportTotalOutstanding').textContent = `$${totalOutstanding.toFixed(2)}`;
 
-  return settlements;
-}
+  debtors.sort((a, b) => a.amount - b.amount); // Most debt first
+  creditors.sort((a, b) => b.amount - a.amount); // Most credit first
 
-function openReportModal() {
-  const balances = updateBalanceTable(true); // Update report table
-  const settlements = calculateSettlements(balances);
-  
-  const listDiv = document.getElementById('settlementList');
-  listDiv.innerHTML = '<h3>Recommended Settlements</h3>';
+  let transactions = [];
+  let i = 0;
+  let j = 0;
 
-  if (settlements.length === 0) {
-    listDiv.innerHTML += '<p class="text-center text-text-muted mt-4">All balances are settled or zero. Good job!</p>';
+  // 3. Find Minimum Transactions
+  while (i < debtors.length && j < creditors.length) {
+    let debtor = debtors[i];
+    let creditor = creditors[j];
+    
+    // Amount to transfer is the smaller of the absolute debt or the credit
+    let amount = Math.min(Math.abs(debtor.amount), creditor.amount);
+
+    transactions.push(`${debtor.name} pays ${creditor.name}: ${amount.toFixed(2)} AED`);
+
+    // Update balances
+    debtor.amount += amount;
+    creditor.amount -= amount;
+
+    // Move to next debtor/creditor if their balance is settled (near zero)
+    if (Math.abs(debtor.amount) < 0.01) i++;
+    if (creditor.amount < 0.01) j++;
+  }
+
+  const table = document.getElementById('reportTable');
+  if (transactions.length === 0) {
+    table.innerHTML = `<tbody><tr><td style="text-align:center; padding:20px; color:var(--success); font-weight:700">🎉 All expense debts are cleared!</td></tr></tbody>`;
   } else {
-    const ul = document.createElement('ul');
-    settlements.forEach(s => {
-      const li = document.createElement('li');
-      li.innerHTML = `<strong>${s.from}</strong> owes <strong>${s.to}</strong>: <span class="text-xl font-bold text-accent">$${s.amount.toFixed(2)}</span>`;
-      ul.appendChild(li);
+    let html = `<thead><tr><th scope="col">Settlement Plan (${transactions.length} Transactions)</th></tr></thead><tbody>`;
+    transactions.forEach(t => {
+      html += `<tr><td style="color:var(--accent); font-weight:600; padding:15px;" scope="row">${t}</td></tr>`;
     });
-    listDiv.appendChild(ul);
+    html += `</tbody>`;
+    table.innerHTML = html;
+  }
+}
+
+// 4. Confirmation to clear all expenses
+function confirmSettlement() {
+  const totalExpenses = expenses.length;
+  if (totalExpenses === 0) {
+    showToast('error', 'There are no expenses to clear.');
+    return;
   }
   
-  document.getElementById('reportModal').style.display = 'flex';
-}
-
-function closeReportModal() {
-  document.getElementById('reportModal').style.display = 'none';
-}
-
-
-// --- Data Management ---
-function clearAllData() {
-  // Custom confirmation dialog replacement
-  const isConfirmed = confirm('WARNING: This will delete ALL room data (Expenses, Members, Rent) for everyone in this group. Are you sure?');
-
-  if (isConfirmed) {
-    window.roomData = { members: [], expenses: [], rent: 0, lastUpdated: new Date().toISOString() };
-    window.saveRoomData(); // Save the empty state
-    showToast('success', 'Room data has been reset.');
-    closeReportModal();
+  if (!confirm(`WARNING: Are you sure everyone has settled their debts? This action will permanently remove all ${totalExpenses} expense records and cannot be undone. Rent setup will remain.`)) {
+    return;
   }
+  
+  // Clear the expenses array
+  expenses = [];
+  
+  // Update UI and storage
+  updateUI();
+  saveData();
+  closeReportModal();
+  showToast('success', `${totalExpenses} expenses successfully cleared! Ready for a new cycle.`);
 }
 
-// --- PDF Generation (Basic example using jspdf-autotable) ---
-function generatePDF() {
+
+/* PDF and WhatsApp share */
+function downloadReportPDF() {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-
-  doc.text("Room Expense Tracker Settlement Report", 14, 20);
-  doc.setFontSize(10);
-  doc.text(`Report Date: ${new Date().toLocaleDateString()}`, 14, 26);
-  doc.text(`Room ID: ${APP_ID}`, 14, 32);
-  doc.setFontSize(12);
-
-  const balances = calculateBalances();
-  const settlements = calculateSettlements(balances);
-  const totalOutstanding = document.getElementById('reportTotalOutstanding').textContent;
-
-  // 1. Balances Table
-  let balanceData = Object.values(balances).map(b => [
-    b.name,
-    `$${b.paid.toFixed(2)}`,
-    `$${b.shouldPay.toFixed(2)}`,
-    b.netBalance >= 0 ? `$${b.netBalance.toFixed(2)}` : `-$${(b.netBalance * -1).toFixed(2)}`
-  ]);
-
-  doc.autoTable({
-    startY: 40,
-    head: [['Member', 'Total Paid', 'Should Pay', 'Net Balance']],
-    body: balanceData,
-    theme: 'striped',
-    headStyles: { fillColor: [44, 83, 100], textColor: [255, 255, 255] }
+  doc.text("🏠 Room Expense Tracker",10,10);
+  doc.text("Generated: "+new Date().toLocaleString(),10,16);
+  doc.autoTable({startY:26, html:"#reportTable"});
+  doc.save("Room_Expense_Tracker_Report.pdf");
+}
+function shareReportWhatsApp() {
+  let text="🏠 Room Expense Tracker Report\n\n";
+  document.querySelectorAll("#reportTable tbody tr").forEach(tr=>{
+    text+=Array.from(tr.children).map(td=>td.textContent).join(" | ")+"\n";
   });
+  text+="Generated on: "+new Date().toLocaleString();
+  window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
+}
 
-  let finalY = doc.lastAutoTable.finalY + 10;
-  
-  // 2. Summary
-  doc.setFontSize(12);
-  doc.text(`Total Shared Expenses (Incl. Rent): ${document.getElementById('totalExpensesDisplay').textContent}`, 14, finalY);
-  finalY += 7;
-  doc.setFontSize(14);
-  doc.setTextColor(0, 198, 255);
-  doc.text(`Total Outstanding to Settle: ${totalOutstanding}`, 14, finalY);
-  doc.setTextColor(0, 0, 0);
-  finalY += 10;
+/* ---------------------------
+   Rent Modal functions
+   --------------------------- */
+function openRentModal() {
+  document.getElementById('rentModal').classList.add('open');
+  document.getElementById('rentModal').ariaHidden = 'false';
+  document.getElementById('rentInput').value = rentValue || '';
+  setTimeout(()=> document.getElementById('rentInput').focus(), 100);
+}
+function closeRentModal() {
+  document.getElementById('rentModal').classList.remove('open');
+  document.getElementById('rentModal').ariaHidden = 'true';
+}
+function saveRent() {
+  const val = parseFloat(document.getElementById('rentInput').value);
+  if (val < 0 || isNaN(val)) { showToast('error','Enter a valid rent (0 or positive)'); return; }
+  rentValue = +val.toFixed(2);
+  updateRentBox();
+  closeRentModal();
+  saveData();
+  showToast('success','Rent updated');
+}
 
-  // 3. Settlements List
-  doc.setFontSize(12);
-  doc.text("Recommended Settlements", 14, finalY);
-  finalY += 7;
-
-  let settlementData = settlements.map(s => [
-    s.from,
-    s.to,
-    `$${s.amount.toFixed(2)}`
-  ]);
-
-  if (settlementData.length > 0) {
-    doc.autoTable({
-      startY: finalY,
-      head: [['Owes', 'Pays To', 'Amount']],
-      body: settlementData,
-      theme: 'grid',
-      headStyles: { fillColor: [0, 198, 255], textColor: [255, 255, 255] }
-    });
+/* update rent display in the same textbox (total and per-head) */
+function updateRentBox(){
+  const rentBox = document.getElementById('rent');
+  const perHead = people.length > 0 ? (rentValue / people.length) : 0;
+  if (rentValue > 0) {
+    rentBox.value = `Total: ${rentValue.toFixed(2)} AED  |  Per head: ${perHead.toFixed(2)} AED`;
+    rentBox.dataset.value = rentValue;
   } else {
-    doc.text("All balances are settled. No transfers needed.", 14, finalY);
+    rentBox.value = 'Total Room Rent (AED)';
+    rentBox.dataset.value = 0;
   }
+}
 
+/* ---------------------------
+   Reset / Save / Load
+   --------------------------- */
+function resetValues() {
+  if(!confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.')) return;
+  rentValue = 0;
+  expenses=[];
+  people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+  updateUI();
+  saveData();
+  showToast('success','All data cleared');
+}
 
-  doc.save('RoomExpenseReport.pdf');
-  showToast('success', 'PDF report generated!');
+/* Save to localStorage */
+function saveData() {
+  try {
+    localStorage.setItem('roomExpenseData', JSON.stringify({
+      people, expenses, rent: rentValue
+    }));
+  } catch(e) {
+    console.error('Save failed', e);
+  }
+}
+
+/* Load from localStorage */
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem('roomExpenseData') || '{}');
+    // Schema check for robustness
+    if (data.people && Array.isArray(data.people)) people = data.people;
+    if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
+    if (data.rent || data.rent === 0) rentValue = data.rent;
+  } catch(e){ console.warn('Load failed, resetting to default.', e); }
+  updateUI();
 }
 
 /* update UI pieces */
@@ -1241,19 +959,19 @@ function updateUI() {
 /* helpers */
 function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
 
+/* Event saves */
+window.addEventListener('DOMContentLoaded', loadData);
+// Note: Removed beforeunload save as it can be unreliable on mobile/single page apps. saveData() is called after every major action.
+
 /* small enhancement: close modal on backdrop click */
 document.querySelectorAll('.modal').forEach(mod => {
   mod.addEventListener('click', (e) => {
     if (e.target === mod) {
-      // Check which modal is open and call its specific close function
-      if (mod.id === 'expenseModal') closeAddExpenseModal();
-      else if (mod.id === 'memberModal') closeMemberEditor();
-      else if (mod.id === 'reportModal') closeReportModal();
-      else if (mod.id === 'rentModal') closeRentModal();
+      mod.classList.remove('open');
+      mod.ariaHidden = 'true';
     }
   });
 });
 </script>
-
 </body>
 </html>
