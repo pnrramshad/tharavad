@@ -11,7 +11,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 
 <style>
-/* Basic Reset and Variables */
 :root{
   --bg-1:#0f2027;
   --bg-2:#203a43;
@@ -25,987 +24,954 @@
   --muted: #9fb4bf;
   --card-radius: 14px;
   --glass-blur: 8px;
-  font-family: 'Inter', sans-serif;
+  --shadow: 0 8px 30px rgba(2,8,16,0.6);
+  --glass-border: rgba(255,255,255,0.06);
+  --success: #7ef0b7;
 }
 
-body {
-  margin: 0;
-  padding: 0;
-  background: var(--bg-1);
-  color: var(--text-light);
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+/* Page background */
+html,body{
+  height:100%;
+  margin:0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+  color:var(--text-light);
+  background: linear-gradient(135deg,var(--bg-1),var(--bg-2) 45%,var(--bg-3));
+  background-attachment: fixed;
+  padding:18px;
+  box-sizing:border-box;
 }
 
-/* Typography */
-h1 {
-  background: -webkit-linear-gradient(45deg, var(--accent), var(--accent-2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  text-shadow: 0 0 10px rgba(0, 198, 255, 0.4);
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 0.5rem;
+/* App container */
+.app {
+  max-width:980px;
+  margin: 10px auto;
+  display:flex;
+  flex-direction:column;
+  gap:16px;
 }
 
-h2 {
-  color: var(--accent-2);
-  font-size: 1.5rem;
-  border-bottom: 2px solid var(--accent);
-  padding-bottom: 0.25rem;
-  margin-top: 2rem;
-  margin-bottom: 1rem;
-}
-
-/* Layout */
-.container {
-  max-width: 1000px;
-  width: 95%;
-  margin: 20px auto;
-  padding: 20px;
-  flex-grow: 1;
-}
-
-.grid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: 1fr;
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
-  .grid-2-1 {
-    grid-template-columns: 2fr 1fr;
-  }
-}
-
-/* Card Styling (Glassmorphism) */
-.card {
-  background: var(--glass);
+/* Sticky header */
+.header {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 16px;
+  border-radius:var(--card-radius);
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
   backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow);
+  border: 1px solid var(--glass-border);
+  position: sticky;
+  top: 12px;
+  z-index: 60;
+}
+.header .title {
+  display:flex;
+  gap:12px;
+  align-items:center;
+}
+.logo {
+  width:44px;height:44px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;
+  background: linear-gradient(135deg,var(--accent),var(--accent-2));
+  color:#002b34;font-weight:700;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.45);
+  font-size:20px;
+}
+.header h1{font-size:18px;margin:0;color:var(--text-light);letter-spacing:0.2px;}
+.header .nav {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+.icon-btn {
+  background:transparent;border:0;color:var(--muted);
+  padding:8px;border-radius:10px;cursor:pointer;
+  display:inline-flex;align-items:center;gap:8px;
+  transition: all .16s ease;
+}
+.icon-btn:hover { transform: translateY(-3px); color:var(--accent); box-shadow: 0 6px 18px rgba(0,198,255,0.06); }
+.icon-btn.primary { color: var(--accent); }
+
+/* Main glass card */
+.container {
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
   border-radius: var(--card-radius);
-  padding: 20px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  border: 1px solid rgba(255, 255, 255, 0.18);
-  transition: all 0.3s ease;
+  padding:18px;
+  box-shadow: var(--shadow);
+  border:1px solid var(--glass-border);
 }
-.card:hover {
-  box-shadow: 0 10px 40px 0 rgba(0, 198, 255, 0.2);
+
+/* Inputs & controls */
+.controls {
+  display:flex;
+  gap:10px;
+  align-items:center;
+  flex-wrap:wrap;
+  margin-bottom:8px;
 }
+.controls input[type="number"],
+.controls input[type="text"],
+.controls select{
+  min-width:150px;
+  max-width:260px;
+  flex:1 1 220px;
+  background: transparent;
+  border:1px solid rgba(255,255,255,0.06);
+  color:var(--text-light);
+  padding:10px 12px;border-radius:10px;
+  outline:none;
+  transition: box-shadow .15s ease, transform .12s ease;
+}
+.controls input::placeholder{ color: rgba(255,255,255,0.38); }
+.controls input:focus{ box-shadow: 0 6px 20px rgba(0,198,255,0.07); transform: translateY(-2px); border-color: var(--accent); }
 
 /* Buttons */
 .btn {
-  padding: 10px 15px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background-color 0.3s, transform 0.1s, box-shadow 0.3s;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  margin-right: 5px;
-  margin-bottom: 5px;
-  display: inline-flex;
-  align-items: center;
+  background: linear-gradient(90deg,var(--accent),var(--accent-2));
+  color:#002b34;border:0;padding:10px 12px;border-radius:10px;
+  font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
+}
+.btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(2,198,255,0.08); }
+.btn.ghost { background: transparent; color: var(--muted); border:1px solid rgba(255,255,255,0.04); }
+.btn.danger { background: linear-gradient(90deg,#ff6b6b,#ff5252); color: white; }
+.btn.warning { background: linear-gradient(90deg,#ffd700,#ffb700); color: #3c3c3c; }
+
+
+/* Layout for the table card */
+.section-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
+.section-title h2 { margin:0; font-size:16px; color:var(--text-light); }
+.small-muted { color:var(--muted); font-size:13px; }
+
+/* Table wrapper: scrollable with sticky header */
+.table-wrap {
+  overflow:auto;
+  max-height:360px;
+  border-radius:10px;
+  padding:8px;
+  border:1px solid rgba(255,255,255,0.03);
+  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
+  -webkit-overflow-scrolling: touch;
 }
 
-.btn i {
-  margin-right: 8px;
+/* Tables (expense & report) */
+table {
+  width:100%;
+  border-collapse:separate;
+  border-spacing:0 8px;
+  min-width:600px;
+  color:var(--text-light);
+}
+thead th {
+  position: sticky;
+  top:0;
+  z-index:10;
+  text-align:left;
+  padding:10px 12px;
+  font-weight:700;
+  font-size:13px;
+  color:var(--text-light);
+  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.8));
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+  backdrop-filter: blur(6px);
+}
+tbody td {
+  padding:12px;
+  font-size:14px;
+  vertical-align:middle;
+  background: transparent;
+}
+tbody tr {
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
+  border-radius:8px;
+  display:table-row;
+}
+tbody tr td:first-child { border-top-left-radius:8px; border-bottom-left-radius:8px; }
+tbody tr td:last-child { border-top-right-radius:8px; border-bottom-right-radius:8px; }
+
+/* Alternating rows */
+tbody tr:nth-child(odd) td {
+  background: rgba(255,255,255,0.03);
+}
+tbody tr:nth-child(even) td {
+  background: rgba(255,255,255,0.02);
+}
+tbody tr:hover td {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 30px rgba(2,8,16,0.6);
 }
 
-.btn-primary {
-  background-color: var(--accent);
-  color: var(--bg-1);
+/* Action buttons in table */
+.table-btn {
+  background:transparent;border:0;color:var(--muted);
+  padding:8px;border-radius:8px;cursor:pointer;
+  transition: all .12s ease;
 }
-.btn-primary:hover {
-  background-color: #0099e5;
-  box-shadow: 0 6px 8px rgba(0, 198, 255, 0.3);
+.table-btn:hover { color: var(--danger); transform: translateY(-2px); }
+
+/* New row highlight animation */
+@keyframes rowIn {
+  0% { opacity:0; transform: translateY(14px) scale(.995); box-shadow: none; }
+  40% { opacity:1; transform: translateY(0) scale(1.005); box-shadow: 0 10px 28px rgba(0,198,255,0.06); }
+  100% { transform: translateY(0) scale(1); box-shadow:none; }
+}
+.new-row td { animation: rowIn .8s ease both; outline: 2px solid rgba(0,198,255,0.12); }
+
+/* Highlight pulse after add (temporary) */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(0,198,255,0.18); }
+  60% { box-shadow: 0 0 12px 6px rgba(0,198,255,0.08); }
+  100% { box-shadow: none; }
 }
 
-.btn-secondary {
-  background-color: var(--bg-3);
-  color: var(--text-light);
-  border: 1px solid var(--accent-2);
-}
-.btn-secondary:hover {
-  background-color: var(--bg-2);
-}
-
-.btn-danger {
-  background-color: var(--danger);
-  color: white;
-}
-.btn-danger:hover {
-  background-color: #d84315;
-}
-
-/* Inputs */
-input[type="text"], input[type="number"], select {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 15px;
-  border: 1px solid var(--accent);
-  border-radius: 6px;
-  background-color: var(--glass-2);
-  color: var(--text-light);
-  box-sizing: border-box;
-}
-input[type="number"]::-webkit-inner-spin-button, 
-input[type="number"]::-webkit-outer-spin-button { 
-  -webkit-appearance: none; 
-  margin: 0; 
-}
-input[type="number"] {
-  -moz-appearance: textfield; /* Firefox */
-}
-
-/* Tables */
-.data-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 15px;
-}
-.data-table th, .data-table td {
-  padding: 12px;
-  text-align: left;
-  border-bottom: 1px solid var(--glass);
-}
-.data-table th {
-  background-color: var(--glass-2);
-  color: var(--accent-2);
-  font-weight: 700;
-  text-transform: uppercase;
-}
-.data-table tr:hover {
-  background-color: var(--glass-2);
-}
-
-.member-list span {
-  display: inline-block;
-  background-color: var(--bg-3);
-  padding: 5px 10px;
-  border-radius: 20px;
-  margin: 5px;
-  border: 1px solid var(--accent);
-}
-
-/* Modal Styling */
+/* Modal styles with animation */
 .modal {
-  display: none; 
-  position: fixed; 
-  z-index: 100;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0,0,0,0.8);
-  backdrop-filter: blur(5px);
+  display:none; position:fixed; inset:0;
+  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.6));
+  backdrop-filter: blur(4px);
+  align-items:center; justify-content:center;
+  z-index:120;
+  padding:18px;
+}
+.modal.open { display:flex; animation: modalIn .28s cubic-bezier(.2,.9,.3,1); }
+@keyframes modalIn {
+  from { opacity:0; transform: translateY(10px) scale(.995); }
+  to { opacity:1; transform: translateY(0) scale(1); }
 }
 .modal-content {
-  background-color: var(--bg-2);
-  margin: 10% auto;
-  padding: 30px;
-  border-radius: var(--card-radius);
-  max-width: 500px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.5);
-  position: relative;
-  border: 1px solid var(--accent);
-}
-.close-btn {
-  color: var(--muted);
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-.close-btn:hover,
-.close-btn:focus {
-  color: var(--text-light);
-  text-decoration: none;
-  cursor: pointer;
+  width:100%; max-width:520px; border-radius:12px;
+  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
+  border:1px solid rgba(255,255,255,0.04);
+  padding:16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+  position:relative;
 }
 
-/* Toast Message */
-#toast-container {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    z-index: 1000;
-    pointer-events: none;
+/* Close button */
+.close-btn {
+  position:absolute; right:12px; top:12px; border:0; padding:8px;
+  border-radius:8px; cursor:pointer; background: rgba(255,255,255,0.02);
+  color: var(--muted);
+}
+.close-btn:hover { color: white; transform: scale(1.06); background: rgba(255,255,255,0.03); }
+
+/* Checkbox grid (split) */
+.checkbox-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
+  gap:8px; margin-top:8px;
+}
+.split-chip {
+  display:flex; align-items:center; justify-content:center;
+  padding:8px 12px; border-radius:999px; cursor:pointer;
+  background: rgba(255,255,255,0.02); color:var(--text-light);
+  transition: all .18s ease;
+  border:1px solid rgba(255,255,255,0.02);
+}
+.split-chip input { display:none; }
+.split-chip.checked { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 8px 26px rgba(2,198,255,0.06); transform: translateY(-3px); }
+
+/* Floating Add button (mobile-friendly) */
+#quickAddBtn {
+  position: fixed; right:18px; bottom:18px; width:62px; height:62px; border-radius:50%;
+  border:0; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer;
+  background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 12px 38px rgba(2,198,255,0.12);
+  z-index:80;
+}
+#quickAddBtn:hover { transform: translateY(-4px); }
+
+/* Toast (notifications) */
+.toast-wrap {
+  position: fixed; right:18px; top:18px; z-index:200; display:flex; flex-direction:column; gap:10px;
 }
 .toast {
-    background-color: var(--bg-3);
-    color: var(--text-light);
-    padding: 10px 20px;
-    border-radius: 8px;
-    margin-top: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-    opacity: 0;
-    transition: opacity 0.3s ease-in-out;
+  min-width:220px; padding:10px 14px; border-radius:10px; color:#002b34; font-weight:700;
+  display:flex; gap:10px; align-items:center; box-shadow: 0 10px 30px rgba(2,8,16,0.48);
+  border: 1px solid rgba(255,255,255,0.04);
+  background: linear-gradient(90deg,var(--success), #d7ffd8);
+  opacity:0; transform: translateY(-8px) scale(.995);
+  animation: toastIn .28s cubic-bezier(.22,.9,.3,1) forwards;
 }
-.toast.show {
-    opacity: 1;
-}
-.toast.success { border-left: 5px solid var(--accent-2); }
-.toast.error { border-left: 5px solid var(--danger); }
-
-/* Utility */
-.text-center { text-align: center; }
-.my-4 { margin-top: 1.5rem; margin-bottom: 1.5rem; }
-.flex-row { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; }
-
-/* Rent Box */
-#rent-box {
-  background: var(--bg-3);
-  padding: 10px;
-  border-radius: 8px;
-  margin-top: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.toast.error { background: linear-gradient(90deg,#ffb2b2,#ff8686); color: #2b0b0b; }
+@keyframes toastIn { to { opacity:1; transform: translateY(0) scale(1); } }
 
 /* Footer */
-footer {
-  text-align: center;
-  padding: 15px;
-  color: var(--muted);
-  font-size: 0.8rem;
-  margin-top: 20px;
-  border-top: 1px solid var(--glass);
+.footer {
+  text-align:center; color:var(--muted); font-size:13px; padding:8px 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width:720px){
+  .header { padding:10px; }
+  .controls { gap:8px; }
+  .table-wrap { max-height:280px; }
+  table { min-width:580px; } /* Increased min-width for new column */
+  .modal-content { max-width:92%; padding:14px; }
+  #quickAddBtn { width:56px; height:56px; font-size:20px; right:14px; bottom:14px; }
+}
+@media (max-width:460px){
+  .controls { flex-direction:column; align-items:stretch; }
+  .header { gap:8px; }
+  .logo { width:40px;height:40px;font-size:18px; }
+  table { min-width:500px; font-size:13px; } /* Adjusted min-width */
 }
 </style>
-
-<!-- ============================================== -->
-<!-- FIREBASE SDKS AND INITIALIZATION (START) -->
-<!-- ============================================== -->
-<script type="module">
-    // Core imports for CDN (using version 11.6.1 for stability)
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-    import { getFirestore, doc, setDoc, onSnapshot, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
-
-    // Global Firebase variables accessible to the main script
-    window.db = null;
-    window.auth = null;
-    window.userId = null;
-    window.isAuthReady = false;
-
-    // Mandatory Canvas global variables
-    window.appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
-
-    let finalFirebaseConfig = null;
-    if (typeof __firebase_config !== 'undefined' && __firebase_config) {
-        try {
-            finalFirebaseConfig = JSON.parse(__firebase_config);
-        } catch (e) {
-            console.error("Configuration Error: Failed to parse __firebase_config. Please check the JSON format.", e);
-        }
-    }
-    
-    /**
-     * Define the Firestore reference path function globally.
-     * Returns a valid DocumentReference or null if Firebase is not initialized.
-     */
-    window.getRoomDocRef = () => {
-      if (!window.db || !window.userId || !window.appId) {
-          return null;
-      }
-      // Private data path: /artifacts/{appId}/users/{userId}/{your_collection_name}/{documentId}
-      const collectionPath = `artifacts/${window.appId}/users/${window.userId}/roomData`;
-      return doc(window.db, collectionPath, 'currentRoomState');
-    };
-
-    /**
-     * Initializes Firebase App, performs custom authentication, and sets up data loading.
-     */
-    async function initializeFirebaseAndAuth() {
-      if (!finalFirebaseConfig) {
-          console.error("CRITICAL: Firebase configuration missing. Cannot initialize.");
-          // Update local state to indicate failure
-          window.isAuthReady = true; 
-          document.getElementById('user-id-display').textContent = 'Config Error';
-          window.showToast?.('error', 'Critical configuration missing. Cannot connect to database.');
-          return;
-      }
-
-      try {
-        const app = initializeApp(finalFirebaseConfig);
-        window.db = getFirestore(app);
-        window.auth = getAuth(app);
-        
-        // Authentication logic
-        const authToken = typeof __initial_auth_token !== 'undefined' ? __initial_auth_token : null;
-        
-        console.log(`Attempting Firebase sign-in... Custom token present: ${!!authToken}`);
-        
-        if (authToken) {
-          await signInWithCustomToken(window.auth, authToken);
-        } else {
-          await signInAnonymously(window.auth);
-        }
-        
-        window.userId = window.auth.currentUser?.uid || crypto.randomUUID();
-        window.isAuthReady = true;
-
-        console.log(`Firebase ready. User ID: ${window.userId}`);
-        
-        // Start loading data after successful authentication
-        if (window.loadData) {
-           window.loadData();
-        }
-
-      } catch (e) {
-        console.error("Firebase initialization or authentication failed:", e);
-        // Note: The main script's showToast function might not be available immediately.
-        document.getElementById('user-id-display').textContent = 'Auth Failed';
-        window.showToast?.('error', 'Firebase connection failed. Check console for details (e.g., security rules, configuration).');
-        window.isAuthReady = true; 
-      }
-    }
-
-    // --- Execution ---
-    // If config is successfully loaded, start the initialization process.
-    if (finalFirebaseConfig) {
-      initializeFirebaseAndAuth();
-    } else {
-      // Config failed to load, set authReady immediately and update display via DOMContentLoaded
-      window.isAuthReady = true;
-      document.addEventListener('DOMContentLoaded', () => {
-        document.getElementById('user-id-display').textContent = 'Config Error';
-      });
-    }
-
-    // Expose necessary Firestore functions globally for the main script
-    window.setDoc = setDoc;
-    window.onSnapshot = onSnapshot;
-    window.deleteDoc = deleteDoc;
-    window.doc = doc;
-    window.getAuth = getAuth; 
-</script>
-<!-- ============================================== -->
-<!-- FIREBASE SDKS AND INITIALIZATION (END) -->
-<!-- ============================================== -->
-
-
 </head>
 <body>
-
-<div class="container">
-  <div class="flex-row">
-    <h1>Room Expense Tracker</h1>
-    <div class="flex-row">
-      <button class="btn btn-secondary" onclick="document.getElementById('pdfModal').style.display='block';"><i class="fas fa-file-pdf"></i> PDF Export</button>
-      <button class="btn btn-danger" onclick="resetValues();"><i class="fas fa-trash-alt"></i> Reset All</button>
+<div class="app">
+  <div class="header">
+    <div class="title">
+      <div class="logo">RT</div>
+      <div>
+        <h1>Room Expense Tracker</h1>
+        <div class="small-muted">Dark Elegant • Tharavad</div>
+      </div>
+    </div>
+    <div class="nav">
+      <button class="icon-btn" onclick="scrollToTop()" title="Home"><i class="fas fa-home"></i></button>
+      <button class="icon-btn" onclick="openAddExpenseModal()" title="Add Expense"><i class="fas fa-plus"></i></button>
+      <button class="icon-btn" onclick="openReportModal()" title="Reports"><i class="fas fa-chart-pie"></i></button>
+      <button class="icon-btn" onclick="openMemberEditor()" title="Members"><i class="fas fa-users"></i></button>
     </div>
   </div>
 
-  <p class="text-center" style="color:var(--muted); font-size:0.9rem;">
-    User ID: <span id="user-id-display">Loading...</span>
-  </p>
-
-  <div class="grid my-4">
-
-    <!-- 1. ADD MEMBER CARD -->
-    <div class="card">
-      <h2><i class="fas fa-users"></i> Room Members</h2>
-      <div id="member-list" class="member-list"></div>
-      
-      <div class="flex-row" style="margin-top: 15px;">
-        <input type="text" id="member-name" placeholder="Member Name" style="margin-bottom: 0; width: auto; flex-grow: 1; margin-right: 10px;">
-        <button class="btn btn-primary" onclick="addMember();"><i class="fas fa-plus"></i> Add</button>
-      </div>
+  <div class="container">
+    <div class="section-title">
+      <h2>🏠 Overview</h2>
+      <div class="small-muted">Manage shared expenses & rent</div>
     </div>
 
-    <!-- 2. ADD EXPENSE CARD -->
-    <div class="card">
-      <h2><i class="fas fa-receipt"></i> Add Expense</h2>
-      <input type="text" id="expense-name" placeholder="Expense Description" required>
-      <input type="number" id="expense-amount" placeholder="Amount (e.g., 500)" required min="0">
-      
-      <label style="color: var(--muted); margin-bottom: 5px; display: block;">Paid By:</label>
-      <select id="expense-paid-by">
-        <!-- Options populated by JS -->
-      </select>
-      
-      <button class="btn btn-primary" onclick="addExpense();"><i class="fas fa-plus-circle"></i> Add Expense</button>
+    <div class="controls">
+      <input id="rent" type="text" placeholder="Total Room Rent (AED)" readonly aria-label="Current Rent Value">
+      <button class="btn" onclick="openRentModal()"><i class="fas fa-dollar-sign"></i> Setup Rent</button>
+      <button class="btn ghost" onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
+      <button class="btn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i> Add Expense</button>
+      <button class="btn" onclick="openReportModal()"><i class="fas fa-chart-pie"></i> Reports</button>
+      <button class="btn danger" onclick="resetValues()"><i class="fas fa-trash"></i> Clear All Data</button>
     </div>
 
-    <!-- 3. RENT/COMMON EXPENSE CARD -->
-    <div class="card">
-      <h2><i class="fas fa-home"></i> Common Expense (e.g., Rent)</h2>
-      <p style="color:var(--muted); font-size:0.9rem;">This amount is split equally among all members.</p>
-      
-      <div id="rent-box">
-        <span style="font-size: 1.2rem; font-weight: 700;">Rent Amount: <span id="current-rent">0</span></span>
-        <button class="btn btn-secondary" onclick="document.getElementById('rentModal').style.display='block';"><i class="fas fa-edit"></i> Edit</button>
-      </div>
+    <div class="section-title">
+      <h2>Expenses</h2>
+      <div class="small-muted" id="expensesCount">0 entries</div>
     </div>
-  </div>
 
-  <!-- 4. EXPENSE TABLE -->
-  <div class="card" style="margin-top: 20px;">
-    <h2><i class="fas fa-list-alt"></i> Expense Breakdown</h2>
-    <div style="overflow-x: auto;">
-      <table id="expense-table" class="data-table">
+    <div class="table-wrap" id="expenseWrap">
+      <table id="expenseTable" aria-label="Expense table">
         <thead>
           <tr>
+            <th>Payer</th>
+            <th>Amount (AED)</th>
             <th>Description</th>
-            <th>Amount</th>
-            <th>Paid By</th>
-            <th>Actions</th>
+            <th>Shared Amount</th>
+            <th>Shared With</th>
+            <th style="text-align:right">Action</th>
           </tr>
         </thead>
-        <tbody id="expense-body">
-          <!-- Rows populated by JS -->
-        </tbody>
+        <tbody></tbody>
       </table>
     </div>
   </div>
 
-  <!-- 5. SUMMARY TABLE -->
-  <div class="card" style="margin-top: 20px;">
-    <h2><i class="fas fa-balance-scale"></i> Member Summary (Settlement)</h2>
-    <div style="overflow-x: auto;">
-      <table id="summary-table" class="data-table">
-        <thead>
-          <tr>
-            <th>Member</th>
-            <th>Total Paid</th>
-            <th>Total Owed</th>
-            <th>Settlement</th>
-          </tr>
-        </thead>
-        <tbody id="summary-body">
-          <!-- Rows populated by JS -->
-        </tbody>
-      </table>
+  <div class="footer">Room Expense Tracker • Tharavad • © <span id="year"></span></div>
+</div>
+
+<button id="quickAddBtn" onclick="openAddExpenseModal()" title="Quick add"><i class="fas fa-plus"></i></button>
+
+<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
+
+<div class="modal" id="expenseModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="addExpenseTitle">
+    <button class="close-btn" onclick="closeAddExpenseModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="addExpenseTitle">➕ Add Expense</h3>
+
+    <div style="margin-top:6px;">
+      <label class="small-muted">Payer</label>
+      <select id="expensePayer" aria-label="Payer" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light)"></select>
+    </div>
+
+    <div style="margin-top:10px;">
+      <label class="small-muted">Amount (AED)</label>
+      <input id="expenseAmount" type="number" placeholder="Enter amount" aria-label="Expense amount in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
+    
+    <div style="margin-top:10px;">
+      <label class="small-muted">Description (Optional)</label>
+      <input id="expenseDescription" type="text" placeholder="e.g. Electricity bill, Groceries" aria-label="Expense description" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
+
+    <div style="margin-top:10px;">
+      <label class="small-muted">Split with</label>
+      <div style="display:flex; justify-content:flex-end; gap:8px;">
+        <button class="icon-btn" onclick="toggleSplitChecks(true)"><i class="fas fa-check-double"></i> All</button>
+        <button class="icon-btn" onclick="toggleSplitChecks(false)"><i class="fas fa-times-circle"></i> None</button>
+      </div>
+      <div class="checkbox-grid" id="expenseSplit"></div>
+    </div>
+
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn ghost" onclick="closeAddExpenseModal()"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn" id="addExpenseSubmit" onclick="submitExpense()"><i class="fas fa-check"></i> Add Expense</button>
     </div>
   </div>
 </div>
 
-<footer>
-  Developed with real-time Firebase Data Persistence.
-</footer>
+<div class="modal" id="memberModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="memberTitle">
+    <button class="close-btn" onclick="closeMemberEditor()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="memberTitle">👥 Edit Members</h3>
 
+    <div id="memberList" style="margin-top:8px;"></div>
 
-<!-- ============================================== -->
-<!-- MODALS -->
-<!-- ============================================== -->
-
-<!-- 1. Rent/Common Expense Modal -->
-<div id="rentModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="document.getElementById('rentModal').style.display='none';">&times;</span>
-    <h2>Set Common Expense (Rent)</h2>
-    <input type="number" id="new-rent-amount" placeholder="Enter new rent amount" min="0">
-    <button class="btn btn-primary" onclick="setRent();"><i class="fas fa-check"></i> Set Rent</button>
+    <div style="display:flex; gap:8px; margin-top:12px;">
+      <input id="newMemberName" type="text" placeholder="Add new member" aria-label="New member name" style="padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light); flex:1;">
+      <button class="btn" onclick="addMember()"><i class="fas fa-user-plus"></i> Add</button>
+      <button class="btn ghost" onclick="saveMemberChanges()"><i class="fas fa-check"></i> Done</button>
+    </div>
   </div>
 </div>
 
-<!-- 2. PDF Export Modal -->
-<div id="pdfModal" class="modal">
-  <div class="modal-content">
-    <span class="close-btn" onclick="document.getElementById('pdfModal').style.display='none';">&times;</span>
-    <h2>Generate PDF Report</h2>
-    <p style="color:var(--muted);">Click below to generate a detailed PDF report of all expenses and the final settlement summary.</p>
-    <button class="btn btn-primary" onclick="generatePdf();"><i class="fas fa-file-download"></i> Generate and Download PDF</button>
+<div class="modal" id="reportModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
+    <button class="close-btn" onclick="closeReportModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="reportTitle">📊 Reports</h3>
+
+    <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
+      <button class="btn" onclick="generateExpenseReport()"><i class="fas fa-list"></i> Expense Report</button>
+      <button class="btn" onclick="generateToPayReport()"><i class="fas fa-hand-holding-usd"></i> Balance Sheet</button>
+      <button class="btn" onclick="generateSmartSettlement()"><i class="fas fa-exchange-alt"></i> Smart Settlement</button>
+    </div>
+
+    <div class="table-wrap" style="margin-top:12px; max-height:320px;">
+      <table id="reportTable"><thead></thead><tbody></tbody></table>
+    </div>
+
+    <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
+      <button class="btn warning" onclick="confirmSettlement()"><i class="fas fa-stamp"></i> Confirm & Clear Expenses</button>
+      <button class="btn" onclick="downloadReportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
+      <button class="btn" onclick="shareReportWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
+    </div>
   </div>
 </div>
 
-<!-- 3. Custom Alert/Toast Container -->
-<div id="toast-container"></div>
+<div class="modal" id="rentModal" aria-hidden="true">
+  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rentTitle">
+    <button class="close-btn" onclick="closeRentModal()" aria-label="Close"><i class="fas fa-times"></i></button>
+    <h3 id="rentTitle">💰 Set Room Rent</h3>
 
+    <div style="margin-top:10px;">
+      <label class="small-muted">Total Rent (AED)</label>
+      <input id="rentInput" type="number" placeholder="Enter total rent" aria-label="Total Rent in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    </div>
 
-<!-- ============================================== -->
-<!-- JAVASCRIPT LOGIC -->
-<!-- ============================================== -->
+    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
+      <button class="btn ghost" onclick="closeRentModal()"><i class="fas fa-times"></i> Cancel</button>
+      <button class="btn" onclick="saveRent()"><i class="fas fa-check"></i> Save</button>
+    </div>
+  </div>
+</div>
+
 <script>
-// ==============================================
-// GLOBAL STATE VARIABLES
-// ==============================================
-let people = []; // Starts empty now, loaded from Firebase. No "fault members".
-let expenses = []; // List of all expenses
-let rentValue = 0; // Common expense/rent
-const TOAST_DURATION = 3000;
-const MAX_RETRIES = 5;
+/* ---------------------------
+   Data & initial variables
+   --------------------------- */
+let people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+// expense: { payer, amount, description, date, shared: [...], perShare }
+let expenses = []; 
+let rentValue = 0;
+let currentReportType = 'settlement'; 
 
-// ==============================================
-// FIREBASE DATA FUNCTIONS (REPLACING LOCALSTORAGE)
-// ==============================================
+/* set copyright year */
+document.getElementById('year').textContent = new Date().getFullYear();
 
-/* Display User ID (for collaboration) */
-function updateUserIdDisplay() {
-    const display = document.getElementById('user-id-display');
-    if (window.isAuthReady && window.userId) {
-        display.textContent = window.userId;
-    } else if (window.isAuthReady && !window.userId) {
-        // This state means auth failed or config failed, and isAuthReady was set to true.
-        display.textContent = display.textContent === 'Loading...' ? 'Auth Failed' : display.textContent;
-    } else {
-        display.textContent = 'Authenticating...';
-        // Retry check if not ready immediately
-        setTimeout(updateUserIdDisplay, 500); 
-    }
+/* ---------------------------
+   Toast notifications
+   --------------------------- */
+function showToast(type='success', message='') {
+  const wrap = document.getElementById('toastWrap');
+  const t = document.createElement('div');
+  t.className = 'toast' + (type==='error' ? ' error' : '');
+  t.innerHTML = `<div style="font-size:16px;">${ type==='error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>' }</div><div style="flex:1">${message}</div>`;
+  wrap.appendChild(t);
+  // auto remove after 3s
+  setTimeout(()=> {
+    t.style.opacity = '0';
+    t.style.transform = 'translateY(-8px)';
+    setTimeout(()=> t.remove(), 350);
+  }, 3000);
 }
 
-
-/**
- * Save data to Firestore (Called after every state change).
- * Uses setDoc to overwrite the room state document.
- */
-async function saveData() {
-    const docRef = window.getRoomDocRef();
-    if (!docRef) {
-      console.warn("Save attempted, but Firestore document reference is invalid or database not ready.");
-      window.showToast?.('error', 'Database not ready. Please wait for authentication.');
-      return;
-    }
-    
-    // Attempt to save data with exponential backoff for robustness
-    for (let i = 0; i < MAX_RETRIES; i++) {
-        try {
-            await window.setDoc(docRef, {
-                people: people, 
-                expenses: expenses, 
-                rent: rentValue
-            }, { merge: false }); // Overwrite the whole document
-            return; // Success
-        } catch(e) {
-            console.error(`Firestore save attempt ${i+1} failed:`, e);
-            if (i < MAX_RETRIES - 1) {
-                // Exponential backoff
-                await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
-            } else {
-                showToast('error', 'Critical: Could not save data to database after multiple attempts. Check console.');
-            }
-        }
-    }
-}
-
-/**
- * Load data from Firestore in real-time.
- */
-function loadData() {
-    if (!window.isAuthReady || !window.db) {
-        console.warn("loadData called, but Firebase is not yet ready.");
-        return;
-    }
-    const docRef = window.getRoomDocRef();
-    if (!docRef) {
-      // If docRef is null here, it means the config/auth failed and getRoomDocRef handles it
-      console.warn("Load attempted, but Firestore document reference is invalid after auth check.");
-      return;
-    }
-
-    window.onSnapshot(docRef, (docSnap) => {
-        if (docSnap.exists()) {
-            const data = docSnap.data();
-            
-            // 1. People
-            if (data.people && Array.isArray(data.people)) {
-                people = data.people;
-            } else {
-                people = [];
-            }
-            
-            // 2. Expenses
-            if (data.expenses && Array.isArray(data.expenses)) {
-                expenses = data.expenses;
-            } else {
-                expenses = [];
-            }
-            
-            // 3. Rent
-            if (data.rent || data.rent === 0) {
-                rentValue = data.rent;
-            } else {
-                rentValue = 0;
-            }
-
-            console.log("Data loaded from Firestore.");
-            updateUI();
-
-        } else {
-            console.log("No data found in Firestore, initializing empty state.");
-            // Document doesn't exist, ensure local state is clean
-            people = [];
-            expenses = [];
-            rentValue = 0;
-            updateUI();
-        }
-    }, (error) => {
-        console.error("Error listening to Firestore changes:", error);
-        showToast('error', 'Failed to connect to live database or permissions denied.');
-    });
-}
-
-/**
- * Reset all data by deleting the Firestore document.
- */
-function resetValues() {
-    // Custom modal instead of confirm()
-    // NOTE: Using window.confirm() here as it is a critical, irreversible action and custom modal implementation is complex for this simple case.
-    const confirmReset = window.confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.');
-    if (!confirmReset) return;
-    
-    const docRef = window.getRoomDocRef();
-    if (!docRef) {
-        showToast('error', 'Database not ready for reset.');
-        return;
-    }
-    
-    window.deleteDoc(docRef).then(() => {
-        // The onSnapshot listener in loadData will automatically handle the local state reset.
-        showToast('success', 'All data cleared from live database.');
-    }).catch(e => {
-        console.error('Firestore delete failed:', e);
-        showToast('error', 'Failed to clear data from database.');
-    });
-}
-
-
-// ==============================================
-// CORE LOGIC FUNCTIONS
-// ==============================================
-
-/* Add a new member */
-function addMember() {
-  const nameInput = document.getElementById('member-name');
-  const name = nameInput.value.trim().toUpperCase();
-  if (!name || people.includes(name)) {
-    showToast('error', 'Invalid or duplicate member name.');
-    return;
-  }
-  people.push(name);
-  nameInput.value = '';
-  saveData(); // Save to Firestore
-  showToast('success', `${name} added.`);
-}
-
-/* Remove a member */
-function removeMember(name) {
-  if (!window.confirm(`Are you sure you want to remove ${name}? All related expenses will remain, but settlement will change.`)) return;
-
-  people = people.filter(p => p !== name);
-  
-  // Note: expenses remain to keep a historical record of what was paid.
-  // The summary logic handles settlement correctly even if members are removed.
-  saveData(); // Save to Firestore
-  showToast('success', `${name} removed.`);
-}
-
-/* Add an expense */
-function addExpense() {
-  const name = document.getElementById('expense-name').value.trim();
-  const amount = parseFloat(document.getElementById('expense-amount').value);
-  const paidBy = document.getElementById('expense-paid-by').value;
-  
-  if (!name || isNaN(amount) || amount <= 0 || !paidBy) {
-    showToast('error', 'Please fill all expense fields correctly.');
-    return;
-  }
-
-  expenses.push({
-    id: Date.now(), // Simple unique ID
-    description: name,
-    amount: amount,
-    paidBy: paidBy
+/* ---------------------------
+   Members UI (editor with add/remove)
+   --------------------------- */
+function updateMemberUI() {
+  const list = document.getElementById('memberList');
+  list.innerHTML = '';
+  people.forEach((p) => {
+    const div = document.createElement('div');
+    div.className = 'member-item';
+    div.style.display = 'flex';
+    div.style.justifyContent = 'space-between';
+    div.style.alignItems = 'center';
+    div.style.padding = '10px';
+    div.style.margin = '6px 0';
+    div.style.borderRadius = '10px';
+    div.style.background = 'linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))';
+    // Use data-name for safer removal
+    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34;font-weight:700">${p[0]||'U'}</div><div style="font-weight:600">${p}</div></div><div><button class="btn ghost" onclick="removeMember('${p.replace(/'/g, "\\'")}')" aria-label="Remove ${p}"><i class="fas fa-trash"></i></button></div>`;
+    list.appendChild(div);
   });
 
-  document.getElementById('expense-name').value = '';
-  document.getElementById('expense-amount').value = '';
-  saveData(); // Save to Firestore
-  showToast('success', `Expense "${name}" added.`);
+  // update payer select & split chips if modal open
+  const sel = document.getElementById('expensePayer');
+  if (sel) sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
 }
 
-/* Remove an expense */
-function removeExpense(id) {
-  if (!window.confirm('Are you sure you want to remove this expense?')) return;
+/* Add / remove members */
+function addMember() {
+  const nameEl = document.getElementById('newMemberName');
+  const name = (nameEl.value || '').trim();
+  const nameUpper = name.toUpperCase(); // Force uppercase internally
   
-  expenses = expenses.filter(e => e.id !== id);
-  saveData(); // Save to Firestore
-  showToast('success', 'Expense removed.');
+  if (!name) { showToast('error', 'Please enter a name'); return; }
+  
+  // Case-insensitive duplicate check
+  if (people.map(p => p.toUpperCase()).includes(nameUpper)) { 
+    showToast('error', 'Member already exists (case insensitive)'); 
+    nameEl.value=''; 
+    return; 
+  }
+  
+  people.push(nameUpper); // Store name as uppercase
+  nameEl.value='';
+  updateUI(); saveData();
+  showToast('success','Member added');
 }
 
-/* Set Rent/Common Expense */
-function setRent() {
-  const newRent = parseFloat(document.getElementById('new-rent-amount').value);
-  if (isNaN(newRent) || newRent < 0) {
-    showToast('error', 'Please enter a valid rent amount (0 or greater).');
+function removeMember(name) {
+  // name is already the uppercase version stored in the people array
+  if (!confirm(`Remove member ${name}? This will update existing expense splits.`)) return;
+  
+  people = people.filter(p => p !== name);
+  
+  // 1. Remove member from shared lists in expenses & recalculate perShare
+  expenses.forEach(e => { 
+    e.shared = e.shared.filter(x => x !== name); 
+    if (e.shared.length > 0) {
+      e.perShare = +(e.amount / e.shared.length).toFixed(2);
+    } else {
+      e.perShare = 0; // No one left to share with
+    }
+    // Also update payer if the payer was removed (transfer to first available member)
+    if (e.payer === name && people.length > 0) {
+        e.payer = people[0];
+        showToast('warning', `Payer for an expense (${e.amount.toFixed(2)}) was removed and transferred to ${e.payer}.`);
+    } else if (e.payer === name && people.length === 0) {
+        // If the last member is removed and they are a payer, remove the expense too.
+        e.remove = true; 
+    }
+  });
+
+  expenses = expenses.filter(e => !e.remove);
+
+  updateUI(); saveData();
+  showToast('success','Member removed and expenses updated');
+}
+
+function saveMemberChanges() { closeMemberEditor(); saveData(); showToast('success','Members updated'); }
+function openMemberEditor() { document.getElementById('memberModal').classList.add('open'); document.getElementById('memberModal').ariaHidden = 'false'; updateMemberUI(); }
+function closeMemberEditor() { document.getElementById('memberModal').classList.remove('open'); document.getElementById('memberModal').ariaHidden = 'true'; }
+
+/* ---------------------------
+   Expense Modal
+   --------------------------- */
+function openAddExpenseModal() {
+  document.getElementById('expenseModal').classList.add('open');
+  document.getElementById('expenseModal').ariaHidden = 'false';
+  
+  const sel = document.getElementById('expensePayer');
+  sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
+  
+  // Reset other fields
+  document.getElementById('expenseAmount').value = '';
+  document.getElementById('expenseDescription').value = '';
+  
+  const split = document.getElementById('expenseSplit');
+  split.innerHTML = '';
+  
+  people.forEach(p => {
+    const id = 'chk_'+p;
+    const label = document.createElement('label');
+    label.className = 'split-chip checked'; // default checked
+    label.innerHTML = `<input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span>`;
+    label.onclick = function(){
+      const cb = this.querySelector('input');
+      // Use requestAnimationFrame to ensure we read the intended new state
+      requestAnimationFrame(() => {
+        this.classList.toggle('checked', cb.checked);
+      });
+    };
+    split.appendChild(label);
+  });
+}
+
+function toggleSplitChecks(check) {
+    document.querySelectorAll('#expenseSplit input[type="checkbox"]').forEach(cb => {
+        cb.checked = check;
+        cb.closest('.split-chip').classList.toggle('checked', check);
+    });
+}
+
+function closeAddExpenseModal() {
+  document.getElementById('expenseModal').classList.remove('open');
+  document.getElementById('expenseModal').ariaHidden = 'true';
+}
+
+/* Submit expense (with validation + toasts + highlight) */
+function submitExpense() {
+  const payer = document.getElementById('expensePayer').value;
+  const amountRaw = document.getElementById('expenseAmount').value;
+  const description = document.getElementById('expenseDescription').value || 'General Expense';
+  const amount = parseFloat(amountRaw);
+  
+  if (!amount || amount <= 0 || isNaN(amount)) {
+    showToast('error','Please enter a valid amount');
     return;
   }
-  rentValue = newRent;
-  document.getElementById('rentModal').style.display='none';
-  saveData(); // Save to Firestore
-  showToast('success', `Common expense set to ${newRent}.`);
+  
+  const shared = [...document.querySelectorAll('#expenseSplit input')].filter(i=>i.checked).map(c => c.value);
+  if (shared.length === 0) { showToast('error','Select at least one member'); return; }
+  
+  const perShare = parseFloat((amount / shared.length).toFixed(2));
+  
+  const entry = { 
+    payer, 
+    amount: +amount.toFixed(2), 
+    description,
+    date: new Date().toISOString(), // Timestamp
+    shared, 
+    perShare 
+  };
+  
+  expenses.push(entry);
+  const newIndex = expenses.length - 1;
+  updateExpenseTable();
+  closeAddExpenseModal();
+  saveData();
+  // highlight last row
+  highlightExpenseRow(newIndex);
+  showToast('success','Expense added successfully');
 }
 
-// ==============================================
-// UI UPDATES
-// ==============================================
+/* highlight a row by index (temporary) */
+function highlightExpenseRow(idx){
+  const tbody = document.querySelector('#expenseTable tbody');
+  const row = tbody.children[idx];
+  if (!row) return;
+  row.classList.add('new-row');
+  setTimeout(()=> {
+    row.style.animation = 'pulseGlow .9s ease';
+  }, 350);
+  setTimeout(()=> {
+    row.classList.remove('new-row');
+    row.style.animation = '';
+  }, 2200);
+}
 
-/* Update all UI components */
+/* ---------------------------
+   Expense Table rendering
+   --------------------------- */
+function updateExpenseTable() {
+  const tbody = document.querySelector('#expenseTable tbody');
+  tbody.innerHTML = '';
+  expenses.slice().reverse().forEach((e, originalIndex) => { // Reverse for latest first, originalIndex used for deletion
+    // Calculate the current index in the non-reversed array
+    const idx = expenses.length - 1 - expenses.findIndex(exp => exp === e); 
+
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td style="font-weight:600" scope="row">${e.payer}</td>
+      <td>${e.amount.toFixed(2)}</td>
+      <td style="color:var(--muted); font-size:13px;" title="${new Date(e.date).toLocaleString()}">${e.description.substring(0, 20)}...</td>
+      <td>${e.perShare.toFixed(2)}</td>
+      <td>${e.shared.join(', ')}</td>
+      <td style="text-align:right">
+        <button class="table-btn" title="Remove" onclick="removeExpense(${idx})" aria-label="Remove expense ${e.description}"><i class="fas fa-trash"></i></button>
+      </td>
+    `;
+    // We append to the front to show latest expense on top
+    tbody.prepend(tr); 
+  });
+  document.getElementById('expensesCount').textContent = `${expenses.length} entries`;
+}
+
+/* remove expense */
+function removeExpense(idx) {
+  if(!confirm('Delete this expense?')) return;
+  expenses.splice(idx,1);
+  updateExpenseTable();
+  saveData();
+  showToast('success','Expense removed');
+}
+
+/* ---------------------------
+   Reports
+   --------------------------- */
+function openReportModal() { 
+  document.getElementById('reportModal').classList.add('open'); 
+  document.getElementById('reportModal').ariaHidden = 'false'; 
+  generateSmartSettlement(); // Default report
+}
+function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); document.getElementById('reportModal').ariaHidden = 'true'; }
+
+// 1. Full Expense List Report
+function generateExpenseReport() {
+  currentReportType='expense'; 
+  const table = document.getElementById('reportTable');
+  let thead='<tr><th scope="col">Payer</th><th scope="col">Amount</th><th scope="col">Description</th><th scope="col">Shared Amount</th><th scope="col">Shared With</th></tr>';
+  let tbody='';
+  expenses.forEach(e=>{
+    const per=(e.perShare).toFixed(2);
+    tbody+=`<tr><td style="font-weight:600" scope="row">${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${e.description}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
+  });
+  table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+}
+
+// 2. Balance Sheet (Paid vs Owed)
+function generateToPayReport() {
+  currentReportType='toPay';
+  const rent = rentValue || 0;
+  const paid = {}, owe = {};
+  people.forEach(p => { paid[p]=0; owe[p]=0; });
+  
+  // Calculate expenses paid and owed
+  expenses.forEach(e => {
+    const per = e.perShare;
+    // Only count as owed if the person is in the split
+    e.shared.forEach(p => owe[p] = (owe[p] || 0) + per);
+    paid[e.payer] = (paid[e.payer] || 0) + e.amount;
+  });
+  
+  const rentShare = (people.length > 0) ? (rent / people.length) : 0;
+  const table = document.getElementById('reportTable');
+  
+  let thead='<tr><th scope="col">Name</th><th scope="col">Paid</th><th scope="col">Expenses Owed</th><th scope="col">Rent Share</th><th scope="col">Net Balance</th></tr>';
+  let tbody='';
+  people.forEach(p=>{
+    const totalPaid = (paid[p]||0);
+    const totalOwed = (owe[p]||0);
+    const netBalance = (totalPaid - totalOwed - rentShare);
+    const balanceClass = netBalance < 0 ? 'color:var(--danger)' : 'color:var(--success)';
+    tbody+=`<tr><td style="font-weight:600" scope="row">${p}</td><td>${totalPaid.toFixed(2)}</td><td>${totalOwed.toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td style="${balanceClass}; font-weight:700">${netBalance.toFixed(2)}</td></tr>`;
+  });
+  table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
+}
+
+
+// 3. Smart Settlement (Minimum Transactions)
+function generateSmartSettlement() {
+  currentReportType='settlement';
+  let balances = {};
+  people.forEach(p => balances[p] = 0);
+
+  // 1. Calculate Balances from Expenses
+  expenses.forEach(e => {
+    // Payer's balance increases by the total amount paid
+    balances[e.payer] += e.amount;
+    
+    // Each person in the split (including the payer) reduces their balance by their share
+    const splitAmount = e.perShare; 
+    e.shared.forEach(person => {
+      balances[person] -= splitAmount;
+    });
+  });
+
+  // 2. Prepare Debtors and Creditors lists (ignore near-zero balances)
+  let debtors = [];
+  let creditors = [];
+
+  for (const [person, amount] of Object.entries(balances)) {
+    if (amount < -0.01) debtors.push({ name: person, amount: amount }); // Negative balance = Ower
+    if (amount > 0.01) creditors.push({ name: person, amount: amount }); // Positive balance = Receiver
+  }
+
+  debtors.sort((a, b) => a.amount - b.amount); // Most debt first
+  creditors.sort((a, b) => b.amount - a.amount); // Most credit first
+
+  let transactions = [];
+  let i = 0;
+  let j = 0;
+
+  // 3. Find Minimum Transactions
+  while (i < debtors.length && j < creditors.length) {
+    let debtor = debtors[i];
+    let creditor = creditors[j];
+    
+    // Amount to transfer is the smaller of the absolute debt or the credit
+    let amount = Math.min(Math.abs(debtor.amount), creditor.amount);
+
+    transactions.push(`${debtor.name} pays ${creditor.name}: ${amount.toFixed(2)} AED`);
+
+    // Update balances
+    debtor.amount += amount;
+    creditor.amount -= amount;
+
+    // Move to next debtor/creditor if their balance is settled (near zero)
+    if (Math.abs(debtor.amount) < 0.01) i++;
+    if (creditor.amount < 0.01) j++;
+  }
+
+  const table = document.getElementById('reportTable');
+  if (transactions.length === 0) {
+    table.innerHTML = `<tbody><tr><td style="text-align:center; padding:20px; color:var(--success); font-weight:700">🎉 All expense debts are cleared!</td></tr></tbody>`;
+  } else {
+    let html = `<thead><tr><th scope="col">Settlement Plan (${transactions.length} Transactions)</th></tr></thead><tbody>`;
+    transactions.forEach(t => {
+      html += `<tr><td style="color:var(--accent); font-weight:600; padding:15px;" scope="row">${t}</td></tr>`;
+    });
+    html += `</tbody>`;
+    table.innerHTML = html;
+  }
+}
+
+// 4. Confirmation to clear all expenses
+function confirmSettlement() {
+  const totalExpenses = expenses.length;
+  if (totalExpenses === 0) {
+    showToast('error', 'There are no expenses to clear.');
+    return;
+  }
+  
+  if (!confirm(`WARNING: Are you sure everyone has settled their debts? This action will permanently remove all ${totalExpenses} expense records and cannot be undone. Rent setup will remain.`)) {
+    return;
+  }
+  
+  // Clear the expenses array
+  expenses = [];
+  
+  // Update UI and storage
+  updateUI();
+  saveData();
+  closeReportModal();
+  showToast('success', `${totalExpenses} expenses successfully cleared! Ready for a new cycle.`);
+}
+
+
+/* PDF and WhatsApp share */
+function downloadReportPDF() {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  doc.text("🏠 Room Expense Tracker",10,10);
+  doc.text("Generated: "+new Date().toLocaleString(),10,16);
+  doc.autoTable({startY:26, html:"#reportTable"});
+  doc.save("Room_Expense_Tracker_Report.pdf");
+}
+function shareReportWhatsApp() {
+  let text="🏠 Room Expense Tracker Report\n\n";
+  document.querySelectorAll("#reportTable tbody tr").forEach(tr=>{
+    text+=Array.from(tr.children).map(td=>td.textContent).join(" | ")+"\n";
+  });
+  text+="Generated on: "+new Date().toLocaleString();
+  window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
+}
+
+/* ---------------------------
+   Rent Modal functions
+   --------------------------- */
+function openRentModal() {
+  document.getElementById('rentModal').classList.add('open');
+  document.getElementById('rentModal').ariaHidden = 'false';
+  document.getElementById('rentInput').value = rentValue || '';
+  setTimeout(()=> document.getElementById('rentInput').focus(), 100);
+}
+function closeRentModal() {
+  document.getElementById('rentModal').classList.remove('open');
+  document.getElementById('rentModal').ariaHidden = 'true';
+}
+function saveRent() {
+  const val = parseFloat(document.getElementById('rentInput').value);
+  if (val < 0 || isNaN(val)) { showToast('error','Enter a valid rent (0 or positive)'); return; }
+  rentValue = +val.toFixed(2);
+  updateRentBox();
+  closeRentModal();
+  saveData();
+  showToast('success','Rent updated');
+}
+
+/* update rent display in the same textbox (total and per-head) */
+function updateRentBox(){
+  const rentBox = document.getElementById('rent');
+  const perHead = people.length > 0 ? (rentValue / people.length) : 0;
+  if (rentValue > 0) {
+    rentBox.value = `Total: ${rentValue.toFixed(2)} AED  |  Per head: ${perHead.toFixed(2)} AED`;
+    rentBox.dataset.value = rentValue;
+  } else {
+    rentBox.value = 'Total Room Rent (AED)';
+    rentBox.dataset.value = 0;
+  }
+}
+
+/* ---------------------------
+   Reset / Save / Load
+   --------------------------- */
+function resetValues() {
+  if(!confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.')) return;
+  rentValue = 0;
+  expenses=[];
+  people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
+  updateUI();
+  saveData();
+  showToast('success','All data cleared');
+}
+
+/* Save to localStorage */
+function saveData() {
+  try {
+    localStorage.setItem('roomExpenseData', JSON.stringify({
+      people, expenses, rent: rentValue
+    }));
+  } catch(e) {
+    console.error('Save failed', e);
+  }
+}
+
+/* Load from localStorage */
+function loadData() {
+  try {
+    const data = JSON.parse(localStorage.getItem('roomExpenseData') || '{}');
+    // Schema check for robustness
+    if (data.people && Array.isArray(data.people)) people = data.people;
+    if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
+    if (data.rent || data.rent === 0) rentValue = data.rent;
+  } catch(e){ console.warn('Load failed, resetting to default.', e); }
+  updateUI();
+}
+
+/* update UI pieces */
 function updateUI() {
-  updateUserIdDisplay();
   updateExpenseTable();
   updateMemberUI();
   updateRentBox();
-  updateSummaryTable();
-}
-
-/* Update the member list and the "Paid By" selector */
-function updateMemberUI() {
-  const listDiv = document.getElementById('member-list');
-  const paidBySelect = document.getElementById('expense-paid-by');
-  listDiv.innerHTML = people.map(p => 
-    `<span>${p} <i class="fas fa-times-circle" style="cursor:pointer; color:var(--danger);" onclick="removeMember('${p}')"></i></span>`
-  ).join('');
-
-  // Update Paid By Selector
-  paidBySelect.innerHTML = people.map(p => `<option value="${p}">${p}</option>`).join('');
-  if (people.length === 0) {
-    paidBySelect.innerHTML = '<option value="" disabled selected>Add members first</option>';
-  }
-}
-
-/* Update rent display */
-function updateRentBox() {
-  document.getElementById('current-rent').textContent = formatCurrency(rentValue);
-}
-
-/* Update the detailed expense table */
-function updateExpenseTable() {
-  const tbody = document.getElementById('expense-body');
-  tbody.innerHTML = expenses.map(e => `
-    <tr>
-      <td>${e.description}</td>
-      <td>${formatCurrency(e.amount)}</td>
-      <td>${e.paidBy}</td>
-      <td><button class="btn btn-danger" style="padding: 5px 10px;" onclick="removeExpense(${e.id})"><i class="fas fa-trash-alt"></i></button></td>
-    </tr>
-  `).join('');
-}
-
-/* Update the settlement summary table */
-function updateSummaryTable() {
-  const summary = calculateSettlement();
-  const tbody = document.getElementById('summary-body');
-  tbody.innerHTML = people.map(p => {
-    const data = summary[p] || { totalPaid: 0, totalOwed: 0, balance: 0 };
-    let settlementText = '';
-    let rowClass = '';
-    
-    if (data.balance > 0) {
-      settlementText = `<span style="color: ${varToHex('--accent-2')}; font-weight: bold;">Receives ${formatCurrency(data.balance)}</span>`;
-      rowClass = 'receives';
-    } else if (data.balance < 0) {
-      settlementText = `<span style="color: ${varToHex('--danger')}; font-weight: bold;">Owes ${formatCurrency(Math.abs(data.balance))}</span>`;
-      rowClass = 'owes';
-    } else {
-      settlementText = `Settled`;
-    }
-
-    return `
-      <tr class="${rowClass}">
-        <td>${p}</td>
-        <td>${formatCurrency(data.totalPaid)}</td>
-        <td>${formatCurrency(data.totalOwed)}</td>
-        <td>${settlementText}</td>
-      </tr>
-    `;
-  }).join('');
-}
-
-
-// ==============================================
-// UTILITY & CALCULATIONS
-// ==============================================
-
-/* Calculate the final settlement for each member */
-function calculateSettlement() {
-  const totalMembers = people.length;
-  if (totalMembers === 0) return {};
-  
-  // 1. Initial structure for summary
-  const summary = people.reduce((acc, name) => {
-    acc[name] = { totalPaid: 0, totalOwed: 0, balance: 0 };
-    return acc;
-  }, {});
-
-  // 2. Individual Expenses
-  expenses.forEach(e => {
-    const splitAmount = e.amount / totalMembers;
-    
-    // Add to Total Paid
-    if (summary[e.paidBy]) {
-      summary[e.paidBy].totalPaid += e.amount;
-    }
-
-    // Add to Total Owed (everyone owes the split amount)
-    people.forEach(p => {
-      summary[p].totalOwed += splitAmount;
-    });
-  });
-
-  // 3. Common Expense (Rent)
-  if (rentValue > 0) {
-    const rentSplit = rentValue / totalMembers;
-    people.forEach(p => {
-      // Everyone owes their share of the rent
-      summary[p].totalOwed += rentSplit;
-    });
-  }
-
-  // 4. Calculate Final Balance (Paid - Owed)
-  Object.keys(summary).forEach(name => {
-    summary[name].balance = summary[name].totalPaid - summary[name].totalOwed;
-  });
-
-  return summary;
-}
-
-/* Helper to format numbers as currency */
-function formatCurrency(amount) {
-  return amount.toLocaleString('en-IN', { style: 'currency', currency: 'INR' }); // Using INR as a common currency for the region
-}
-
-/* Helper to get CSS variable hex value */
-function varToHex(variableName) {
-  const style = getComputedStyle(document.body);
-  const color = style.getPropertyValue(variableName).trim();
-  // Simple check to ensure it's a color format (might need advanced parsing for RGBA)
-  if (color.startsWith('#')) return color;
-  // Fallback for simple colors
-  if (variableName === '--accent-2') return '#1de9b6'; 
-  if (variableName === '--danger') return '#ff5252'; 
-  return '#ffffff';
-}
-
-/* ==============================================
-   TOAST NOTIFICATIONS (Custom alert)
-   ============================================== */
-function showToast(type, message) {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.classList.add('toast', type);
-    toast.textContent = message;
-    
-    container.appendChild(toast);
-    
-    // Use requestAnimationFrame to ensure the element is added before applying the 'show' class
-    requestAnimationFrame(() => {
-        toast.classList.add('show');
-    });
-
-    setTimeout(() => {
-        toast.classList.remove('show');
-        toast.addEventListener('transitionend', () => toast.remove());
-    }, TOAST_DURATION);
-}
-
-/* ==============================================
-   PDF GENERATION (using jspdf and jspdf-autotable)
-   ============================================== */
-function generatePdf() {
-    document.getElementById('pdfModal').style.display='none';
-    
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-    const settlement = calculateSettlement();
-    const currentDate = new Date().toLocaleDateString();
-
-    let y = 20;
-
-    // Title
-    doc.setFontSize(20);
-    doc.text("Room Expense Settlement Report", 105, y, null, null, "center");
-    y += 10;
-    doc.setFontSize(10);
-    doc.text(`Generated on: ${currentDate} | User ID: ${window.userId || 'N/A'}`, 105, y, null, null, "center");
-    y += 15;
-
-    // Rent Summary
-    doc.setFontSize(14);
-    doc.text(`Common Expense/Rent: ${formatCurrency(rentValue)}`, 14, y);
-    y += 10;
-    
-    // Expense Breakdown Table
-    doc.setFontSize(16);
-    doc.text("1. Expense Breakdown", 14, y);
-    y += 5;
-    
-    const expenseData = expenses.map(e => [
-      e.description, 
-      formatCurrency(e.amount), 
-      e.paidBy
-    ]);
-    
-    doc.autoTable({
-      startY: y,
-      head: [['Description', 'Amount', 'Paid By']],
-      body: expenseData,
-      styles: { fillColor: [44, 83, 100] },
-      headStyles: { fillColor: [32, 58, 67] },
-      margin: { top: 10, left: 14, right: 14 },
-      didDrawPage: (data) => { y = data.cursor.y; }
-    });
-
-    // Settlement Summary Table
-    y += 10; // Add margin
-    doc.setFontSize(16);
-    doc.text("2. Final Settlement Summary", 14, y);
-    y += 5;
-    
-    const summaryData = people.map(p => {
-      const data = settlement[p] || { totalPaid: 0, totalOwed: 0, balance: 0 };
-      let settlementText = 'Settled';
-      if (data.balance > 0) {
-        settlementText = `Receives ${formatCurrency(data.balance)}`;
-      } else if (data.balance < 0) {
-        settlementText = `Owes ${formatCurrency(Math.abs(data.balance))}`;
-      }
-      return [
-        p, 
-        formatCurrency(data.totalPaid), 
-        formatCurrency(data.totalOwed), 
-        settlementText
-      ];
-    });
-
-    doc.autoTable({
-      startY: y,
-      head: [['Member', 'Total Paid', 'Total Owed', 'Settlement']],
-      body: summaryData,
-      styles: { fillColor: [44, 83, 100] },
-      headStyles: { fillColor: [32, 58, 67] },
-      margin: { top: 10, left: 14, right: 14 }
-    });
-    
-    doc.save("Room_Expense_Report.pdf");
-    showToast('success', 'PDF report generated and downloaded.');
 }
 
 /* helpers */
 function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
 
-/* Event saves and modal closing */
-window.addEventListener('DOMContentLoaded', () => {
-    // Start initial display update. loadData is called automatically upon successful authentication.
-    updateUserIdDisplay(); 
-}); 
+/* Event saves */
+window.addEventListener('DOMContentLoaded', loadData);
+// Note: Removed beforeunload save as it can be unreliable on mobile/single page apps. saveData() is called after every major action.
 
-// Close modal on backdrop click
+/* small enhancement: close modal on backdrop click */
 document.querySelectorAll('.modal').forEach(mod => {
   mod.addEventListener('click', (e) => {
     if (e.target === mod) {
-      mod.style.display = 'none';
+      mod.classList.remove('open');
+      mod.ariaHidden = 'true';
     }
   });
 });
 </script>
-
 </body>
 </html>
