@@ -1,977 +1,1632 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1.0,user-scalable=no" />
-<title>Room Expense Tracker -- Dark Elegant</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roomie Expense - UAE Roommate Shared Expense & Settlement Calculator</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- html2canvas and jsPDF for client-side Advanced PDF Generation -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        }
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+        .glass-panel-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .glass-panel-hover:hover {
+            background: rgba(30, 41, 59, 0.75);
+            border-color: rgba(56, 189, 248, 0.25);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15);
+            transform: translateY(-2px);
+        }
 
-<style>
-:root{
-  --bg-1:#0f2027;
-  --bg-2:#203a43;
-  --bg-3:#2c5364;
-  --glass: rgba(255,255,255,0.04);
-  --glass-2: rgba(255,255,255,0.03);
-  --accent: #00c6ff;
-  --accent-2: #1de9b6;
-  --danger: #ff5252;
-  --text-light: #e6f7ff;
-  --muted: #9fb4bf;
-  --card-radius: 14px;
-  --glass-blur: 8px;
-  --shadow: 0 8px 30px rgba(2,8,16,0.6);
-  --glass-border: rgba(255,255,255,0.06);
-  --success: #7ef0b7;
-}
+        .glass-input {
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            transition: all 0.2s ease;
+        }
+        .glass-input:focus {
+            background: rgba(15, 23, 42, 0.8);
+            border-color: rgba(56, 189, 248, 0.5);
+            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        }
 
-/* Page background */
-html,body{
-  height:100%;
-  margin:0;
-  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-  -webkit-font-smoothing:antialiased;
-  -moz-osx-font-smoothing:grayscale;
-  color:var(--text-light);
-  background: linear-gradient(135deg,var(--bg-1),var(--bg-2) 45%,var(--bg-3));
-  background-attachment: fixed;
-  padding:18px;
-  box-sizing:border-box;
-}
+        .glass-badge {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(6px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
 
-/* App container */
-.app {
-  max-width:980px;
-  margin: 10px auto;
-  display:flex;
-  flex-direction:column;
-  gap:16px;
-}
+        .ambient-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(140px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.25;
+        }
 
-/* Sticky header */
-.header {
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:12px 16px;
-  border-radius:var(--card-radius);
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-  backdrop-filter: blur(var(--glass-blur));
-  box-shadow: var(--shadow);
-  border: 1px solid var(--glass-border);
-  position: sticky;
-  top: 12px;
-  z-index: 60;
-}
-.header .title {
-  display:flex;
-  gap:12px;
-  align-items:center;
-}
-.logo {
-  width:44px;height:44px;border-radius:10px;
-  display:flex;align-items:center;justify-content:center;
-  background: linear-gradient(135deg,var(--accent),var(--accent-2));
-  color:#002b34;font-weight:700;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.45);
-  font-size:20px;
-}
-.header h1{font-size:18px;margin:0;color:var(--text-light);letter-spacing:0.2px;}
-.header .nav {
-  display:flex;
-  gap:8px;
-  align-items:center;
-}
-.icon-btn {
-  background:transparent;border:0;color:var(--muted);
-  padding:8px;border-radius:10px;cursor:pointer;
-  display:inline-flex;align-items:center;gap:8px;
-  transition: all .16s ease;
-}
-.icon-btn:hover { transform: translateY(-3px); color:var(--accent); box-shadow: 0 6px 18px rgba(0,198,255,0.06); }
-.icon-btn.primary { color: var(--accent); }
-
-/* Main glass card */
-.container {
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border-radius: var(--card-radius);
-  padding:18px;
-  box-shadow: var(--shadow);
-  border:1px solid var(--glass-border);
-}
-
-/* Inputs & controls */
-.controls {
-  display:flex;
-  gap:10px;
-  align-items:center;
-  flex-wrap:wrap;
-  margin-bottom:8px;
-}
-.controls input[type="number"],
-.controls input[type="text"],
-.controls select{
-  min-width:150px;
-  max-width:260px;
-  flex:1 1 220px;
-  background: transparent;
-  border:1px solid rgba(255,255,255,0.06);
-  color:var(--text-light);
-  padding:10px 12px;border-radius:10px;
-  outline:none;
-  transition: box-shadow .15s ease, transform .12s ease;
-}
-.controls input::placeholder{ color: rgba(255,255,255,0.38); }
-.controls input:focus{ box-shadow: 0 6px 20px rgba(0,198,255,0.07); transform: translateY(-2px); border-color: var(--accent); }
-
-/* Buttons */
-.btn {
-  background: linear-gradient(90deg,var(--accent),var(--accent-2));
-  color:#002b34;border:0;padding:10px 12px;border-radius:10px;
-  font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
-  transition: transform .12s ease, box-shadow .12s ease, opacity .12s ease;
-}
-.btn:hover{ transform: translateY(-3px); box-shadow: 0 10px 24px rgba(2,198,255,0.08); }
-.btn.ghost { background: transparent; color: var(--muted); border:1px solid rgba(255,255,255,0.04); }
-.btn.danger { background: linear-gradient(90deg,#ff6b6b,#ff5252); color: white; }
-.btn.warning { background: linear-gradient(90deg,#ffd700,#ffb700); color: #3c3c3c; }
-
-
-/* Layout for the table card */
-.section-title { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:8px; }
-.section-title h2 { margin:0; font-size:16px; color:var(--text-light); }
-.small-muted { color:var(--muted); font-size:13px; }
-
-/* Table wrapper: scrollable with sticky header */
-.table-wrap {
-  overflow:auto;
-  max-height:360px;
-  border-radius:10px;
-  padding:8px;
-  border:1px solid rgba(255,255,255,0.03);
-  background: linear-gradient(180deg, rgba(255,255,255,0.015), rgba(255,255,255,0.01));
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Tables (expense & report) */
-table {
-  width:100%;
-  border-collapse:separate;
-  border-spacing:0 8px;
-  min-width:600px;
-  color:var(--text-light);
-}
-thead th {
-  position: sticky;
-  top:0;
-  z-index:10;
-  text-align:left;
-  padding:10px 12px;
-  font-weight:700;
-  font-size:13px;
-  color:var(--text-light);
-  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.8));
-  border-bottom: 1px solid rgba(255,255,255,0.03);
-  backdrop-filter: blur(6px);
-}
-tbody td {
-  padding:12px;
-  font-size:14px;
-  vertical-align:middle;
-  background: transparent;
-}
-tbody tr {
-  transition: transform .18s ease, box-shadow .18s ease, background .18s ease;
-  border-radius:8px;
-  display:table-row;
-}
-tbody tr td:first-child { border-top-left-radius:8px; border-bottom-left-radius:8px; }
-tbody tr td:last-child { border-top-right-radius:8px; border-bottom-right-radius:8px; }
-
-/* Alternating rows */
-tbody tr:nth-child(odd) td {
-  background: rgba(255,255,255,0.03);
-}
-tbody tr:nth-child(even) td {
-  background: rgba(255,255,255,0.02);
-}
-tbody tr:hover td {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 30px rgba(2,8,16,0.6);
-}
-
-/* Action buttons in table */
-.table-btn {
-  background:transparent;border:0;color:var(--muted);
-  padding:8px;border-radius:8px;cursor:pointer;
-  transition: all .12s ease;
-}
-.table-btn:hover { color: var(--danger); transform: translateY(-2px); }
-
-/* New row highlight animation */
-@keyframes rowIn {
-  0% { opacity:0; transform: translateY(14px) scale(.995); box-shadow: none; }
-  40% { opacity:1; transform: translateY(0) scale(1.005); box-shadow: 0 10px 28px rgba(0,198,255,0.06); }
-  100% { transform: translateY(0) scale(1); box-shadow:none; }
-}
-.new-row td { animation: rowIn .8s ease both; outline: 2px solid rgba(0,198,255,0.12); }
-
-/* Highlight pulse after add (temporary) */
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 0 0 rgba(0,198,255,0.18); }
-  60% { box-shadow: 0 0 12px 6px rgba(0,198,255,0.08); }
-  100% { box-shadow: none; }
-}
-
-/* Modal styles with animation */
-.modal {
-  display:none; position:fixed; inset:0;
-  background: linear-gradient(180deg, rgba(2,8,16,0.6), rgba(2,8,16,0.6));
-  backdrop-filter: blur(4px);
-  align-items:center; justify-content:center;
-  z-index:120;
-  padding:18px;
-}
-.modal.open { display:flex; animation: modalIn .28s cubic-bezier(.2,.9,.3,1); }
-@keyframes modalIn {
-  from { opacity:0; transform: translateY(10px) scale(.995); }
-  to { opacity:1; transform: translateY(0) scale(1); }
-}
-.modal-content {
-  width:100%; max-width:520px; border-radius:12px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));
-  border:1px solid rgba(255,255,255,0.04);
-  padding:16px; box-shadow: 0 12px 40px rgba(0,0,0,0.6);
-  position:relative;
-}
-
-/* Close button */
-.close-btn {
-  position:absolute; right:12px; top:12px; border:0; padding:8px;
-  border-radius:8px; cursor:pointer; background: rgba(255,255,255,0.02);
-  color: var(--muted);
-}
-.close-btn:hover { color: white; transform: scale(1.06); background: rgba(255,255,255,0.03); }
-
-/* Checkbox grid (split) */
-.checkbox-grid {
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(110px,1fr));
-  gap:8px; margin-top:8px;
-}
-.split-chip {
-  display:flex; align-items:center; justify-content:center;
-  padding:8px 12px; border-radius:999px; cursor:pointer;
-  background: rgba(255,255,255,0.02); color:var(--text-light);
-  transition: all .18s ease;
-  border:1px solid rgba(255,255,255,0.02);
-}
-.split-chip input { display:none; }
-.split-chip.checked { background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 8px 26px rgba(2,198,255,0.06); transform: translateY(-3px); }
-
-/* Floating Add button (mobile-friendly) */
-#quickAddBtn {
-  position: fixed; right:18px; bottom:18px; width:62px; height:62px; border-radius:50%;
-  border:0; display:flex; align-items:center; justify-content:center; font-size:22px; cursor:pointer;
-  background: linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34; box-shadow: 0 12px 38px rgba(2,198,255,0.12);
-  z-index:80;
-}
-#quickAddBtn:hover { transform: translateY(-4px); }
-
-/* Toast (notifications) */
-.toast-wrap {
-  position: fixed; right:18px; top:18px; z-index:200; display:flex; flex-direction:column; gap:10px;
-}
-.toast {
-  min-width:220px; padding:10px 14px; border-radius:10px; color:#002b34; font-weight:700;
-  display:flex; gap:10px; align-items:center; box-shadow: 0 10px 30px rgba(2,8,16,0.48);
-  border: 1px solid rgba(255,255,255,0.04);
-  background: linear-gradient(90deg,var(--success), #d7ffd8);
-  opacity:0; transform: translateY(-8px) scale(.995);
-  animation: toastIn .28s cubic-bezier(.22,.9,.3,1) forwards;
-}
-.toast.error { background: linear-gradient(90deg,#ffb2b2,#ff8686); color: #2b0b0b; }
-@keyframes toastIn { to { opacity:1; transform: translateY(0) scale(1); } }
-
-/* Footer */
-.footer {
-  text-align:center; color:var(--muted); font-size:13px; padding:8px 4px;
-}
-
-/* Responsive adjustments */
-@media (max-width:720px){
-  .header { padding:10px; }
-  .controls { gap:8px; }
-  .table-wrap { max-height:280px; }
-  table { min-width:580px; } /* Increased min-width for new column */
-  .modal-content { max-width:92%; padding:14px; }
-  #quickAddBtn { width:56px; height:56px; font-size:20px; right:14px; bottom:14px; }
-}
-@media (max-width:460px){
-  .controls { flex-direction:column; align-items:stretch; }
-  .header { gap:8px; }
-  .logo { width:40px;height:40px;font-size:18px; }
-  table { min-width:500px; font-size:13px; } /* Adjusted min-width */
-}
-</style>
+        /* Print Media Styles */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+                color: #0f172a !important;
+            }
+            header, .no-print, .tab-btn, #toast, .modal-backdrop {
+                display: none !important;
+            }
+            .tab-content {
+                display: block !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            .page-break {
+                page-break-before: always;
+            }
+        }
+        .print-only {
+            display: none;
+        }
+    </style>
 </head>
-<body>
-<div class="app">
-  <div class="header">
-    <div class="title">
-      <div class="logo">RT</div>
-      <div>
-        <h1>Room Expense Tracker</h1>
-        <div class="small-muted">Dark Elegant • Tharavad</div>
-      </div>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased relative overflow-x-hidden">
+
+    <!-- Ambient Glowing Background Orbs for Glass Reflection Depth -->
+    <div class="ambient-glow bg-sky-500 -top-40 -left-40"></div>
+    <div class="ambient-glow bg-indigo-600 top-1/3 -right-40"></div>
+    <div class="ambient-glow bg-emerald-500 bottom-10 left-1/3"></div>
+
+    <!-- Top Navigation Header -->
+    <header class="glass-panel sticky top-0 z-30 border-b border-white/10 bg-slate-950/40 backdrop-blur-2xl">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between relative z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-400 via-indigo-500 to-sky-600 flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-sky-500/30 border border-white/20">
+                    <i class="fa-solid fa-house-user"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-extrabold bg-gradient-to-r from-white via-slate-100 to-sky-300 bg-clip-text text-transparent">Roomie Expense Manager (UAE)</h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">DEWA, Rent, Chiller & Shared Expense Splitter</p>
+                </div>
+            </div>
+
+            <!-- Quick Month Picker & Action Buttons -->
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="flex items-center gap-1.5 glass-input px-3 py-1.5 rounded-xl border border-white/10">
+                    <i class="fa-solid fa-calendar-days text-sky-400 text-xs"></i>
+                    <input type="month" id="monthPicker" onchange="changeActiveMonth(this.value)" class="bg-transparent text-xs text-slate-200 outline-none cursor-pointer font-medium">
+                </div>
+                <button onclick="openPdfModal()" class="px-3.5 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl shadow-lg shadow-indigo-600/30 border border-white/15 transition flex items-center gap-1.5 active:scale-95">
+                    <i class="fa-solid fa-file-pdf"></i>
+                    <span class="hidden sm:inline">Advanced PDF Report</span>
+                </button>
+                <button onclick="loadDemoData()" class="px-3 py-1.5 text-xs font-medium glass-badge hover:bg-white/10 text-slate-300 hover:text-white rounded-xl border border-white/10 transition flex items-center gap-1.5" title="Load optional sample dataset">
+                    <i class="fa-solid fa-wand-magic-sparkles text-amber-400"></i>
+                    <span class="hidden md:inline">Load Sample Data</span>
+                </button>
+                <button onclick="resetAllDataConfirmation()" class="px-3 py-1.5 text-xs font-medium bg-rose-950/30 hover:bg-rose-900/50 text-rose-300 rounded-xl border border-rose-500/20 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    <span class="hidden md:inline">Reset All</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 relative z-10">
+
+        <!-- Top Summary Metrics Banner -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-15 text-sky-400 text-4xl"><i class="fa-solid fa-users"></i></div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Active Roommates</p>
+                <p class="text-2xl sm:text-3xl font-extrabold text-white mt-1" id="statMemberCount">0</p>
+                <p class="text-xs text-slate-400 mt-1">In this room</p>
+            </div>
+
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-15 text-indigo-400 text-4xl"><i class="fa-solid fa-building-columns"></i></div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Fixed Rent & Bills</p>
+                <p class="text-2xl sm:text-3xl font-extrabold text-indigo-300 mt-1 drop-shadow-sm" id="statFixedTotal">AED 0.00</p>
+                <p class="text-xs text-indigo-400/90 font-medium mt-1">Recurring setup cost</p>
+            </div>
+
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-15 text-emerald-400 text-4xl"><i class="fa-solid fa-basket-shopping"></i></div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Variable / Groceries</p>
+                <p class="text-2xl sm:text-3xl font-extrabold text-emerald-300 mt-1 drop-shadow-sm" id="statVariableTotal">AED 0.00</p>
+                <p class="text-xs text-emerald-400/90 font-medium mt-1">Shared room expenses</p>
+            </div>
+
+            <div class="glass-panel glass-panel-hover rounded-2xl p-4 relative overflow-hidden">
+                <div class="absolute top-0 right-0 p-3 opacity-15 text-amber-400 text-4xl"><i class="fa-solid fa-calculator"></i></div>
+                <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Month Spend</p>
+                <p class="text-2xl sm:text-3xl font-extrabold text-amber-300 mt-1 drop-shadow-sm" id="statMonthGrandTotal">AED 0.00</p>
+                <p class="text-xs text-amber-400/90 font-medium mt-1">Avg/Person: <span id="statAvgPerPerson" class="font-bold text-amber-200">AED 0.00</span></p>
+            </div>
+        </div>
+
+        <!-- Tab Navigation Bar -->
+        <div class="flex border-b border-white/10 space-x-1 sm:space-x-4 overflow-x-auto custom-scrollbar no-print">
+            <button onclick="switchTab('setup')" id="tabBtn-setup" class="tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-sky-400 text-sky-400 whitespace-nowrap transition drop-shadow">
+                <i class="fa-solid fa-gear"></i> Setup & Configuration
+            </button>
+            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition">
+                <i class="fa-solid fa-receipt"></i> Enter & Log Expenses
+            </button>
+            <button onclick="switchTab('settlement')" id="tabBtn-settlement" class="tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition">
+                <i class="fa-solid fa-calculator"></i> Calculation & Settlement
+            </button>
+        </div>
+
+        <!-- SECTION 1: SETUP & CONFIGURATION TAB -->
+        <section id="sec-setup" class="tab-content space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <!-- Left: Roommates Directory -->
+                <div class="glass-panel rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div>
+                            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-users text-sky-400"></i> Roommates Directory
+                            </h2>
+                            <p class="text-xs text-slate-400">Add or manage members living in the room.</p>
+                        </div>
+                        <button onclick="openMemberModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs shadow-lg shadow-sky-500/25 border border-white/15 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-plus"></i> Add Member
+                        </button>
+                    </div>
+
+                    <div id="membersContainer" class="space-y-3">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+
+                <!-- Right: Fixed Recurring Expenses Config -->
+                <div class="glass-panel rounded-2xl p-5 space-y-4">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                        <div>
+                            <h2 class="text-base font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-file-invoice-dollar text-indigo-400"></i> Recurring Fixed Expenses Setup
+                            </h2>
+                            <p class="text-xs text-slate-400">Configure monthly fixed bills like Room Rent, Wi-Fi, Maid salary, etc.</p>
+                        </div>
+                        <button onclick="openFixedModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl text-xs shadow-lg shadow-indigo-600/25 border border-white/15 transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-plus"></i> Add Fixed Bill
+                        </button>
+                    </div>
+
+                    <div id="fixedContainer" class="space-y-3">
+                        <!-- Dynamically populated -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 2: ENTER & LOG EXPENSES TAB -->
+        <section id="sec-expenses" class="tab-content hidden space-y-6">
+            <div class="glass-panel rounded-2xl p-5 space-y-5">
+                <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
+                            <i class="fa-solid fa-receipt text-emerald-400"></i> Record New Expense
+                        </h2>
+                        <p class="text-xs text-slate-400">Enter money spent for food, groceries, or room items. Choose paid-by person and pick who shares it equally.</p>
+                    </div>
+                    <span class="text-xs glass-badge text-emerald-300 px-3 py-1 rounded-full font-semibold border border-emerald-400/20">Equal Split Customizer</span>
+                </div>
+
+                <!-- Quick Add Expense Form -->
+                <form id="expenseForm" onsubmit="handleExpenseSubmit(event)" class="space-y-4 glass-panel p-4 rounded-xl border border-white/10">
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div class="sm:col-span-1">
+                            <label class="text-xs font-semibold text-slate-300 block mb-1">Item Title / Description <span class="text-rose-400">*</span></label>
+                            <input type="text" id="expTitle" required placeholder="e.g. Carrefour Groceries, LuLu, Talabat, Gas Refill" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-300 block mb-1">Amount (AED) <span class="text-rose-400">*</span></label>
+                            <input type="number" step="0.01" min="0.01" id="expAmount" required placeholder="0.00" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-300 block mb-1">Date</label>
+                            <input type="date" id="expDate" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="text-xs font-semibold text-slate-300 block mb-1">Paid By (Who spent the money?)</label>
+                            <select id="expPayer" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                                <!-- Populated dynamically -->
+                            </select>
+                        </div>
+                        <div>
+                            <label class="text-xs font-semibold text-slate-300 block mb-1">Expense Category</label>
+                            <select id="expCategory" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                                <option value="grocery" class="bg-slate-900">Food & Grocery</option>
+                                <option value="dining" class="bg-slate-900">Dining Out / Meals</option>
+                                <option value="utilities" class="bg-slate-900">Utilities & Maintenance</option>
+                                <option value="household" class="bg-slate-900">Household & Cleaning</option>
+                                <option value="other" class="bg-slate-900">Other Shared Expense</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Member Selection Checkboxes for Equal Split -->
+                    <div class="space-y-2 pt-2 border-t border-white/10">
+                        <div class="flex items-center justify-between">
+                            <label class="text-xs font-bold text-sky-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-users-viewfinder"></i> Select Members Who Share This Expense Equally:
+                            </label>
+                            <div class="flex items-center gap-2">
+                                <button type="button" onclick="toggleAllExpenseMembers(true)" class="text-[11px] text-sky-400 hover:underline">Select All</button>
+                                <span class="text-slate-600">•</span>
+                                <button type="button" onclick="toggleAllExpenseMembers(false)" class="text-[11px] text-slate-400 hover:underline">Clear All</button>
+                            </div>
+                        </div>
+
+                        <div id="expenseMemberCheckboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 pt-1">
+                            <!-- Populated dynamically with checkboxes -->
+                        </div>
+                        <p class="text-[11px] text-slate-400 mt-1">This expense will be divided equally among all checked members.</p>
+                    </div>
+
+                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/25 border border-white/15 flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-plus"></i> Save Expense Record
+                    </button>
+                </form>
+
+                <!-- Expense History List -->
+                <div class="space-y-3 pt-2">
+                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left text-sky-400"></i> Expense History (<span id="expenseCountBadge">0</span>)
+                    </h3>
+                    <div id="expenseList" class="max-h-96 overflow-y-auto custom-scrollbar space-y-2 pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: CALCULATION & SETTLEMENT ENGINE TAB -->
+        <section id="sec-settlement" class="tab-content hidden space-y-6">
+            <!-- Calculation Formula Header Card -->
+            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden border border-white/10">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
+                    <div>
+                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-calculator text-indigo-400"></i> Monthly Room Audit & Settlement
+                        </h2>
+                        <p class="text-xs text-slate-300 mt-1">
+                            Individual Share = <span class="text-indigo-300 font-semibold">Equal Fixed Expenses Share</span> + <span class="text-emerald-300 font-semibold">Sum of Selected Expense Splits</span>.
+                        </p>
+                    </div>
+                    
+                    <div class="flex items-center gap-2 flex-wrap no-print">
+                        <button onclick="openPdfModal()" class="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/25 border border-white/15">
+                            <i class="fa-solid fa-file-pdf"></i> Generate PDF Report
+                        </button>
+                        <button onclick="copyWhatsAppSummary()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/25 border border-white/15">
+                            <i class="fa-brands fa-whatsapp text-sm"></i> Copy WhatsApp Summary
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Member Settlement Breakdown Cards -->
+            <div class="glass-panel rounded-2xl p-5 space-y-4">
+                <h3 class="text-base font-bold text-slate-100 flex items-center gap-2 border-b border-white/10 pb-3">
+                    <i class="fa-solid fa-scale-balanced text-sky-400"></i> Individual Roommate Cost & Balance Breakdown
+                </h3>
+                <div id="settlementGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Optimized Peer-to-Peer Debt Transfer Plan -->
+            <div class="glass-panel rounded-2xl p-5 space-y-4">
+                <h3 class="text-base font-bold text-slate-100 flex items-center gap-2 border-b border-white/10 pb-3">
+                    <i class="fa-solid fa-arrows-split-up-and-left text-emerald-400"></i> Peer-to-Peer Settlement Payment Plan
+                </h3>
+                <p class="text-xs text-slate-400">Settle all room dues with these minimal peer-to-peer transfers:</p>
+                <div id="transferPlanContainer" class="space-y-2">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ADVANCED PDF REPORT BUILDER MODAL -->
+    <div id="pdfModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel border border-white/15 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <!-- Modal Header -->
+            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-400/30 flex items-center justify-center text-indigo-400 font-bold">
+                        <i class="fa-solid fa-file-pdf text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-base font-bold text-white">Advanced PDF Report Generator</h3>
+                        <p class="text-xs text-slate-400">Customize, preview and export professional PDF statements</p>
+                    </div>
+                </div>
+                <button onclick="closePdfModal()" class="text-slate-400 hover:text-white p-2 rounded-lg text-lg transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Modal Content & Controls -->
+            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
+                <!-- Generator Controls Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 glass-panel p-4 rounded-xl border border-white/10">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Report Format</label>
+                        <select id="pdfScope" onchange="renderPdfPreview()" class="w-full glass-input text-slate-200 text-xs rounded-xl px-3 py-2 outline-none">
+                            <option value="full" class="bg-slate-900">Full Monthly Room Audit Statement</option>
+                            <option value="member" class="bg-slate-900">Individual Member Summary</option>
+                        </select>
+                    </div>
+
+                    <div id="pdfMemberSelectWrapper" class="hidden">
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Select Roommate</label>
+                        <select id="pdfMemberSelect" onchange="renderPdfPreview()" class="w-full glass-input text-slate-200 text-xs rounded-xl px-3 py-2 outline-none">
+                            <!-- Options filled dynamically -->
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Payment Instructions / Notes</label>
+                        <input type="text" id="pdfNotes" oninput="renderPdfPreview()" placeholder="e.g. Transfer via UAE Instant Pay / Careem Pay / FAB by 5th" class="w-full glass-input text-slate-200 text-xs rounded-xl px-3 py-2 outline-none">
+                    </div>
+
+                    <div class="flex items-center gap-4 pt-1 sm:col-span-2">
+                        <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                            <input type="checkbox" id="pdfIncludeTransactions" checked onchange="renderPdfPreview()" class="accent-indigo-500 rounded">
+                            Include Itemized Expense Log
+                        </label>
+                        <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
+                            <input type="checkbox" id="pdfIncludeFixed" checked onchange="renderPdfPreview()" class="accent-indigo-500 rounded">
+                            Include Fixed Recurring Bills Table
+                        </label>
+                    </div>
+                </div>
+
+                <!-- PDF Live Printable Preview Canvas Area -->
+                <div class="border border-white/10 rounded-xl overflow-hidden bg-slate-950 p-2 sm:p-4">
+                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
+                        <span><i class="fa-solid fa-eye text-sky-400 mr-1"></i> Live PDF Page Preview</span>
+                        <span class="text-slate-500">A4 Printable Template</span>
+                    </p>
+
+                    <div class="max-w-[794px] mx-auto bg-white text-slate-900 rounded-lg p-8 shadow-2xl space-y-6 text-xs font-sans" id="pdfRenderCanvas">
+                        <!-- Rendered PDF content inserted dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Modal Footer Action Buttons -->
+            <div class="px-6 py-4 border-t border-white/10 flex items-center justify-end gap-3 bg-slate-950/40">
+                <button onclick="closePdfModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
+                    Cancel
+                </button>
+                <button onclick="triggerNativePrint()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-200 rounded-xl text-xs font-semibold border border-white/10 transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-print"></i> Native Print
+                </button>
+                <button onclick="downloadPdfDocument()" id="downloadPdfBtn" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition border border-white/15 flex items-center gap-2">
+                    <i class="fa-solid fa-download"></i> Download PDF Document
+                </button>
+            </div>
+        </div>
     </div>
-    <div class="nav">
-      <button class="icon-btn" onclick="scrollToTop()" title="Home"><i class="fas fa-home"></i></button>
-      <button class="icon-btn" onclick="openAddExpenseModal()" title="Add Expense"><i class="fas fa-plus"></i></button>
-      <button class="icon-btn" onclick="openReportModal()" title="Reports"><i class="fas fa-chart-pie"></i></button>
-      <button class="icon-btn" onclick="openMemberEditor()" title="Members"><i class="fas fa-users"></i></button>
-    </div>
-  </div>
 
-  <div class="container">
-    <div class="section-title">
-      <h2>🏠 Overview</h2>
-      <div class="small-muted">Manage shared expenses & rent</div>
-    </div>
-
-    <div class="controls">
-      <input id="rent" type="text" placeholder="Total Room Rent (AED)" readonly aria-label="Current Rent Value">
-      <button class="btn" onclick="openRentModal()"><i class="fas fa-dollar-sign"></i> Setup Rent</button>
-      <button class="btn ghost" onclick="openMemberEditor()"><i class="fas fa-users"></i> Members</button>
-      <button class="btn" onclick="openAddExpenseModal()"><i class="fas fa-plus"></i> Add Expense</button>
-      <button class="btn" onclick="openReportModal()"><i class="fas fa-chart-pie"></i> Reports</button>
-      <button class="btn danger" onclick="resetValues()"><i class="fas fa-trash"></i> Clear All Data</button>
-    </div>
-
-    <div class="section-title">
-      <h2>Expenses</h2>
-      <div class="small-muted" id="expensesCount">0 entries</div>
-    </div>
-
-    <div class="table-wrap" id="expenseWrap">
-      <table id="expenseTable" aria-label="Expense table">
-        <thead>
-          <tr>
-            <th>Payer</th>
-            <th>Amount (AED)</th>
-            <th>Description</th>
-            <th>Shared Amount</th>
-            <th>Shared With</th>
-            <th style="text-align:right">Action</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-
-  <div class="footer">Room Expense Tracker • Tharavad • © <span id="year"></span></div>
-</div>
-
-<button id="quickAddBtn" onclick="openAddExpenseModal()" title="Quick add"><i class="fas fa-plus"></i></button>
-
-<div class="toast-wrap" id="toastWrap" aria-live="polite" aria-atomic="true"></div>
-
-<div class="modal" id="expenseModal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="addExpenseTitle">
-    <button class="close-btn" onclick="closeAddExpenseModal()" aria-label="Close"><i class="fas fa-times"></i></button>
-    <h3 id="addExpenseTitle">➕ Add Expense</h3>
-
-    <div style="margin-top:6px;">
-      <label class="small-muted">Payer</label>
-      <select id="expensePayer" aria-label="Payer" style="width:100%; padding:10px; margin-top:6px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light)"></select>
+    <!-- ROOMMATE MEMBER MODAL -->
+    <div id="memberModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel border border-white/15 w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
+                <h3 id="memberModalTitle" class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-user-plus text-sky-400"></i> Add Roommate
+                </h3>
+                <button onclick="closeMemberModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="memberForm" onsubmit="saveMemberSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editMemberId">
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 block mb-1">Roommate Name <span class="text-rose-400">*</span></label>
+                    <input type="text" id="mName" required placeholder="e.g. Tariq Mahmood" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                </div>
+                <div>
+                    <label class="text-xs font-semibold text-slate-300 block mb-1">Phone / WhatsApp (Optional)</label>
+                    <input type="text" id="mPhone" placeholder="e.g. +971 50 123 4567" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                </div>
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
+                    <button type="button" onclick="closeMemberModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-500/25 transition border border-white/15">
+                        Save Roommate
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div style="margin-top:10px;">
-      <label class="small-muted">Amount (AED)</label>
-      <input id="expenseAmount" type="number" placeholder="Enter amount" aria-label="Expense amount in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
-    </div>
-    
-    <div style="margin-top:10px;">
-      <label class="small-muted">Description (Optional)</label>
-      <input id="expenseDescription" type="text" placeholder="e.g. Electricity bill, Groceries" aria-label="Expense description" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
-    </div>
+    <!-- FIXED EXPENSE SETUP MODAL -->
+    <div id="fixedModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel border border-white/15 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden">
+            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
+                <h3 class="text-base font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-file-invoice-dollar text-indigo-400"></i> Fixed Monthly Expense Bill
+                </h3>
+                <button onclick="closeFixedModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <form id="fixedForm" onsubmit="saveFixedSubmit(event)" class="p-6 space-y-4">
+                <input type="hidden" id="editFixedId">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Bill Title <span class="text-rose-400">*</span></label>
+                        <input type="text" id="fTitle" required placeholder="e.g. DEWA, Room Rent, Internet" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                    </div>
+                    <div>
+                        <label class="text-xs font-semibold text-slate-300 block mb-1">Monthly Amount (AED) <span class="text-rose-400">*</span></label>
+                        <input type="number" step="0.01" min="0.01" id="fAmount" required placeholder="0.00" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
+                    </div>
+                </div>
 
-    <div style="margin-top:10px;">
-      <label class="small-muted">Split with</label>
-      <div style="display:flex; justify-content:flex-end; gap:8px;">
-        <button class="icon-btn" onclick="toggleSplitChecks(true)"><i class="fas fa-check-double"></i> All</button>
-        <button class="icon-btn" onclick="toggleSplitChecks(false)"><i class="fas fa-times-circle"></i> None</button>
-      </div>
-      <div class="checkbox-grid" id="expenseSplit"></div>
-    </div>
+                <div class="space-y-2 pt-2 border-t border-white/10">
+                    <div class="flex items-center justify-between">
+                        <label class="text-xs font-bold text-indigo-300">Split Equally Among:</label>
+                        <div class="flex items-center gap-2 text-[11px]">
+                            <button type="button" onclick="toggleAllFixedMembers(true)" class="text-sky-400 hover:underline">Select All</button>
+                            <span class="text-slate-600">•</span>
+                            <button type="button" onclick="toggleAllFixedMembers(false)" class="text-slate-400 hover:underline">Clear</button>
+                        </div>
+                    </div>
+                    <div id="fixedMemberCheckboxes" class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto custom-scrollbar">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
 
-    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
-      <button class="btn ghost" onclick="closeAddExpenseModal()"><i class="fas fa-times"></i> Cancel</button>
-      <button class="btn" id="addExpenseSubmit" onclick="submitExpense()"><i class="fas fa-check"></i> Add Expense</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="memberModal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="memberTitle">
-    <button class="close-btn" onclick="closeMemberEditor()" aria-label="Close"><i class="fas fa-times"></i></button>
-    <h3 id="memberTitle">👥 Edit Members</h3>
-
-    <div id="memberList" style="margin-top:8px;"></div>
-
-    <div style="display:flex; gap:8px; margin-top:12px;">
-      <input id="newMemberName" type="text" placeholder="Add new member" aria-label="New member name" style="padding:10px; border-radius:8px; background:transparent; border:1px solid rgba(255,255,255,0.03); color:var(--text-light); flex:1;">
-      <button class="btn" onclick="addMember()"><i class="fas fa-user-plus"></i> Add</button>
-      <button class="btn ghost" onclick="saveMemberChanges()"><i class="fas fa-check"></i> Done</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="reportModal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="reportTitle">
-    <button class="close-btn" onclick="closeReportModal()" aria-label="Close"><i class="fas fa-times"></i></button>
-    <h3 id="reportTitle">📊 Reports</h3>
-
-    <div style="display:flex; gap:8px; margin-top:8px; flex-wrap:wrap;">
-      <button class="btn" onclick="generateExpenseReport()"><i class="fas fa-list"></i> Expense Report</button>
-      <button class="btn" onclick="generateToPayReport()"><i class="fas fa-hand-holding-usd"></i> Balance Sheet</button>
-      <button class="btn" onclick="generateSmartSettlement()"><i class="fas fa-exchange-alt"></i> Smart Settlement</button>
+                <div class="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
+                    <button type="button" onclick="closeFixedModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/25 transition border border-white/15">
+                        Save Fixed Bill
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
-    <div class="table-wrap" style="margin-top:12px; max-height:320px;">
-      <table id="reportTable"><thead></thead><tbody></tbody></table>
+    <!-- CONFIRMATION PROMPT MODAL -->
+    <div id="confirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
+        <div class="glass-panel border border-white/15 w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center space-y-4">
+            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl mx-auto">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <div>
+                <h3 id="confirmModalTitle" class="text-base font-bold text-white">Confirm Action</h3>
+                <p id="confirmModalMessage" class="text-xs text-slate-400 mt-1">Are you sure you want to proceed?</p>
+            </div>
+            <div class="flex items-center justify-center gap-3 pt-2">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
+                    Cancel
+                </button>
+                <button id="confirmModalActionBtn" class="px-5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-600/25 transition border border-white/15">
+                    Confirm
+                </button>
+            </div>
+        </div>
     </div>
 
-    <div style="display:flex; gap:8px; margin-top:12px; justify-content:flex-end;">
-      <button class="btn warning" onclick="confirmSettlement()"><i class="fas fa-stamp"></i> Confirm & Clear Expenses</button>
-      <button class="btn" onclick="downloadReportPDF()"><i class="fas fa-file-pdf"></i> PDF</button>
-      <button class="btn" onclick="shareReportWhatsApp()"><i class="fab fa-whatsapp"></i> WhatsApp</button>
-    </div>
-  </div>
-</div>
-
-<div class="modal" id="rentModal" aria-hidden="true">
-  <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="rentTitle">
-    <button class="close-btn" onclick="closeRentModal()" aria-label="Close"><i class="fas fa-times"></i></button>
-    <h3 id="rentTitle">💰 Set Room Rent</h3>
-
-    <div style="margin-top:10px;">
-      <label class="small-muted">Total Rent (AED)</label>
-      <input id="rentInput" type="number" placeholder="Enter total rent" aria-label="Total Rent in AED" style="margin-top:6px; width:100%; padding:10px; border-radius:8px; border:1px solid rgba(255,255,255,0.03); background:transparent; color:var(--text-light);">
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl glass-panel border border-white/15 shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
+        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toastMsg" class="text-xs font-semibold text-slate-100">Notification message</span>
     </div>
 
-    <div style="display:flex; gap:8px; justify-content:flex-end; margin-top:14px;">
-      <button class="btn ghost" onclick="closeRentModal()"><i class="fas fa-times"></i> Cancel</button>
-      <button class="btn" onclick="saveRent()"><i class="fas fa-check"></i> Save</button>
-    </div>
-  </div>
-</div>
+    <script>
+        // Core Application State
+        let state = {
+            activeMonth: new Date().toISOString().slice(0, 7), // 'YYYY-MM'
+            members: [],         // [{ id, name, phone, dateAdded }]
+            fixedExpenses: [],   // [{ id, title, amount, splitWith: [memberIds] }]
+            expenses: []         // [{ id, title, amount, payerId, category, date, splitWith: [memberIds] }]
+        };
 
-<script>
-/* ---------------------------
-   Data & initial variables
-   --------------------------- */
-let people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
-// expense: { payer, amount, description, date, shared: [...], perShare }
-let expenses = []; 
-let rentValue = 0;
-let currentReportType = 'settlement'; 
+        const STORAGE_KEY = 'room_expense_app_data_v2';
 
-/* set copyright year */
-document.getElementById('year').textContent = new Date().getFullYear();
+        // Helpers
+        const getTodayISO = () => new Date().toISOString().split('T')[0];
+        const fmt = (num) => 'AED ' + (Number(num) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/* ---------------------------
-   Toast notifications
-   --------------------------- */
-function showToast(type='success', message='') {
-  const wrap = document.getElementById('toastWrap');
-  const t = document.createElement('div');
-  t.className = 'toast' + (type==='error' ? ' error' : '');
-  t.innerHTML = `<div style="font-size:16px;">${ type==='error' ? '<i class="fas fa-exclamation-circle"></i>' : '<i class="fas fa-check-circle"></i>' }</div><div style="flex:1">${message}</div>`;
-  wrap.appendChild(t);
-  // auto remove after 3s
-  setTimeout(()=> {
-    t.style.opacity = '0';
-    t.style.transform = 'translateY(-8px)';
-    setTimeout(()=> t.remove(), 350);
-  }, 3000);
-}
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.error('LocalStorage Save Error:', e);
+            }
+        }
 
-/* ---------------------------
-   Members UI (editor with add/remove)
-   --------------------------- */
-function updateMemberUI() {
-  const list = document.getElementById('memberList');
-  list.innerHTML = '';
-  people.forEach((p) => {
-    const div = document.createElement('div');
-    div.className = 'member-item';
-    div.style.display = 'flex';
-    div.style.justifyContent = 'space-between';
-    div.style.alignItems = 'center';
-    div.style.padding = '10px';
-    div.style.margin = '6px 0';
-    div.style.borderRadius = '10px';
-    div.style.background = 'linear-gradient(90deg, rgba(255,255,255,0.01), rgba(255,255,255,0.02))';
-    // Use data-name for safer removal
-    div.innerHTML = `<div style="display:flex; align-items:center; gap:10px;"><div style="width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:linear-gradient(90deg,var(--accent),var(--accent-2)); color:#002b34;font-weight:700">${p[0]||'U'}</div><div style="font-weight:600">${p}</div></div><div><button class="btn ghost" onclick="removeMember('${p.replace(/'/g, "\\'")}')" aria-label="Remove ${p}"><i class="fas fa-trash"></i></button></div>`;
-    list.appendChild(div);
-  });
+        function loadSavedState() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    if (parsed && typeof parsed === 'object') {
+                        state = {
+                            activeMonth: parsed.activeMonth || new Date().toISOString().slice(0, 7),
+                            members: Array.isArray(parsed.members) ? parsed.members : [],
+                            fixedExpenses: Array.isArray(parsed.fixedExpenses) ? parsed.fixedExpenses : [],
+                            expenses: Array.isArray(parsed.expenses) ? parsed.expenses : []
+                        };
+                    }
+                } catch (e) {
+                    console.error('Failed to parse saved state:', e);
+                }
+            }
+        }
 
-  // update payer select & split chips if modal open
-  const sel = document.getElementById('expensePayer');
-  if (sel) sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
-}
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
 
-/* Add / remove members */
-function addMember() {
-  const nameEl = document.getElementById('newMemberName');
-  const name = (nameEl.value || '').trim();
-  const nameUpper = name.toUpperCase(); // Force uppercase internally
-  
-  if (!name) { showToast('error', 'Please enter a name'); return; }
-  
-  // Case-insensitive duplicate check
-  if (people.map(p => p.toUpperCase()).includes(nameUpper)) { 
-    showToast('error', 'Member already exists (case insensitive)'); 
-    nameEl.value=''; 
-    return; 
-  }
-  
-  people.push(nameUpper); // Store name as uppercase
-  nameEl.value='';
-  updateUI(); saveData();
-  showToast('success','Member added');
-}
+            toastMsg.innerText = message;
+            if (type === 'error') {
+                toastIcon.className = 'fa-solid fa-circle-exclamation text-rose-400 text-lg';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
+            }
 
-function removeMember(name) {
-  // name is already the uppercase version stored in the people array
-  if (!confirm(`Remove member ${name}? This will update existing expense splits.`)) return;
-  
-  people = people.filter(p => p !== name);
-  
-  // 1. Remove member from shared lists in expenses & recalculate perShare
-  expenses.forEach(e => { 
-    e.shared = e.shared.filter(x => x !== name); 
-    if (e.shared.length > 0) {
-      e.perShare = +(e.amount / e.shared.length).toFixed(2);
-    } else {
-      e.perShare = 0; // No one left to share with
-    }
-    // Also update payer if the payer was removed (transfer to first available member)
-    if (e.payer === name && people.length > 0) {
-        e.payer = people[0];
-        showToast('warning', `Payer for an expense (${e.amount.toFixed(2)}) was removed and transferred to ${e.payer}.`);
-    } else if (e.payer === name && people.length === 0) {
-        // If the last member is removed and they are a payer, remove the expense too.
-        e.remove = true; 
-    }
-  });
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
 
-  expenses = expenses.filter(e => !e.remove);
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
 
-  updateUI(); saveData();
-  showToast('success','Member removed and expenses updated');
-}
+        function switchTab(tabId) {
+            const tabs = ['setup', 'expenses', 'settlement'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tabBtn-${t}`);
+                const sec = document.getElementById(`sec-${t}`);
+                if (t === tabId) {
+                    btn.className = 'tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-sky-500 text-sky-400 whitespace-nowrap transition';
+                    sec.classList.remove('hidden');
+                } else {
+                    btn.className = 'tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition';
+                    sec.classList.add('hidden');
+                }
+            });
+            if (tabId === 'settlement') renderSettlement();
+        }
 
-function saveMemberChanges() { closeMemberEditor(); saveData(); showToast('success','Members updated'); }
-function openMemberEditor() { document.getElementById('memberModal').classList.add('open'); document.getElementById('memberModal').ariaHidden = 'false'; updateMemberUI(); }
-function closeMemberEditor() { document.getElementById('memberModal').classList.remove('open'); document.getElementById('memberModal').ariaHidden = 'true'; }
+        function changeActiveMonth(monthVal) {
+            if (!monthVal) return;
+            state.activeMonth = monthVal;
+            saveState();
+            updateAllViews();
+        }
 
-/* ---------------------------
-   Expense Modal
-   --------------------------- */
-function openAddExpenseModal() {
-  document.getElementById('expenseModal').classList.add('open');
-  document.getElementById('expenseModal').ariaHidden = 'false';
-  
-  const sel = document.getElementById('expensePayer');
-  sel.innerHTML = people.map(p => `<option>${p}</option>`).join('');
-  
-  // Reset other fields
-  document.getElementById('expenseAmount').value = '';
-  document.getElementById('expenseDescription').value = '';
-  
-  const split = document.getElementById('expenseSplit');
-  split.innerHTML = '';
-  
-  people.forEach(p => {
-    const id = 'chk_'+p;
-    const label = document.createElement('label');
-    label.className = 'split-chip checked'; // default checked
-    label.innerHTML = `<input type="checkbox" id="${id}" value="${p}" checked><span>${p}</span>`;
-    label.onclick = function(){
-      const cb = this.querySelector('input');
-      // Use requestAnimationFrame to ensure we read the intended new state
-      requestAnimationFrame(() => {
-        this.classList.toggle('checked', cb.checked);
-      });
-    };
-    split.appendChild(label);
-  });
-}
+        // Roommate Management
+        function openMemberModal(memberId = null) {
+            const modal = document.getElementById('memberModal');
+            const modalTitle = document.getElementById('memberModalTitle');
+            const editId = document.getElementById('editMemberId');
 
-function toggleSplitChecks(check) {
-    document.querySelectorAll('#expenseSplit input[type="checkbox"]').forEach(cb => {
-        cb.checked = check;
-        cb.closest('.split-chip').classList.toggle('checked', check);
-    });
-}
+            if (memberId) {
+                const member = state.members.find(m => m.id === memberId);
+                if (!member) return;
+                modalTitle.innerHTML = `<i class="fa-solid fa-user-pen text-sky-400"></i> Edit Roommate`;
+                editId.value = member.id;
+                document.getElementById('mName').value = member.name || '';
+                document.getElementById('mPhone').value = member.phone || '';
+            } else {
+                modalTitle.innerHTML = `<i class="fa-solid fa-user-plus text-sky-400"></i> Add Roommate`;
+                editId.value = '';
+                document.getElementById('mName').value = '';
+                document.getElementById('mPhone').value = '';
+            }
 
-function closeAddExpenseModal() {
-  document.getElementById('expenseModal').classList.remove('open');
-  document.getElementById('expenseModal').ariaHidden = 'true';
-}
+            modal.classList.remove('hidden');
+        }
 
-/* Submit expense (with validation + toasts + highlight) */
-function submitExpense() {
-  const payer = document.getElementById('expensePayer').value;
-  const amountRaw = document.getElementById('expenseAmount').value;
-  const description = document.getElementById('expenseDescription').value || 'General Expense';
-  const amount = parseFloat(amountRaw);
-  
-  if (!amount || amount <= 0 || isNaN(amount)) {
-    showToast('error','Please enter a valid amount');
-    return;
-  }
-  
-  const shared = [...document.querySelectorAll('#expenseSplit input')].filter(i=>i.checked).map(c => c.value);
-  if (shared.length === 0) { showToast('error','Select at least one member'); return; }
-  
-  const perShare = parseFloat((amount / shared.length).toFixed(2));
-  
-  const entry = { 
-    payer, 
-    amount: +amount.toFixed(2), 
-    description,
-    date: new Date().toISOString(), // Timestamp
-    shared, 
-    perShare 
-  };
-  
-  expenses.push(entry);
-  const newIndex = expenses.length - 1;
-  updateExpenseTable();
-  closeAddExpenseModal();
-  saveData();
-  // highlight last row
-  highlightExpenseRow(newIndex);
-  showToast('success','Expense added successfully');
-}
+        function closeMemberModal() {
+            document.getElementById('memberModal').classList.add('hidden');
+        }
 
-/* highlight a row by index (temporary) */
-function highlightExpenseRow(idx){
-  const tbody = document.querySelector('#expenseTable tbody');
-  const row = tbody.children[idx];
-  if (!row) return;
-  row.classList.add('new-row');
-  setTimeout(()=> {
-    row.style.animation = 'pulseGlow .9s ease';
-  }, 350);
-  setTimeout(()=> {
-    row.classList.remove('new-row');
-    row.style.animation = '';
-  }, 2200);
-}
+        function saveMemberSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editMemberId').value;
+            const name = document.getElementById('mName').value.trim();
+            const phone = document.getElementById('mPhone').value.trim();
 
-/* ---------------------------
-   Expense Table rendering
-   --------------------------- */
-function updateExpenseTable() {
-  const tbody = document.querySelector('#expenseTable tbody');
-  tbody.innerHTML = '';
-  expenses.slice().reverse().forEach((e, originalIndex) => { // Reverse for latest first, originalIndex used for deletion
-    // Calculate the current index in the non-reversed array
-    const idx = expenses.length - 1 - expenses.findIndex(exp => exp === e); 
+            if (!name) return;
 
-    const tr = document.createElement('tr');
-    tr.innerHTML = `
-      <td style="font-weight:600" scope="row">${e.payer}</td>
-      <td>${e.amount.toFixed(2)}</td>
-      <td style="color:var(--muted); font-size:13px;" title="${new Date(e.date).toLocaleString()}">${e.description.substring(0, 20)}...</td>
-      <td>${e.perShare.toFixed(2)}</td>
-      <td>${e.shared.join(', ')}</td>
-      <td style="text-align:right">
-        <button class="table-btn" title="Remove" onclick="removeExpense(${idx})" aria-label="Remove expense ${e.description}"><i class="fas fa-trash"></i></button>
-      </td>
-    `;
-    // We append to the front to show latest expense on top
-    tbody.prepend(tr); 
-  });
-  document.getElementById('expensesCount').textContent = `${expenses.length} entries`;
-}
+            if (editId) {
+                const member = state.members.find(m => m.id === editId);
+                if (member) {
+                    member.name = name;
+                    member.phone = phone;
+                }
+                showToast('Roommate updated!');
+            } else {
+                const newId = 'm_' + Date.now();
+                state.members.push({
+                    id: newId,
+                    name: name,
+                    phone: phone,
+                    dateAdded: getTodayISO()
+                });
+                showToast(`Added roommate ${name}!`);
+            }
 
-/* remove expense */
-function removeExpense(idx) {
-  if(!confirm('Delete this expense?')) return;
-  expenses.splice(idx,1);
-  updateExpenseTable();
-  saveData();
-  showToast('success','Expense removed');
-}
+            saveState();
+            closeMemberModal();
+            updateAllViews();
+        }
 
-/* ---------------------------
-   Reports
-   --------------------------- */
-function openReportModal() { 
-  document.getElementById('reportModal').classList.add('open'); 
-  document.getElementById('reportModal').ariaHidden = 'false'; 
-  generateSmartSettlement(); // Default report
-}
-function closeReportModal() { document.getElementById('reportModal').classList.remove('open'); document.getElementById('reportModal').ariaHidden = 'true'; }
+        function deleteMemberConfirmation(id) {
+            const member = state.members.find(m => m.id === id);
+            if (!member) return;
 
-// 1. Full Expense List Report
-function generateExpenseReport() {
-  currentReportType='expense'; 
-  const table = document.getElementById('reportTable');
-  let thead='<tr><th scope="col">Payer</th><th scope="col">Amount</th><th scope="col">Description</th><th scope="col">Shared Amount</th><th scope="col">Shared With</th></tr>';
-  let tbody='';
-  expenses.forEach(e=>{
-    const per=(e.perShare).toFixed(2);
-    tbody+=`<tr><td style="font-weight:600" scope="row">${e.payer}</td><td>${e.amount.toFixed(2)}</td><td>${e.description}</td><td>${per}</td><td>${e.shared.join(', ')}</td></tr>`;
-  });
-  table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
-}
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('confirmModalTitle').innerText = `Remove ${member.name}?`;
+            document.getElementById('confirmModalMessage').innerText = `This will remove ${member.name} from directory.`;
+            
+            const btn = document.getElementById('confirmModalActionBtn');
+            btn.onclick = () => {
+                state.members = state.members.filter(m => m.id !== id);
+                saveState();
+                closeConfirmModal();
+                updateAllViews();
+                showToast(`Removed ${member.name}.`);
+            };
 
-// 2. Balance Sheet (Paid vs Owed)
-function generateToPayReport() {
-  currentReportType='toPay';
-  const rent = rentValue || 0;
-  const paid = {}, owe = {};
-  people.forEach(p => { paid[p]=0; owe[p]=0; });
-  
-  // Calculate expenses paid and owed
-  expenses.forEach(e => {
-    const per = e.perShare;
-    // Only count as owed if the person is in the split
-    e.shared.forEach(p => owe[p] = (owe[p] || 0) + per);
-    paid[e.payer] = (paid[e.payer] || 0) + e.amount;
-  });
-  
-  const rentShare = (people.length > 0) ? (rent / people.length) : 0;
-  const table = document.getElementById('reportTable');
-  
-  let thead='<tr><th scope="col">Name</th><th scope="col">Paid</th><th scope="col">Expenses Owed</th><th scope="col">Rent Share</th><th scope="col">Net Balance</th></tr>';
-  let tbody='';
-  people.forEach(p=>{
-    const totalPaid = (paid[p]||0);
-    const totalOwed = (owe[p]||0);
-    const netBalance = (totalPaid - totalOwed - rentShare);
-    const balanceClass = netBalance < 0 ? 'color:var(--danger)' : 'color:var(--success)';
-    tbody+=`<tr><td style="font-weight:600" scope="row">${p}</td><td>${totalPaid.toFixed(2)}</td><td>${totalOwed.toFixed(2)}</td><td>${rentShare.toFixed(2)}</td><td style="${balanceClass}; font-weight:700">${netBalance.toFixed(2)}</td></tr>`;
-  });
-  table.innerHTML=`<thead>${thead}</thead><tbody>${tbody}</tbody>`;
-}
+            modal.classList.remove('hidden');
+        }
 
+        function closeConfirmModal() {
+            document.getElementById('confirmModal').classList.add('hidden');
+        }
 
-// 3. Smart Settlement (Minimum Transactions)
-function generateSmartSettlement() {
-  currentReportType='settlement';
-  let balances = {};
-  people.forEach(p => balances[p] = 0);
+        function renderMembers() {
+            const container = document.getElementById('membersContainer');
+            document.getElementById('statMemberCount').innerText = state.members.length;
 
-  // 1. Calculate Balances from Expenses
-  expenses.forEach(e => {
-    // Payer's balance increases by the total amount paid
-    balances[e.payer] += e.amount;
-    
-    // Each person in the split (including the payer) reduces their balance by their share
-    const splitAmount = e.perShare; 
-    e.shared.forEach(person => {
-      balances[person] -= splitAmount;
-    });
-  });
+            if (state.members.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-panel rounded-xl p-6 text-center space-y-2 border border-white/10">
+                        <i class="fa-solid fa-users text-3xl text-slate-500"></i>
+                        <h3 class="text-xs font-bold text-slate-300">No Roommates Added Yet</h3>
+                        <p class="text-[11px] text-slate-400">Click "Add Member" above to start tracking your flatmates.</p>
+                    </div>
+                `;
+                return;
+            }
 
-  // 2. Prepare Debtors and Creditors lists (ignore near-zero balances)
-  let debtors = [];
-  let creditors = [];
+            container.innerHTML = state.members.map(m => `
+                <div class="flex items-center justify-between glass-panel glass-panel-hover p-3.5 rounded-xl border border-white/10">
+                    <div class="flex items-center gap-3">
+                        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-400/20 to-indigo-500/20 border border-sky-400/30 flex items-center justify-center font-bold text-sky-300 text-sm shadow-sm">
+                            ${m.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div>
+                            <h3 class="font-bold text-slate-100 text-xs">${m.name}</h3>
+                            <p class="text-[11px] text-slate-400">${m.phone || 'No phone added'}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1">
+                        <button onclick="openMemberModal('${m.id}')" class="p-1.5 text-slate-400 hover:text-sky-400 rounded-lg transition" title="Edit">
+                            <i class="fa-solid fa-pen text-xs"></i>
+                        </button>
+                        <button onclick="deleteMemberConfirmation('${m.id}')" class="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg transition" title="Delete">
+                            <i class="fa-solid fa-trash text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-  for (const [person, amount] of Object.entries(balances)) {
-    if (amount < -0.01) debtors.push({ name: person, amount: amount }); // Negative balance = Ower
-    if (amount > 0.01) creditors.push({ name: person, amount: amount }); // Positive balance = Receiver
-  }
+        // Fixed Expense Setup
+        function openFixedModal(fixedId = null) {
+            if (state.members.length === 0) {
+                showToast('Please add roommates first!', 'error');
+                return;
+            }
 
-  debtors.sort((a, b) => a.amount - b.amount); // Most debt first
-  creditors.sort((a, b) => b.amount - a.amount); // Most credit first
+            const modal = document.getElementById('fixedModal');
+            const editId = document.getElementById('editFixedId');
 
-  let transactions = [];
-  let i = 0;
-  let j = 0;
+            if (fixedId) {
+                const fix = state.fixedExpenses.find(f => f.id === fixedId);
+                if (!fix) return;
+                editId.value = fix.id;
+                document.getElementById('fTitle').value = fix.title;
+                document.getElementById('fAmount').value = fix.amount;
+                renderFixedMemberCheckboxes(fix.splitWith || state.members.map(m => m.id));
+            } else {
+                editId.value = '';
+                document.getElementById('fTitle').value = '';
+                document.getElementById('fAmount').value = '';
+                renderFixedMemberCheckboxes(state.members.map(m => m.id));
+            }
 
-  // 3. Find Minimum Transactions
-  while (i < debtors.length && j < creditors.length) {
-    let debtor = debtors[i];
-    let creditor = creditors[j];
-    
-    // Amount to transfer is the smaller of the absolute debt or the credit
-    let amount = Math.min(Math.abs(debtor.amount), creditor.amount);
+            modal.classList.remove('hidden');
+        }
 
-    transactions.push(`${debtor.name} pays ${creditor.name}: ${amount.toFixed(2)} AED`);
+        function closeFixedModal() {
+            document.getElementById('fixedModal').classList.add('hidden');
+        }
 
-    // Update balances
-    debtor.amount += amount;
-    creditor.amount -= amount;
+        function renderFixedMemberCheckboxes(selectedIds = []) {
+            const container = document.getElementById('fixedMemberCheckboxes');
+            container.innerHTML = state.members.map(m => {
+                const checked = selectedIds.includes(m.id) ? 'checked' : '';
+                return `
+                    <label class="flex items-center gap-2 bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs cursor-pointer hover:border-slate-700">
+                        <input type="checkbox" name="fMemberCheck" value="${m.id}" ${checked} class="accent-indigo-500 rounded">
+                        <span class="text-slate-200 truncate">${m.name}</span>
+                    </label>
+                `;
+            }).join('');
+        }
 
-    // Move to next debtor/creditor if their balance is settled (near zero)
-    if (Math.abs(debtor.amount) < 0.01) i++;
-    if (creditor.amount < 0.01) j++;
-  }
+        function toggleAllFixedMembers(select) {
+            const checkboxes = document.querySelectorAll('input[name="fMemberCheck"]');
+            checkboxes.forEach(cb => cb.checked = select);
+        }
 
-  const table = document.getElementById('reportTable');
-  if (transactions.length === 0) {
-    table.innerHTML = `<tbody><tr><td style="text-align:center; padding:20px; color:var(--success); font-weight:700">🎉 All expense debts are cleared!</td></tr></tbody>`;
-  } else {
-    let html = `<thead><tr><th scope="col">Settlement Plan (${transactions.length} Transactions)</th></tr></thead><tbody>`;
-    transactions.forEach(t => {
-      html += `<tr><td style="color:var(--accent); font-weight:600; padding:15px;" scope="row">${t}</td></tr>`;
-    });
-    html += `</tbody>`;
-    table.innerHTML = html;
-  }
-}
+        function saveFixedSubmit(e) {
+            e.preventDefault();
+            const editId = document.getElementById('editFixedId').value;
+            const title = document.getElementById('fTitle').value.trim();
+            const amount = parseFloat(document.getElementById('fAmount').value);
 
-// 4. Confirmation to clear all expenses
-function confirmSettlement() {
-  const totalExpenses = expenses.length;
-  if (totalExpenses === 0) {
-    showToast('error', 'There are no expenses to clear.');
-    return;
-  }
-  
-  if (!confirm(`WARNING: Are you sure everyone has settled their debts? This action will permanently remove all ${totalExpenses} expense records and cannot be undone. Rent setup will remain.`)) {
-    return;
-  }
-  
-  // Clear the expenses array
-  expenses = [];
-  
-  // Update UI and storage
-  updateUI();
-  saveData();
-  closeReportModal();
-  showToast('success', `${totalExpenses} expenses successfully cleared! Ready for a new cycle.`);
-}
+            const checkedNodes = document.querySelectorAll('input[name="fMemberCheck"]:checked');
+            const splitWith = Array.from(checkedNodes).map(cb => cb.value);
 
+            if (!title || isNaN(amount) || amount <= 0) return;
+            if (splitWith.length === 0) {
+                showToast('Select at least one member to share this bill!', 'error');
+                return;
+            }
 
-/* PDF and WhatsApp share */
-function downloadReportPDF() {
-  const { jsPDF } = window.jspdf;
-  const doc = new jsPDF();
-  doc.text("🏠 Room Expense Tracker",10,10);
-  doc.text("Generated: "+new Date().toLocaleString(),10,16);
-  doc.autoTable({startY:26, html:"#reportTable"});
-  doc.save("Room_Expense_Tracker_Report.pdf");
-}
-function shareReportWhatsApp() {
-  let text="🏠 Room Expense Tracker Report\n\n";
-  document.querySelectorAll("#reportTable tbody tr").forEach(tr=>{
-    text+=Array.from(tr.children).map(td=>td.textContent).join(" | ")+"\n";
-  });
-  text+="Generated on: "+new Date().toLocaleString();
-  window.open("https://wa.me/?text="+encodeURIComponent(text),"_blank");
-}
+            if (editId) {
+                const fix = state.fixedExpenses.find(f => f.id === editId);
+                if (fix) {
+                    fix.title = title;
+                    fix.amount = amount;
+                    fix.splitWith = splitWith;
+                }
+                showToast('Fixed bill updated!');
+            } else {
+                state.fixedExpenses.push({
+                    id: 'f_' + Date.now(),
+                    title,
+                    amount,
+                    splitWith
+                });
+                showToast('Fixed bill recorded!');
+            }
 
-/* ---------------------------
-   Rent Modal functions
-   --------------------------- */
-function openRentModal() {
-  document.getElementById('rentModal').classList.add('open');
-  document.getElementById('rentModal').ariaHidden = 'false';
-  document.getElementById('rentInput').value = rentValue || '';
-  setTimeout(()=> document.getElementById('rentInput').focus(), 100);
-}
-function closeRentModal() {
-  document.getElementById('rentModal').classList.remove('open');
-  document.getElementById('rentModal').ariaHidden = 'true';
-}
-function saveRent() {
-  const val = parseFloat(document.getElementById('rentInput').value);
-  if (val < 0 || isNaN(val)) { showToast('error','Enter a valid rent (0 or positive)'); return; }
-  rentValue = +val.toFixed(2);
-  updateRentBox();
-  closeRentModal();
-  saveData();
-  showToast('success','Rent updated');
-}
+            saveState();
+            closeFixedModal();
+            updateAllViews();
+        }
 
-/* update rent display in the same textbox (total and per-head) */
-function updateRentBox(){
-  const rentBox = document.getElementById('rent');
-  const perHead = people.length > 0 ? (rentValue / people.length) : 0;
-  if (rentValue > 0) {
-    rentBox.value = `Total: ${rentValue.toFixed(2)} AED  |  Per head: ${perHead.toFixed(2)} AED`;
-    rentBox.dataset.value = rentValue;
-  } else {
-    rentBox.value = 'Total Room Rent (AED)';
-    rentBox.dataset.value = 0;
-  }
-}
+        function deleteFixedExpense(id) {
+            state.fixedExpenses = state.fixedExpenses.filter(f => f.id !== id);
+            saveState();
+            updateAllViews();
+            showToast('Fixed bill removed.');
+        }
 
-/* ---------------------------
-   Reset / Save / Load
-   --------------------------- */
-function resetValues() {
-  if(!confirm('Clear ALL data, including members, expenses, and rent? This cannot be undone.')) return;
-  rentValue = 0;
-  expenses=[];
-  people = ["RAMSHAD","ASHIR","ZAKKI","ASEEF","KUTTAPI"];
-  updateUI();
-  saveData();
-  showToast('success','All data cleared');
-}
+        function renderFixedExpenses() {
+            const container = document.getElementById('fixedContainer');
+            const totalFixed = state.fixedExpenses.reduce((s, f) => s + f.amount, 0);
+            document.getElementById('statFixedTotal').innerText = fmt(totalFixed);
 
-/* Save to localStorage */
-function saveData() {
-  try {
-    localStorage.setItem('roomExpenseData', JSON.stringify({
-      people, expenses, rent: rentValue
-    }));
-  } catch(e) {
-    console.error('Save failed', e);
-  }
-}
+            if (state.fixedExpenses.length === 0) {
+                container.innerHTML = `
+                    <div class="glass-panel rounded-xl p-6 text-center space-y-2 border border-white/10">
+                        <i class="fa-solid fa-building-columns text-3xl text-slate-500"></i>
+                        <h3 class="text-xs font-bold text-slate-300">No Fixed Bills Configured</h3>
+                        <p class="text-[11px] text-slate-400">Click "Add Fixed Bill" to set up Room Rent, Wi-Fi, DEWA, etc.</p>
+                    </div>
+                `;
+                return;
+            }
 
-/* Load from localStorage */
-function loadData() {
-  try {
-    const data = JSON.parse(localStorage.getItem('roomExpenseData') || '{}');
-    // Schema check for robustness
-    if (data.people && Array.isArray(data.people)) people = data.people;
-    if (data.expenses && Array.isArray(data.expenses)) expenses = data.expenses;
-    if (data.rent || data.rent === 0) rentValue = data.rent;
-  } catch(e){ console.warn('Load failed, resetting to default.', e); }
-  updateUI();
-}
+            container.innerHTML = state.fixedExpenses.map(f => {
+                const sharedCount = f.splitWith ? f.splitWith.length : 0;
+                const perPersonShare = sharedCount > 0 ? f.amount / sharedCount : 0;
 
-/* update UI pieces */
-function updateUI() {
-  updateExpenseTable();
-  updateMemberUI();
-  updateRentBox();
-}
+                return `
+                    <div class="flex items-center justify-between glass-panel glass-panel-hover p-3.5 rounded-xl border border-white/10">
+                        <div class="space-y-0.5">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-100 text-xs">${f.title}</span>
+                                <span class="px-2 py-0.5 glass-badge text-indigo-300 border border-indigo-400/20 text-[10px] rounded-full font-semibold">
+                                    Shared by ${sharedCount}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">Share: <strong class="text-slate-300">${fmt(perPersonShare)} / person</strong></p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono font-bold text-indigo-300 text-sm drop-shadow-sm">${fmt(f.amount)}</span>
+                            <button onclick="openFixedModal('${f.id}')" class="text-slate-400 hover:text-indigo-400 p-1"><i class="fa-solid fa-pen text-xs"></i></button>
+                            <button onclick="deleteFixedExpense('${f.id}')" class="text-slate-400 hover:text-rose-400 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
 
-/* helpers */
-function scrollToTop(){ window.scrollTo({top:0,behavior:'smooth'}); }
+        // Expenses Logging
+        function renderExpenseFormMemberCheckboxes() {
+            const container = document.getElementById('expenseMemberCheckboxes');
+            if (state.members.length === 0) {
+                container.innerHTML = `<p class="text-xs text-rose-400 col-span-full">No roommates found. Please add roommates in Setup tab first.</p>`;
+                return;
+            }
 
-/* Event saves */
-window.addEventListener('DOMContentLoaded', loadData);
-// Note: Removed beforeunload save as it can be unreliable on mobile/single page apps. saveData() is called after every major action.
+            container.innerHTML = state.members.map(m => `
+                <label class="flex items-center gap-2 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:border-slate-700 transition">
+                    <input type="checkbox" name="expMemberCheck" value="${m.id}" checked class="accent-sky-500 rounded w-4 h-4">
+                    <span class="text-slate-200 font-medium truncate">${m.name}</span>
+                </label>
+            `).join('');
+        }
 
-/* small enhancement: close modal on backdrop click */
-document.querySelectorAll('.modal').forEach(mod => {
-  mod.addEventListener('click', (e) => {
-    if (e.target === mod) {
-      mod.classList.remove('open');
-      mod.ariaHidden = 'true';
-    }
-  });
-});
-</script>
+        function toggleAllExpenseMembers(select) {
+            const checkboxes = document.querySelectorAll('input[name="expMemberCheck"]');
+            checkboxes.forEach(cb => cb.checked = select);
+        }
+
+        function handleExpenseSubmit(e) {
+            e.preventDefault();
+            const title = document.getElementById('expTitle').value.trim();
+            const amount = parseFloat(document.getElementById('expAmount').value);
+            const payerId = document.getElementById('expPayer').value;
+            const category = document.getElementById('expCategory').value;
+            const date = document.getElementById('expDate').value || getTodayISO();
+
+            const checkedNodes = document.querySelectorAll('input[name="expMemberCheck"]:checked');
+            const splitWith = Array.from(checkedNodes).map(cb => cb.value);
+
+            if (!title || isNaN(amount) || amount <= 0 || !payerId) return;
+            if (splitWith.length === 0) {
+                showToast('Please select at least one roommate to share this expense!', 'error');
+                return;
+            }
+
+            state.expenses.push({
+                id: 'exp_' + Date.now(),
+                title,
+                amount,
+                payerId,
+                category,
+                date,
+                splitWith
+            });
+
+            saveState();
+            document.getElementById('expenseForm').reset();
+            document.getElementById('expDate').value = getTodayISO();
+            toggleAllExpenseMembers(true);
+            updateAllViews();
+            showToast('Recorded expense!');
+        }
+
+        function deleteExpense(id) {
+            state.expenses = state.expenses.filter(e => e.id !== id);
+            saveState();
+            updateAllViews();
+            showToast('Expense record deleted.');
+        }
+
+        function renderExpenses() {
+            const list = document.getElementById('expenseList');
+            const monthExps = state.expenses.filter(e => e.date && e.date.startsWith(state.activeMonth));
+            
+            const totalVar = monthExps.reduce((s, e) => s + e.amount, 0);
+            document.getElementById('statVariableTotal').innerText = fmt(totalVar);
+            document.getElementById('expenseCountBadge').innerText = monthExps.length;
+
+            if (monthExps.length === 0) {
+                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No expenses recorded for ${state.activeMonth}. Enter an expense above to get started.</p>`;
+                return;
+            }
+
+            list.innerHTML = monthExps.map(e => {
+                const payer = state.members.find(m => m.id === e.payerId);
+                const sharedNames = e.splitWith ? e.splitWith.map(id => {
+                    const m = state.members.find(m => m.id === id);
+                    return m ? m.name : '';
+                }).filter(Boolean).join(', ') : 'All';
+
+                const perPersonShare = e.splitWith && e.splitWith.length > 0 ? e.amount / e.splitWith.length : 0;
+
+                return `
+                    <div class="flex items-center justify-between glass-panel glass-panel-hover p-3.5 rounded-xl border border-white/10 text-xs">
+                        <div class="space-y-1">
+                            <div class="flex items-center gap-2">
+                                <span class="font-bold text-slate-100">${e.title}</span>
+                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold glass-badge text-emerald-300 border border-emerald-400/20">
+                                    ${e.category.toUpperCase()}
+                                </span>
+                            </div>
+                            <p class="text-[11px] text-slate-400">
+                                Paid by <strong class="text-slate-200">${payer ? payer.name : 'Unknown'}</strong> on ${e.date}
+                            </p>
+                            <p class="text-[11px] text-sky-400">
+                                Shared (${e.splitWith ? e.splitWith.length : 0}): <span class="text-slate-300">${sharedNames}</span> (${fmt(perPersonShare)} each)
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <span class="font-mono font-bold text-emerald-300 text-sm drop-shadow-sm">${fmt(e.amount)}</span>
+                            <button onclick="deleteExpense('${e.id}')" class="text-slate-400 hover:text-rose-400 p-1"><i class="fa-solid fa-trash"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateDropdowns() {
+            const expPayer = document.getElementById('expPayer');
+
+            const optionsHTML = state.members.length === 0
+                ? `<option value="">No roommates available</option>`
+                : state.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+
+            if (expPayer) expPayer.innerHTML = optionsHTML;
+            renderExpenseFormMemberCheckboxes();
+
+            // Populate PDF member select dropdown
+            const pdfSelect = document.getElementById('pdfMemberSelect');
+            if (pdfSelect) {
+                pdfSelect.innerHTML = state.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
+            }
+        }
+
+        // Calculation & Settlement Engine
+        function getCalculatedStats() {
+            const monthExps = state.expenses.filter(e => e.date && e.date.startsWith(state.activeMonth));
+            const totalFixed = state.fixedExpenses.reduce((s, f) => s + f.amount, 0);
+            const totalVar = monthExps.reduce((s, e) => s + e.amount, 0);
+            const grandTotal = totalFixed + totalVar;
+
+            const memberStats = state.members.map(m => {
+                let totalPaid = 0;
+                let totalOwed = 0;
+
+                state.fixedExpenses.forEach(f => {
+                    if (f.splitWith && f.splitWith.includes(m.id)) {
+                        totalOwed += (f.amount / f.splitWith.length);
+                    }
+                });
+
+                monthExps.forEach(e => {
+                    if (e.payerId === m.id) {
+                        totalPaid += e.amount;
+                    }
+                    if (e.splitWith && e.splitWith.includes(m.id)) {
+                        totalOwed += (e.amount / e.splitWith.length);
+                    }
+                });
+
+                const netBalance = totalPaid - totalOwed;
+
+                return {
+                    id: m.id,
+                    name: m.name,
+                    phone: m.phone,
+                    totalPaid,
+                    totalOwed,
+                    netBalance
+                };
+            });
+
+            // Peer-to-peer transfers
+            const debtors = memberStats.filter(b => b.netBalance < -0.01).map(b => ({ name: b.name, amount: Math.abs(b.netBalance) }));
+            const creditors = memberStats.filter(b => b.netBalance > 0.01).map(b => ({ name: b.name, amount: b.netBalance }));
+            const transfers = [];
+
+            let i = 0, j = 0;
+            while (i < debtors.length && j < creditors.length) {
+                const debtor = debtors[i];
+                const creditor = creditors[j];
+                const amount = Math.min(debtor.amount, creditor.amount);
+
+                transfers.push({
+                    from: debtor.name,
+                    to: creditor.name,
+                    amount: amount
+                });
+
+                debtor.amount -= amount;
+                creditor.amount -= amount;
+
+                if (debtor.amount < 0.01) i++;
+                if (creditor.amount < 0.01) j++;
+            }
+
+            return {
+                month: state.activeMonth,
+                totalFixed,
+                totalVar,
+                grandTotal,
+                monthExps,
+                memberStats,
+                transfers
+            };
+        }
+
+        function renderSettlement() {
+            const grid = document.getElementById('settlementGrid');
+            if (state.members.length === 0) {
+                grid.innerHTML = `<div class="col-span-full p-6 text-center text-xs text-slate-400">Please add roommates in Setup tab first.</div>`;
+                document.getElementById('transferPlanContainer').innerHTML = '';
+                return;
+            }
+
+            const stats = getCalculatedStats();
+
+            document.getElementById('statMonthGrandTotal').innerText = fmt(stats.grandTotal);
+            document.getElementById('statAvgPerPerson').innerText = fmt(state.members.length > 0 ? stats.grandTotal / state.members.length : 0);
+
+            // Render member settlement breakdown cards
+            grid.innerHTML = stats.memberStats.map(s => {
+                const isRefund = s.netBalance >= 0;
+                const statusColor = isRefund ? 'text-emerald-300 bg-emerald-500/10 border-emerald-400/30' : 'text-rose-300 bg-rose-500/10 border-rose-400/30';
+                const statusBadge = isRefund ? 'Gets Refund' : 'Needs to Pay';
+
+                return `
+                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl border border-white/10 space-y-3">
+                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                            <h4 class="font-bold text-slate-100 text-sm flex items-center gap-2">
+                                <span class="w-7 h-7 rounded-lg bg-white/10 border border-white/10 text-sky-300 text-xs flex items-center justify-center font-bold">${s.name.charAt(0)}</span>
+                                ${s.name}
+                            </h4>
+                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${statusColor}">
+                                ${statusBadge}: ${fmt(Math.abs(s.netBalance))}
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="glass-panel p-2.5 rounded-xl border border-white/5">
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Total Out of Pocket Paid</p>
+                                <p class="font-mono font-bold text-emerald-300 text-sm mt-0.5">${fmt(s.totalPaid)}</p>
+                            </div>
+                            <div class="glass-panel p-2.5 rounded-xl border border-white/5">
+                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Calculated Share Owed</p>
+                                <p class="font-mono font-bold text-amber-300 text-sm mt-0.5">${fmt(s.totalOwed)}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Render Peer-to-Peer Transfers
+            const container = document.getElementById('transferPlanContainer');
+            if (stats.transfers.length === 0) {
+                container.innerHTML = `<p class="text-xs text-emerald-300 font-semibold glass-panel p-3.5 rounded-xl border border-emerald-500/30 text-center"><i class="fa-solid fa-circle-check mr-1"></i> All room accounts are fully balanced!</p>`;
+                return;
+            }
+
+            container.innerHTML = stats.transfers.map(t => `
+                <div class="flex items-center justify-between glass-panel glass-panel-hover p-3 rounded-xl border border-white/10 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-rose-300">${t.from}</span>
+                        <i class="fa-solid fa-arrow-right text-slate-500 text-xs"></i>
+                        <span class="font-bold text-emerald-300">${t.to}</span>
+                    </div>
+                    <div class="font-mono font-extrabold text-amber-300 glass-badge px-2.5 py-1 rounded-lg border border-amber-400/30">
+                        Pays ${fmt(t.amount)}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // WhatsApp Summary Export
+        function copyWhatsAppSummary() {
+            const stats = getCalculatedStats();
+
+            let text = `🏠 *ROOM EXPENSE SETTLEMENT REPORT (${stats.month})*\n`;
+            text += `-----------------------------------\n`;
+            text += `📌 *Fixed Rent & Bills:* ${fmt(stats.totalFixed)}\n`;
+            text += `🛒 *Variable Groceries:* ${fmt(stats.totalVar)}\n`;
+            text += `💰 *Total Room Spend:* ${fmt(stats.grandTotal)}\n\n`;
+
+            text += `👤 *INDIVIDUAL BREAKDOWN:*\n`;
+
+            stats.memberStats.forEach(m => {
+                const statusStr = m.netBalance >= 0 ? `Gets back ${fmt(m.netBalance)}` : `Owes ${fmt(Math.abs(m.netBalance))}`;
+                text += `• *${m.name}*: Paid ${fmt(m.totalPaid)} | Share ${fmt(m.totalOwed)} => *${statusStr}*\n`;
+            });
+
+            text += `\n🔄 *PAYMENT INSTRUCTIONS:*\n`;
+            
+            if (stats.transfers.length === 0) {
+                text += `✅ All accounts are balanced!\n`;
+            } else {
+                stats.transfers.forEach(t => {
+                    text += `👉 *${t.from}* pays *${t.to}*: ${fmt(t.amount)}\n`;
+                });
+            }
+
+            // Clipboard copy
+            const textarea = document.createElement('textarea');
+            textarea.value = text;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+
+            showToast('Summary copied to clipboard!');
+        }
+
+        // ADVANCED PDF GENERATOR ENGINE
+        function openPdfModal() {
+            if (state.members.length === 0) {
+                showToast('Add roommates before generating a PDF report.', 'error');
+                return;
+            }
+            updateDropdowns();
+            document.getElementById('pdfModal').classList.remove('hidden');
+            renderPdfPreview();
+        }
+
+        function closePdfModal() {
+            document.getElementById('pdfModal').classList.add('hidden');
+        }
+
+        function renderPdfPreview() {
+            const scope = document.getElementById('pdfScope').value;
+            const memberSelectWrapper = document.getElementById('pdfMemberSelectWrapper');
+            const incTx = document.getElementById('pdfIncludeTransactions').checked;
+            const incFixed = document.getElementById('pdfIncludeFixed').checked;
+            const notes = document.getElementById('pdfNotes').value.trim();
+
+            if (scope === 'member') {
+                memberSelectWrapper.classList.remove('hidden');
+            } else {
+                memberSelectWrapper.classList.add('hidden');
+            }
+
+            const canvas = document.getElementById('pdfRenderCanvas');
+            const stats = getCalculatedStats();
+
+            let html = '';
+
+            if (scope === 'full') {
+                html = `
+                    <div class="border-b-2 border-slate-900 pb-4 flex items-start justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 text-indigo-700 font-black text-xl tracking-tight">
+                                <i class="fa-solid fa-house-user"></i> ROOMMATE EXPENSE STATEMENT
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-0.5">Shared Room Account Audit & Settlement Statement</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block bg-slate-100 text-slate-800 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-300">
+                                Month: ${stats.month}
+                            </span>
+                            <p class="text-[10px] text-slate-400 mt-1">Generated: ${new Date().toLocaleDateString()}</p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Roommates</p>
+                            <p class="text-lg font-extrabold text-slate-800">${stats.memberStats.length}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Fixed Rent & Bills</p>
+                            <p class="text-lg font-extrabold text-indigo-700">${fmt(stats.totalFixed)}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Variable Expenses</p>
+                            <p class="text-lg font-extrabold text-emerald-700">${fmt(stats.totalVar)}</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Grand Total</p>
+                            <p class="text-lg font-extrabold text-amber-700">${fmt(stats.grandTotal)}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">1. Roommate Settlement Summary</h4>
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                                    <th class="p-2">Roommate Name</th>
+                                    <th class="p-2 text-right">Out-of-Pocket Paid</th>
+                                    <th class="p-2 text-right">Fair Share Owed</th>
+                                    <th class="p-2 text-right">Net Settlement Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                ${stats.memberStats.map(m => {
+                                    const isRefund = m.netBalance >= 0;
+                                    const netClass = isRefund ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold';
+                                    const netText = isRefund ? `+${fmt(m.netBalance)} (Gets Back)` : `${fmt(m.netBalance)} (Owes)`;
+                                    return `
+                                        <tr>
+                                            <td class="p-2 font-medium text-slate-800">${m.name}</td>
+                                            <td class="p-2 text-right font-mono text-slate-700">${fmt(m.totalPaid)}</td>
+                                            <td class="p-2 text-right font-mono text-slate-700">${fmt(m.totalOwed)}</td>
+                                            <td class="p-2 text-right font-mono ${netClass}">${netText}</td>
+                                        </tr>
+                                    `;
+                                }).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">2. Peer-to-Peer Payment Transfers</h4>
+                        ${stats.transfers.length === 0 
+                            ? `<p class="p-2 text-xs text-emerald-700 bg-emerald-50 rounded border border-emerald-200">All room accounts are fully settled!</p>`
+                            : `<div class="grid grid-cols-1 gap-2">
+                                ${stats.transfers.map(t => `
+                                    <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs">
+                                        <div class="font-medium text-slate-800">
+                                            <strong class="text-rose-700">${t.from}</strong> &nbsp;⇄&nbsp; <strong class="text-emerald-700">${t.to}</strong>
+                                        </div>
+                                        <span class="font-mono font-extrabold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded border border-amber-300">
+                                            Pays ${fmt(t.amount)}
+                                        </span>
+                                    </div>
+                                `).join('')}
+                               </div>`
+                        }
+                    </div>
+
+                    ${incFixed ? `
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">3. Monthly Fixed Recurring Bills Setup</h4>
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                                    <th class="p-2">Fixed Item</th>
+                                    <th class="p-2 text-center">Split Count</th>
+                                    <th class="p-2 text-right">Per Person Share</th>
+                                    <th class="p-2 text-right">Total Monthly Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200">
+                                ${state.fixedExpenses.map(f => `
+                                    <tr>
+                                        <td class="p-2 font-medium text-slate-800">${f.title}</td>
+                                        <td class="p-2 text-center text-slate-600">${f.splitWith ? f.splitWith.length : 0} members</td>
+                                        <td class="p-2 text-right font-mono text-slate-700">${fmt(f.splitWith && f.splitWith.length > 0 ? f.amount / f.splitWith.length : 0)}</td>
+                                        <td class="p-2 text-right font-mono font-bold text-indigo-700">${fmt(f.amount)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    ` : ''}
+
+                    ${incTx ? `
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">4. Itemized Variable Expenses Log (${stats.monthExps.length})</h4>
+                        ${stats.monthExps.length === 0 
+                            ? `<p class="p-2 text-xs text-slate-500 italic">No variable expenses logged for this month.</p>`
+                            : `<table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                                        <th class="p-2">Date</th>
+                                        <th class="p-2">Description</th>
+                                        <th class="p-2">Paid By</th>
+                                        <th class="p-2 text-center">Split Count</th>
+                                        <th class="p-2 text-right">Amount</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${stats.monthExps.map(e => {
+                                        const payer = state.members.find(m => m.id === e.payerId);
+                                        return `
+                                            <tr>
+                                                <td class="p-2 text-slate-500 text-[11px]">${e.date}</td>
+                                                <td class="p-2 font-medium text-slate-800">${e.title}</td>
+                                                <td class="p-2 text-slate-700">${payer ? payer.name : 'Unknown'}</td>
+                                                <td class="p-2 text-center text-slate-600">${e.splitWith ? e.splitWith.length : 0}</td>
+                                                <td class="p-2 text-right font-mono font-bold text-emerald-700">${fmt(e.amount)}</td>
+                                            </tr>
+                                        `;
+                                    }).join('')}
+                                </tbody>
+                            </table>`
+                        }
+                    </div>
+                    ` : ''}
+
+                    ${notes ? `
+                    <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-xs space-y-1">
+                        <p class="font-bold text-indigo-900"><i class="fa-solid fa-circle-info mr-1"></i> Payment Notes & Instructions:</p>
+                        <p class="text-indigo-800 font-medium">${notes}</p>
+                    </div>
+                    ` : ''}
+
+                    <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
+                        <p>Roomie Expense Management System • Official Statement</p>
+                        <p>Page 1 of 1</p>
+                    </div>
+                `;
+            } else {
+                const selectedMemberId = document.getElementById('pdfMemberSelect').value;
+                const member = stats.memberStats.find(m => m.id === selectedMemberId) || stats.memberStats[0];
+
+                if (!member) {
+                    canvas.innerHTML = `<p class="text-center text-slate-500 py-6">No roommate selected.</p>`;
+                    return;
+                }
+
+                const memberExpsPaid = stats.monthExps.filter(e => e.payerId === member.id);
+                const isRefund = member.netBalance >= 0;
+
+                html = `
+                    <div class="border-b-2 border-slate-900 pb-4 flex items-start justify-between">
+                        <div>
+                            <div class="flex items-center gap-2 text-indigo-700 font-black text-xl tracking-tight">
+                                <i class="fa-solid fa-user-tag"></i> PERSONAL STATEMENT
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-0.5">Roommate Expense Breakdown & Due Receipt</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="inline-block bg-slate-100 text-slate-800 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-300">
+                                Month: ${stats.month}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
+                        <div>
+                            <p class="text-[10px] font-bold uppercase text-slate-400">Prepared For</p>
+                            <h3 class="text-lg font-bold text-slate-900">${member.name}</h3>
+                            <p class="text-xs text-slate-500">${member.phone || 'No phone listed'}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-[10px] font-bold uppercase text-slate-400">Net Balance Status</p>
+                            <p class="text-xl font-black ${isRefund ? 'text-emerald-700' : 'text-rose-700'}">
+                                ${isRefund ? `Gets Refund: ${fmt(member.netBalance)}` : `Amount Due: ${fmt(Math.abs(member.netBalance))}`}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
+                            <p class="text-[10px] font-bold text-emerald-800 uppercase">Total Out-of-Pocket Paid</p>
+                            <p class="text-xl font-extrabold text-emerald-700 font-mono mt-1">${fmt(member.totalPaid)}</p>
+                        </div>
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
+                            <p class="text-[10px] font-bold text-amber-800 uppercase">Total Calculated Fair Share</p>
+                            <p class="text-xl font-extrabold text-amber-700 font-mono mt-1">${fmt(member.totalOwed)}</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">Payment Settlement Action</h4>
+                        ${stats.transfers.filter(t => t.from === member.name || t.to === member.name).length === 0
+                            ? `<p class="p-3 text-xs bg-slate-50 text-slate-600 rounded-lg border">No peer transfers required for ${member.name}.</p>`
+                            : stats.transfers.filter(t => t.from === member.name || t.to === member.name).map(t => `
+                                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-xs flex justify-between items-center">
+                                    <span>${t.from === member.name ? `👉 Pay <strong>${t.to}</strong>` : `👈 Receive from <strong>${t.from}</strong>`}</span>
+                                    <span class="font-mono font-bold text-indigo-900">${fmt(t.amount)}</span>
+                                </div>
+                            `).join('')
+                        }
+                    </div>
+
+                    ${incTx ? `
+                    <div class="space-y-2">
+                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">Expenses Logged by ${member.name} (${memberExpsPaid.length})</h4>
+                        ${memberExpsPaid.length === 0
+                            ? `<p class="text-xs text-slate-500 italic p-2">No out of pocket expenses logged by this member.</p>`
+                            : `<table class="w-full text-left border-collapse text-xs">
+                                <thead>
+                                    <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
+                                        <th class="p-2">Date</th>
+                                        <th class="p-2">Title</th>
+                                        <th class="p-2 text-right">Amount Paid</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200">
+                                    ${memberExpsPaid.map(e => `
+                                        <tr>
+                                            <td class="p-2 text-slate-500">${e.date}</td>
+                                            <td class="p-2 font-medium text-slate-800">${e.title}</td>
+                                            <td class="p-2 text-right font-mono font-bold text-emerald-700">${fmt(e.amount)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>`
+                        }
+                    </div>
+                    ` : ''}
+
+                    ${notes ? `
+                    <div class="p-3 bg-slate-100 border border-slate-200 rounded-lg text-xs space-y-1">
+                        <p class="font-bold text-slate-800">Note:</p>
+                        <p class="text-slate-600">${notes}</p>
+                    </div>
+                    ` : ''}
+
+                    <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
+                        <p>Roomie Expense Manager • Personal Statement</p>
+                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    </div>
+                `;
+            }
+
+            canvas.innerHTML = html;
+        }
+
+        async function downloadPdfDocument() {
+            const btn = document.getElementById('downloadPdfBtn');
+            const originalBtnHtml = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating PDF...`;
+            btn.disabled = true;
+
+            try {
+                const element = document.getElementById('pdfRenderCanvas');
+                
+                const canvas = await html2canvas(element, {
+                    scale: 2,
+                    useCORS: true,
+                    backgroundColor: '#ffffff'
+                });
+
+                const imgData = canvas.toDataURL('image/jpeg', 1.0);
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF('p', 'mm', 'a4');
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
+                
+                const monthStr = state.activeMonth || 'Report';
+                pdf.save(`Room_Expense_Statement_${monthStr}.pdf`);
+
+                showToast('PDF Document downloaded successfully!');
+            } catch (err) {
+                console.error('PDF Generation Error:', err);
+                showToast('Failed to generate PDF document.', 'error');
+            } finally {
+                btn.innerHTML = originalBtnHtml;
+                btn.disabled = false;
+            }
+        }
+
+        function triggerNativePrint() {
+            window.print();
+        }
+
+        // Optional Sample Data Loader (Manual Trigger Only)
+        function loadDemoData() {
+            const today = getTodayISO();
+            const currentMonth = state.activeMonth;
+
+            state.members = [
+                { id: 'm_1', name: 'Tariq Mahmood', phone: '+971 50 234 5678', dateAdded: today },
+                { id: 'm_2', name: 'Rashid Al-Maktoum', phone: '+971 52 987 6543', dateAdded: today },
+                { id: 'm_3', name: 'Alex Miller', phone: '+971 55 112 2334', dateAdded: today }
+            ];
+
+            state.fixedExpenses = [
+                { id: 'f_1', title: 'Apartment Rent (Monthly Share)', amount: 5500, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'f_2', title: 'DEWA (Electricity & Water)', amount: 680, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'f_3', title: 'Empower / Chiller AC Bill', amount: 350, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'f_4', title: 'du High-Speed Home Internet', amount: 389, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'f_5', title: 'Weekly House Maid Service', amount: 400, splitWith: ['m_1', 'm_2', 'm_3'] }
+            ];
+
+            state.expenses = [
+                { id: 'exp_0', title: 'Paid Flat Rent to Landlord', amount: 5500, payerId: 'm_1', category: 'utilities', date: `${currentMonth}-01`, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'exp_1', title: 'Carrefour Hypermarket Groceries', amount: 480, payerId: 'm_2', category: 'grocery', date: `${currentMonth}-04`, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'exp_2', title: 'Lulu Hypermarket Fresh Items', amount: 210, payerId: 'm_3', category: 'grocery', date: `${currentMonth}-09`, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'exp_3', title: 'Talabat Weekend Dinner Order', amount: 165, payerId: 'm_1', category: 'dining', date: `${currentMonth}-14`, splitWith: ['m_1', 'm_2', 'm_3'] },
+                { id: 'exp_4', title: 'Gas Cylinder Refill', amount: 85, payerId: 'm_2', category: 'household', date: `${currentMonth}-18`, splitWith: ['m_1', 'm_2', 'm_3'] }
+            ];
+
+            saveState();
+            updateAllViews();
+            showToast('Loaded sample dataset!');
+        }
+
+        function resetAllDataConfirmation() {
+            const modal = document.getElementById('confirmModal');
+            document.getElementById('confirmModalTitle').innerText = 'Reset All Data?';
+            document.getElementById('confirmModalMessage').innerText = 'This will permanently clear all roommates, fixed bills, and expenses.';
+
+            const btn = document.getElementById('confirmModalActionBtn');
+            btn.onclick = () => {
+                localStorage.removeItem(STORAGE_KEY);
+                state = {
+                    activeMonth: new Date().toISOString().slice(0, 7),
+                    members: [],
+                    fixedExpenses: [],
+                    expenses: []
+                };
+                closeConfirmModal();
+                updateAllViews();
+                showToast('All stored data reset.');
+            };
+
+            modal.classList.remove('hidden');
+        }
+
+        function updateAllViews() {
+            renderMembers();
+            renderFixedExpenses();
+            renderExpenses();
+            updateDropdowns();
+            renderSettlement();
+        }
+
+        // Initialize App on DOM Load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadSavedState();
+
+            const monthInput = document.getElementById('monthPicker');
+            if (monthInput) monthInput.value = state.activeMonth;
+
+            document.getElementById('expDate').value = getTodayISO();
+
+            // Render existing saved state or start completely clean
+            updateAllViews();
+        });
+    </script>
 </body>
 </html>
