@@ -1,1760 +1,923 @@
+
+
+Skip to content
+Using Gmail with screen readers
+1 of 2,524
+AKH_Gulf_General_Trading_LLC_Website
+Inbox
+
+Ramshad PNR <pnrramshad@gmail.com>
+Attachments
+11:50 AM (13 minutes ago)
+to me
+
+ One attachment
+  •  Scanned by Gmail
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Roomie Expense - UAE Roommate Shared Expense & Settlement Calculator</title>
-    <!-- Tailwind CSS CDN -->
+    <title>AKH Gulf General Trading LLC | Premium FMCG & Beverage Distribution</title>
+    
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- html2canvas and jsPDF for client-side Advanced PDF Generation -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
-                    fontFamily: {
-                        sans: ['Plus Jakarta Sans', 'sans-serif'],
-                    },
                     colors: {
                         brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#075985',
+                            gold: '#D4AF37',
+                            goldHover: '#B89628',
+                            navy: '#0B132B',
+                            slateDark: '#1C2541',
+                            emerald: '#0B4F37',
+                            emeraldDark: '#063323',
+                            coffee: '#3D2314',
+                            coffeeDark: '#25150C',
+                            lightBg: '#F8FAFC'
                         }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
                     }
                 }
             }
         }
     </script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: #0f172a; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #475569; }
-
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.65);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #F8FAFC;
+            color: #1E293B;
+            overflow-x: hidden;
         }
-
-        .glass-panel-hover {
+        .font-serif-heading {
+            font-family: 'Playfair Display', serif;
+        }
+        .glass-nav {
+            background: rgba(11, 19, 43, 0.95);
+            backdrop-filter: blur(14px);
+        }
+        .card-hover {
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .glass-panel-hover:hover {
-            background: rgba(30, 41, 59, 0.75);
-            border-color: rgba(56, 189, 248, 0.25);
-            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.15);
-            transform: translateY(-2px);
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
         }
-
-        .glass-input {
-            background: rgba(15, 23, 42, 0.5);
-            backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            transition: all 0.2s ease;
+        .perrier-border {
+            border-left: 4px solid #0B4F37;
         }
-        .glass-input:focus {
-            background: rgba(15, 23, 42, 0.8);
-            border-color: rgba(56, 189, 248, 0.5);
-            box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.15);
+        .alameed-border {
+            border-left: 4px solid #3D2314;
         }
-
-        .glass-badge {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(6px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        /* Custom scrollbar for interactive modals */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
-
-        .ambient-glow {
-            position: fixed;
-            width: 600px;
-            height: 600px;
-            border-radius: 50%;
-            filter: blur(140px);
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.25;
+        ::-webkit-scrollbar-track {
+            background: #0b132b;
         }
-
-        /* Print Media Styles */
-        @media print {
-            body {
-                background-color: #ffffff !important;
-                color: #0f172a !important;
-            }
-            header, .no-print, .tab-btn, #toast, .modal-backdrop {
-                display: none !important;
-            }
-            .tab-content {
-                display: block !important;
-            }
-            .print-only {
-                display: block !important;
-            }
-            .page-break {
-                page-break-before: always;
-            }
-        }
-        .print-only {
-            display: none;
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased relative overflow-x-hidden">
+<body class="antialiased selection:bg-brand-gold selection:text-slate-900">
 
-    <!-- Ambient Glowing Background Orbs for Glass Reflection Depth -->
-    <div class="ambient-glow bg-sky-500 -top-40 -left-40"></div>
-    <div class="ambient-glow bg-indigo-600 top-1/3 -right-40"></div>
-    <div class="ambient-glow bg-emerald-500 bottom-10 left-1/3"></div>
+    <!-- Top Navigation Bar -->
+    <header class="fixed top-0 left-0 right-0 z-50 glass-nav text-white border-b border-slate-800 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- Brand Logo -->
+                <a href="#home" class="flex items-center space-x-3 group">
+                    <div class="w-11 h-11 bg-gradient-to-tr from-brand-gold via-amber-300 to-amber-500 rounded-lg flex items-center justify-center text-slate-950 font-extrabold text-xl shadow-md group-hover:scale-105 transition-transform">
+                        AKH
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-serif-heading font-bold text-lg tracking-wide text-white leading-tight">AKH GULF</span>
+                        <span class="text-[10px] tracking-widest text-brand-gold uppercase font-semibold">General Trading LLC</span>
+                    </div>
+                </a>
 
-    <!-- Top Navigation Header -->
-    <header class="glass-panel sticky top-0 z-30 border-b border-white/10 bg-slate-950/90 sm:bg-slate-950/40 backdrop-blur-2xl py-2.5 sm:py-0">
-        <div class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 min-h-[4rem] flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10">
-            <div class="flex items-center gap-2.5 min-w-0">
-                <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-sky-400 via-indigo-500 to-sky-600 flex-shrink-0 flex items-center justify-center text-white font-bold text-lg sm:text-xl shadow-lg shadow-sky-500/30 border border-white/20">
-                    <i class="fa-solid fa-house-user"></i>
+                <!-- Navigation Links for Desktop -->
+                <nav class="hidden lg:flex items-center space-x-8 text-sm font-medium">
+                    <a href="#home" class="text-white hover:text-brand-gold transition-colors">Home</a>
+                    <a href="#about" class="text-slate-300 hover:text-brand-gold transition-colors">About Us</a>
+                    <a href="#brands" class="text-slate-300 hover:text-brand-gold transition-colors">Perrier & Al Ameed</a>
+                    <a href="#catalog" class="text-slate-300 hover:text-brand-gold transition-colors">Product Lines</a>
+                    <a href="#logistics" class="text-slate-300 hover:text-brand-gold transition-colors">Distribution Network</a>
+                    <a href="#contact" class="text-slate-300 hover:text-brand-gold transition-colors">Trade Contact</a>
+                </nav>
+
+                <!-- Direct Inquiry CTA -->
+                <div class="hidden lg:flex items-center space-x-4">
+                    <a href="#contact" class="bg-gradient-to-r from-brand-gold to-amber-500 hover:brightness-110 text-slate-950 font-bold px-5 py-2.5 rounded-lg shadow-md transition-all text-sm flex items-center space-x-2">
+                        <i class="fa-solid fa-file-invoice"></i>
+                        <span>Wholesale RFQ</span>
+                    </a>
                 </div>
-                <div class="min-w-0">
-                    <h1 class="text-sm sm:text-lg font-extrabold bg-gradient-to-r from-white via-slate-100 to-sky-300 bg-clip-text text-transparent truncate">Roomie Expense Manager (UAE)</h1>
-                    <p class="text-[11px] sm:text-xs text-slate-400 hidden sm:block truncate">DEWA, Rent, Chiller & Shared Expense Splitter</p>
+
+                <!-- Mobile Menu Button -->
+                <div class="lg:hidden flex items-center">
+                    <button id="mobile-menu-btn" class="text-slate-300 hover:text-white p-2 focus:outline-none" aria-label="Open Navigation Menu">
+                        <i class="fa-solid fa-bars text-2xl" id="menu-icon"></i>
+                    </button>
                 </div>
             </div>
+        </div>
 
-            <!-- Quick Month Picker & Action Buttons -->
-            <div class="flex items-center gap-1.5 sm:gap-3 flex-wrap sm:flex-nowrap justify-between sm:justify-end w-full sm:w-auto">
-                <div class="flex items-center gap-1.5 glass-input px-2.5 py-1.5 rounded-xl border border-white/10 flex-shrink-0">
-                    <i class="fa-solid fa-calendar-days text-sky-400 text-xs"></i>
-                    <input type="month" id="monthPicker" onchange="changeActiveMonth(this.value)" class="bg-transparent text-xs text-slate-200 outline-none cursor-pointer font-medium max-w-[125px] sm:max-w-none">
-                </div>
-                <div class="flex items-center gap-1.5 flex-wrap">
-                    <button onclick="openPdfModal()" class="px-2.5 sm:px-3.5 py-1.5 text-xs font-semibold bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl shadow-lg shadow-indigo-600/30 border border-white/15 transition flex items-center gap-1.5 active:scale-95">
-                        <i class="fa-solid fa-file-pdf text-xs"></i>
-                        <span class="inline">PDF Report</span>
-                    </button>
-                    <button onclick="loadDemoData()" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium glass-badge hover:bg-white/10 text-slate-300 hover:text-white rounded-xl border border-white/10 transition flex items-center gap-1.5" title="Load optional sample dataset">
-                        <i class="fa-solid fa-wand-magic-sparkles text-amber-400 text-xs"></i>
-                        <span class="hidden md:inline">Load Sample Data</span>
-                    </button>
-                    <button onclick="resetAllDataConfirmation()" class="px-2.5 sm:px-3 py-1.5 text-xs font-medium bg-rose-950/30 hover:bg-rose-900/50 text-rose-300 rounded-xl border border-rose-500/20 transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-rotate-left text-xs"></i>
-                        <span class="hidden md:inline">Reset All</span>
-                    </button>
-                </div>
-            </div>
+        <!-- Mobile Navigation Drawer -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-slate-950 border-b border-slate-800 px-4 pt-3 pb-6 space-y-3">
+            <a href="#home" class="mobile-link block text-slate-200 hover:text-brand-gold py-2 text-base font-medium border-b border-slate-800/60">Home</a>
+            <a href="#about" class="mobile-link block text-slate-200 hover:text-brand-gold py-2 text-base font-medium border-b border-slate-800/60">About Us</a>
+            <a href="#brands" class="mobile-link block text-slate-200 hover:text-brand-gold py-2 text-base font-medium border-b border-slate-800/60">Perrier & Al Ameed</a>
+            <a href="#catalog" class="mobile-link block text-slate-200 hover:text-brand-gold py-2 text-base font-medium border-b border-slate-800/60">Product Lines</a>
+            <a href="#logistics" class="mobile-link block text-slate-200 hover:text-brand-gold py-2 text-base font-medium border-b border-slate-800/60">Distribution Network</a>
+            <a href="#contact" class="mobile-link block text-slate-200 hover:text-brand-gold py-2 text-base font-medium">Trade Contact</a>
+            <a href="#contact" class="w-full mt-3 bg-brand-gold text-slate-950 font-bold py-3 rounded-lg text-center block shadow-lg">Request B2B Quotation</a>
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-5 sm:space-y-6 relative z-10">
+    <!-- Hero Section -->
+    <section id="home" class="relative pt-28 pb-20 md:pt-40 md:pb-32 bg-slate-950 text-white overflow-hidden">
+        <div class="absolute inset-0 z-0 opacity-25 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1920&q=80');"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-slate-950 via-slate-950/95 to-slate-950/70 z-0"></div>
 
-        <!-- Top Summary Metrics Banner -->
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-4">
-            <div class="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 relative overflow-hidden min-w-0">
-                <div class="absolute top-0 right-0 p-2 sm:p-3 opacity-15 text-sky-400 text-2xl sm:text-4xl"><i class="fa-solid fa-users"></i></div>
-                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 truncate">Active Roommates</p>
-                <p class="text-xl sm:text-2xl md:text-3xl font-extrabold text-white mt-1 truncate" id="statMemberCount">0</p>
-                <p class="text-[10px] sm:text-xs text-slate-400 mt-1 truncate">In this room</p>
-            </div>
-
-            <div class="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 relative overflow-hidden min-w-0">
-                <div class="absolute top-0 right-0 p-2 sm:p-3 opacity-15 text-indigo-400 text-2xl sm:text-4xl"><i class="fa-solid fa-building-columns"></i></div>
-                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 truncate">Fixed Rent & Bills</p>
-                <p class="text-base sm:text-2xl md:text-3xl font-extrabold text-indigo-300 mt-1 drop-shadow-sm truncate" id="statFixedTotal">AED 0.00</p>
-                <p class="text-[10px] sm:text-xs text-indigo-400/90 font-medium mt-1 truncate">Recurring setup cost</p>
-            </div>
-
-            <div class="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 relative overflow-hidden min-w-0">
-                <div class="absolute top-0 right-0 p-2 sm:p-3 opacity-15 text-emerald-400 text-2xl sm:text-4xl"><i class="fa-solid fa-basket-shopping"></i></div>
-                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 truncate">Variable / Groceries</p>
-                <p class="text-base sm:text-2xl md:text-3xl font-extrabold text-emerald-300 mt-1 drop-shadow-sm truncate" id="statVariableTotal">AED 0.00</p>
-                <p class="text-[10px] sm:text-xs text-emerald-400/90 font-medium mt-1 truncate">Shared room expenses</p>
-            </div>
-
-            <div class="glass-panel glass-panel-hover rounded-2xl p-3 sm:p-4 relative overflow-hidden min-w-0">
-                <div class="absolute top-0 right-0 p-2 sm:p-3 opacity-15 text-amber-400 text-2xl sm:text-4xl"><i class="fa-solid fa-calculator"></i></div>
-                <p class="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-400 truncate">Total Month Spend</p>
-                <p class="text-base sm:text-2xl md:text-3xl font-extrabold text-amber-300 mt-1 drop-shadow-sm truncate" id="statMonthGrandTotal">AED 0.00</p>
-                <p class="text-[10px] sm:text-xs text-amber-400/90 font-medium mt-1 truncate">Avg/Person: <span id="statAvgPerPerson" class="font-bold text-amber-200">AED 0.00</span></p>
-            </div>
-        </div>
-
-        <!-- Tab Navigation Bar -->
-        <div class="flex border-b border-white/10 space-x-1 sm:space-x-4 overflow-x-auto custom-scrollbar no-print">
-            <button onclick="switchTab('setup')" id="tabBtn-setup" class="tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-sky-400 text-sky-400 whitespace-nowrap transition drop-shadow">
-                <i class="fa-solid fa-gear"></i> Setup & Configuration
-            </button>
-            <button onclick="switchTab('expenses')" id="tabBtn-expenses" class="tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition">
-                <i class="fa-solid fa-receipt"></i> Enter & Log Expenses
-            </button>
-            <button onclick="switchTab('settlement')" id="tabBtn-settlement" class="tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition">
-                <i class="fa-solid fa-calculator"></i> Calculation & Settlement
-            </button>
-        </div>
-
-        <!-- SECTION 1: SETUP & CONFIGURATION TAB -->
-        <section id="sec-setup" class="tab-content space-y-6">
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Left: Roommates Directory -->
-                <div class="glass-panel rounded-2xl p-5 space-y-4">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div>
-                            <h2 class="text-base font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-users text-sky-400"></i> Roommates Directory
-                            </h2>
-                            <p class="text-xs text-slate-400">Add or manage members living in the room.</p>
-                        </div>
-                        <button onclick="openMemberModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-semibold rounded-xl text-xs shadow-lg shadow-sky-500/25 border border-white/15 transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-user-plus"></i> Add Member
-                        </button>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="grid lg:grid-cols-12 gap-12 items-center">
+                <div class="lg:col-span-7 space-y-6 text-center lg:text-left">
+                    <div class="inline-flex items-center space-x-2 bg-slate-900/90 border border-slate-700/80 px-4 py-2 rounded-full text-xs font-semibold text-brand-gold uppercase tracking-wider">
+                        <i class="fa-solid fa-truck-fast text-sm"></i>
+                        <span>UAE Authorized FMCG & Beverage Wholesale Distributor</span>
                     </div>
-
-                    <div id="membersContainer" class="space-y-3">
-                        <!-- Dynamically populated -->
-                    </div>
-                </div>
-
-                <!-- Right: Fixed Recurring Expenses Config -->
-                <div class="glass-panel rounded-2xl p-5 space-y-4">
-                    <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                        <div>
-                            <h2 class="text-base font-bold text-white flex items-center gap-2">
-                                <i class="fa-solid fa-file-invoice-dollar text-indigo-400"></i> Recurring Fixed Expenses Setup
-                            </h2>
-                            <p class="text-xs text-slate-400">Configure monthly fixed bills like Room Rent, Wi-Fi, Maid salary, etc.</p>
-                        </div>
-                        <button onclick="openFixedModal()" class="px-3.5 py-1.5 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold rounded-xl text-xs shadow-lg shadow-indigo-600/25 border border-white/15 transition flex items-center gap-1.5">
-                            <i class="fa-solid fa-plus"></i> Add Fixed Bill
-                        </button>
-                    </div>
-
-                    <div id="fixedContainer" class="space-y-3">
-                        <!-- Dynamically populated -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 2: ENTER & LOG EXPENSES TAB -->
-        <section id="sec-expenses" class="tab-content hidden space-y-6">
-            <div class="glass-panel rounded-2xl p-5 space-y-5">
-                <div class="flex items-center justify-between border-b border-white/10 pb-3">
-                    <div>
-                        <h2 class="text-lg font-bold text-slate-100 flex items-center gap-2">
-                            <i class="fa-solid fa-receipt text-emerald-400"></i> Record New Expense
-                        </h2>
-                        <p class="text-xs text-slate-400">Enter money spent for food, groceries, or room items. Choose paid-by person and pick who shares it equally.</p>
-                    </div>
-                    <span class="text-xs glass-badge text-emerald-300 px-3 py-1 rounded-full font-semibold border border-emerald-400/20">Equal Split Customizer</span>
-                </div>
-
-                <!-- Quick Add Expense Form -->
-                <form id="expenseForm" onsubmit="handleExpenseSubmit(event)" class="space-y-4 glass-panel p-4 rounded-xl border border-white/10">
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                        <div class="sm:col-span-1">
-                            <label class="text-xs font-semibold text-slate-300 block mb-1">Item Title / Description <span class="text-rose-400">*</span></label>
-                            <input type="text" id="expTitle" required placeholder="e.g. Carrefour Groceries, LuLu, Talabat, Gas Refill" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-slate-300 block mb-1">Amount (AED) <span class="text-rose-400">*</span></label>
-                            <input type="number" step="0.01" min="0.01" id="expAmount" required placeholder="0.00" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-slate-300 block mb-1">Date</label>
-                            <input type="date" id="expDate" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                        <div>
-                            <label class="text-xs font-semibold text-slate-300 block mb-1">Paid By (Who spent the money?)</label>
-                            <select id="expPayer" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                                <!-- Populated dynamically -->
-                            </select>
-                        </div>
-                        <div>
-                            <label class="text-xs font-semibold text-slate-300 block mb-1">Expense Category</label>
-                            <select id="expCategory" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                                <option value="grocery" class="bg-slate-900">Food & Grocery</option>
-                                <option value="dining" class="bg-slate-900">Dining Out / Meals</option>
-                                <option value="utilities" class="bg-slate-900">Utilities & Maintenance</option>
-                                <option value="household" class="bg-slate-900">Household & Cleaning</option>
-                                <option value="other" class="bg-slate-900">Other Shared Expense</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Member Selection Checkboxes for Equal Split -->
-                    <div class="space-y-2 pt-2 border-t border-white/10">
-                        <div class="flex items-center justify-between">
-                            <label class="text-xs font-bold text-sky-400 flex items-center gap-1.5">
-                                <i class="fa-solid fa-users-viewfinder"></i> Select Members Who Share This Expense Equally:
-                            </label>
-                            <div class="flex items-center gap-2">
-                                <button type="button" onclick="toggleAllExpenseMembers(true)" class="text-[11px] text-sky-400 hover:underline">Select All</button>
-                                <span class="text-slate-600">•</span>
-                                <button type="button" onclick="toggleAllExpenseMembers(false)" class="text-[11px] text-slate-400 hover:underline">Clear All</button>
-                            </div>
-                        </div>
-
-                        <div id="expenseMemberCheckboxes" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2.5 pt-1">
-                            <!-- Populated dynamically with checkboxes -->
-                        </div>
-                        <p class="text-[11px] text-slate-400 mt-1">This expense will be divided equally among all checked members.</p>
-                    </div>
-
-                    <button type="submit" class="w-full py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-semibold rounded-xl text-sm transition shadow-lg shadow-emerald-600/25 border border-white/15 flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-plus"></i> Save Expense Record
-                    </button>
-                </form>
-
-                <!-- Expense History List -->
-                <div class="space-y-3 pt-2">
-                    <h3 class="text-sm font-bold text-slate-200 flex items-center gap-2">
-                        <i class="fa-solid fa-clock-rotate-left text-sky-400"></i> Expense History (<span id="expenseCountBadge">0</span>)
-                    </h3>
-                    <div id="expenseList" class="max-h-96 overflow-y-auto custom-scrollbar space-y-2 pr-1">
-                        <!-- Populated dynamically -->
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SECTION 3: CALCULATION & SETTLEMENT ENGINE TAB -->
-        <section id="sec-settlement" class="tab-content hidden space-y-6">
-            <!-- Calculation Formula Header Card -->
-            <div class="glass-panel p-5 rounded-2xl relative overflow-hidden border border-white/10">
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
-                    <div>
-                        <h2 class="text-xl font-bold text-white flex items-center gap-2">
-                            <i class="fa-solid fa-calculator text-indigo-400"></i> Monthly Room Audit & Settlement
-                        </h2>
-                        <p class="text-xs text-slate-300 mt-1">
-                            Individual Share = <span class="text-indigo-300 font-semibold">Equal Fixed Expenses Share</span> + <span class="text-emerald-300 font-semibold">Sum of Selected Expense Splits</span>.
-                        </p>
-                    </div>
-                    
-                    <div class="flex items-center gap-2 flex-wrap no-print">
-                        <button onclick="openPdfModal()" class="px-3.5 py-2 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-indigo-600/25 border border-white/15">
-                            <i class="fa-solid fa-file-pdf"></i> Generate PDF Report
-                        </button>
-                        <button onclick="copyWhatsAppSummary()" class="px-3.5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-semibold transition flex items-center gap-1.5 shadow-lg shadow-emerald-600/25 border border-white/15">
-                            <i class="fa-brands fa-whatsapp text-sm"></i> Copy WhatsApp Summary
-                        </button>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Member Settlement Breakdown Cards -->
-            <div class="glass-panel rounded-2xl p-5 space-y-4">
-                <h3 class="text-base font-bold text-slate-100 flex items-center gap-2 border-b border-white/10 pb-3">
-                    <i class="fa-solid fa-scale-balanced text-sky-400"></i> Individual Roommate Cost & Balance Breakdown
-                </h3>
-                <div id="settlementGrid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-
-            <!-- Optimized Peer-to-Peer Debt Transfer Plan -->
-            <div class="glass-panel rounded-2xl p-5 space-y-4">
-                <h3 class="text-base font-bold text-slate-100 flex items-center gap-2 border-b border-white/10 pb-3">
-                    <i class="fa-solid fa-arrows-split-up-and-left text-emerald-400"></i> Peer-to-Peer Settlement Payment Plan
-                </h3>
-                <p class="text-xs text-slate-400">Settle all room dues with these minimal peer-to-peer transfers:</p>
-                <div id="transferPlanContainer" class="space-y-2">
-                    <!-- Populated dynamically -->
-                </div>
-            </div>
-        </section>
-
-    </main>
-
-    <!-- ADVANCED PDF REPORT BUILDER MODAL -->
-    <div id="pdfModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-panel border border-white/15 w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <!-- Modal Header -->
-            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
-                <div class="flex items-center gap-3">
-                    <div class="w-9 h-9 rounded-xl bg-indigo-500/10 border border-indigo-400/30 flex items-center justify-center text-indigo-400 font-bold">
-                        <i class="fa-solid fa-file-pdf text-lg"></i>
-                    </div>
-                    <div>
-                        <h3 class="text-base font-bold text-white">Advanced PDF Report Generator</h3>
-                        <p class="text-xs text-slate-400">Customize, preview and export professional PDF statements</p>
-                    </div>
-                </div>
-                <button onclick="closePdfModal()" class="text-slate-400 hover:text-white p-2 rounded-lg text-lg transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- Modal Content & Controls -->
-            <div class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar">
-                <!-- Generator Controls Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 glass-panel p-4 rounded-xl border border-white/10">
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Report Format</label>
-                        <select id="pdfScope" onchange="renderPdfPreview()" class="w-full glass-input text-slate-200 text-xs rounded-xl px-3 py-2 outline-none">
-                            <option value="full" class="bg-slate-900">Full Monthly Room Audit Statement</option>
-                            <option value="member" class="bg-slate-900">Individual Member Summary</option>
-                        </select>
-                    </div>
-
-                    <div id="pdfMemberSelectWrapper" class="hidden">
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Select Roommate</label>
-                        <select id="pdfMemberSelect" onchange="renderPdfPreview()" class="w-full glass-input text-slate-200 text-xs rounded-xl px-3 py-2 outline-none">
-                            <!-- Options filled dynamically -->
-                        </select>
-                    </div>
-
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Payment Instructions / Notes</label>
-                        <input type="text" id="pdfNotes" oninput="renderPdfPreview()" placeholder="e.g. Transfer via UAE Instant Pay / Careem Pay / FAB by 5th" class="w-full glass-input text-slate-200 text-xs rounded-xl px-3 py-2 outline-none">
-                    </div>
-
-                    <div class="flex items-center gap-4 pt-1 sm:col-span-2">
-                        <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                            <input type="checkbox" id="pdfIncludeTransactions" checked onchange="renderPdfPreview()" class="accent-indigo-500 rounded">
-                            Include Itemized Expense Log
-                        </label>
-                        <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer">
-                            <input type="checkbox" id="pdfIncludeFixed" checked onchange="renderPdfPreview()" class="accent-indigo-500 rounded">
-                            Include Fixed Recurring Bills Table
-                        </label>
-                    </div>
-                </div>
-
-                <!-- PDF Live Printable Preview Canvas Area -->
-                <div class="border border-white/10 rounded-xl overflow-hidden bg-slate-950 p-2 sm:p-4">
-                    <p class="text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
-                        <span><i class="fa-solid fa-eye text-sky-400 mr-1"></i> Live PDF Page Preview</span>
-                        <span class="text-slate-500">A4 Printable Template</span>
+                    <h1 class="font-serif-heading text-3xl sm:text-5xl lg:text-6xl font-bold leading-tight text-white">
+                        Distributing Authentic <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-gold via-amber-200 to-brand-gold">Beverages & Gourmet Goods</span> Across the Gulf
+                    </h1>
+                    <p class="text-slate-300 text-base sm:text-lg font-light leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                        AKH Gulf General Trading LLC provides temperature-controlled B2B distribution for iconic global beverages, specialty coffee roasts, sparkling mineral waters, and premium consumer goods to hotels, cafes, restaurants, and hypermarkets.
                     </p>
 
-                    <div class="w-full overflow-x-auto custom-scrollbar pb-2">
-                        <div class="min-w-[650px] max-w-[794px] mx-auto bg-white text-slate-900 rounded-lg p-4 sm:p-8 shadow-2xl space-y-6 text-xs font-sans" id="pdfRenderCanvas">
-                            <!-- Rendered PDF content inserted dynamically -->
-                        </div>
+                    <div class="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                        <a href="#brands" class="w-full sm:w-auto bg-brand-gold hover:bg-brand-goldHover text-slate-950 font-bold px-8 py-4 rounded-xl shadow-lg transition-all text-center flex items-center justify-center space-x-2">
+                            <span>Explore Perrier & Al Ameed</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                        <a href="#catalog" class="w-full sm:w-auto border border-slate-700 hover:bg-slate-800 text-slate-200 font-semibold px-8 py-4 rounded-xl transition-all text-center">
+                            Browse All Lines
+                        </a>
                     </div>
-                </div>
-            </div>
 
-            <!-- Modal Footer Action Buttons -->
-            <div class="px-6 py-4 border-t border-white/10 flex items-center justify-end gap-3 bg-slate-950/40">
-                <button onclick="closePdfModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
-                    Cancel
-                </button>
-                <button onclick="triggerNativePrint()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-200 rounded-xl text-xs font-semibold border border-white/10 transition flex items-center gap-1.5">
-                    <i class="fa-solid fa-print"></i> Native Print
-                </button>
-                <button onclick="downloadPdfDocument()" id="downloadPdfBtn" class="px-5 py-2 bg-gradient-to-r from-indigo-600 to-sky-600 hover:from-indigo-500 hover:to-sky-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-indigo-600/30 transition border border-white/15 flex items-center gap-2">
-                    <i class="fa-solid fa-download"></i> Download PDF Document
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- ROOMMATE MEMBER MODAL -->
-    <div id="memberModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-panel border border-white/15 w-full max-w-md rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
-                <h3 id="memberModalTitle" class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-user-plus text-sky-400"></i> Add Roommate
-                </h3>
-                <button onclick="closeMemberModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <form id="memberForm" onsubmit="saveMemberSubmit(event)" class="p-6 space-y-4">
-                <input type="hidden" id="editMemberId">
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 block mb-1">Roommate Name <span class="text-rose-400">*</span></label>
-                    <input type="text" id="mName" required placeholder="e.g. Tariq Mahmood" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                </div>
-                <div>
-                    <label class="text-xs font-semibold text-slate-300 block mb-1">Phone / WhatsApp (Optional)</label>
-                    <input type="text" id="mPhone" placeholder="e.g. +971 50 123 4567" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                </div>
-                <div class="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
-                    <button type="button" onclick="closeMemberModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-sky-500/25 transition border border-white/15">
-                        Save Roommate
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- FIXED EXPENSE SETUP MODAL -->
-    <div id="fixedModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-panel border border-white/15 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-file-invoice-dollar text-indigo-400"></i> Fixed Monthly Expense Bill
-                </h3>
-                <button onclick="closeFixedModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <form id="fixedForm" onsubmit="saveFixedSubmit(event)" class="p-6 space-y-4">
-                <input type="hidden" id="editFixedId">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Bill Title <span class="text-rose-400">*</span></label>
-                        <input type="text" id="fTitle" required placeholder="e.g. DEWA, Room Rent, Internet" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Monthly Amount (AED) <span class="text-rose-400">*</span></label>
-                        <input type="number" step="0.01" min="0.01" id="fAmount" required placeholder="0.00" class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                    </div>
-                </div>
-
-    <!-- EXPENSE EDIT MODAL -->
-    <div id="expenseModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-panel border border-white/15 w-full max-w-lg rounded-2xl shadow-2xl flex flex-col overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-slate-950/40">
-                <h3 class="text-base font-bold text-white flex items-center gap-2">
-                    <i class="fa-solid fa-pen-to-square text-sky-400"></i> Edit Expense Log
-                </h3>
-                <button onclick="closeExpenseModal()" class="text-slate-400 hover:text-white p-1 rounded-lg text-lg transition">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <form id="editExpenseForm" onsubmit="saveExpenseEditSubmit(event)" class="p-6 space-y-4">
-                <input type="hidden" id="editExpId">
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div class="sm:col-span-1">
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Item Title / Description <span class="text-rose-400">*</span></label>
-                        <input type="text" id="editExpTitle" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Amount (AED) <span class="text-rose-400">*</span></label>
-                        <input type="number" step="0.01" min="0.01" id="editExpAmount" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Date</label>
-                        <input type="date" id="editExpDate" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Paid By</label>
-                        <select id="editExpPayer" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                        </select>
-                    </div>
-                    <div>
-                        <label class="text-xs font-semibold text-slate-300 block mb-1">Expense Category</label>
-                        <select id="editExpCategory" required class="w-full glass-input text-slate-100 text-sm rounded-xl px-3.5 py-2 outline-none">
-                            <option value="grocery" class="bg-slate-900">Food & Grocery</option>
-                            <option value="dining" class="bg-slate-900">Dining Out / Meals</option>
-                            <option value="utilities" class="bg-slate-900">Utilities & Maintenance</option>
-                            <option value="household" class="bg-slate-900">Household & Cleaning</option>
-                            <option value="other" class="bg-slate-900">Other Shared Expense</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="space-y-2 pt-2 border-t border-white/10">
-                    <div class="flex items-center justify-between">
-                        <label class="text-xs font-bold text-sky-400">Members Sharing Expense:</label>
-                        <div class="flex items-center gap-2 text-[11px]">
-                            <button type="button" onclick="toggleAllEditExpenseMembers(true)" class="text-sky-400 hover:underline">Select All</button>
-                            <span class="text-slate-600">•</span>
-                            <button type="button" onclick="toggleAllEditExpenseMembers(false)" class="text-slate-400 hover:underline">Clear</button>
-                        </div>
-                    </div>
-                    <div id="editExpenseMemberCheckboxes" class="grid grid-cols-2 gap-2 max-h-40 overflow-y-auto custom-scrollbar">
-                    </div>
-                </div>
-
-                <div class="flex items-center justify-end gap-3 pt-2 border-t border-white/10">
-                    <button type="button" onclick="closeExpenseModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
-                        Cancel
-                    </button>
-                    <button type="submit" class="px-5 py-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-600/25 transition border border-white/15">
-                        Save Changes
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- CONFIRMATION PROMPT MODAL -->
-    <div id="confirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-xl z-50 flex items-center justify-center hidden p-4">
-        <div class="glass-panel border border-white/15 w-full max-w-sm rounded-2xl shadow-2xl p-6 text-center space-y-4">
-            <div class="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-xl mx-auto">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-            </div>
-            <div>
-                <h3 id="confirmModalTitle" class="text-base font-bold text-white">Confirm Action</h3>
-                <p id="confirmModalMessage" class="text-xs text-slate-400 mt-1">Are you sure you want to proceed?</p>
-            </div>
-            <div class="flex items-center justify-center gap-3 pt-2">
-                <button onclick="closeConfirmModal()" class="px-4 py-2 glass-badge hover:bg-white/10 text-slate-300 rounded-xl text-xs font-semibold transition">
-                    Cancel
-                </button>
-                <button id="confirmModalActionBtn" class="px-5 py-2 bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 text-white rounded-xl text-xs font-bold shadow-lg shadow-rose-600/25 transition border border-white/15">
-                    Confirm
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- TOAST NOTIFICATION CONTAINER -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-2xl glass-panel border border-white/15 shadow-2xl transition-all duration-300 transform translate-y-20 opacity-0 pointer-events-none">
-        <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
-        <span id="toastMsg" class="text-xs font-semibold text-slate-100">Notification message</span>
-    </div>
-
-    <script>
-        // Core Application State
-        let state = {
-            activeMonth: new Date().toISOString().slice(0, 7), // 'YYYY-MM'
-            members: [],         // [{ id, name, phone, dateAdded }]
-            fixedExpenses: [],   // [{ id, title, amount, splitWith: [memberIds] }]
-            expenses: []         // [{ id, title, amount, payerId, category, date, splitWith: [memberIds] }]
-        };
-
-        const STORAGE_KEY = 'room_expense_app_data_v2';
-
-        // Helpers
-        const getTodayISO = () => new Date().toISOString().split('T')[0];
-        const fmt = (num) => 'AED ' + (Number(num) || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-
-        function saveState() {
-            try {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-            } catch (e) {
-                console.error('LocalStorage Save Error:', e);
-            }
-        }
-
-        function loadSavedState() {
-            const saved = localStorage.getItem(STORAGE_KEY);
-            if (saved) {
-                try {
-                    const parsed = JSON.parse(saved);
-                    if (parsed && typeof parsed === 'object') {
-                        state = {
-                            activeMonth: parsed.activeMonth || new Date().toISOString().slice(0, 7),
-                            members: Array.isArray(parsed.members) ? parsed.members : [],
-                            fixedExpenses: Array.isArray(parsed.fixedExpenses) ? parsed.fixedExpenses : [],
-                            expenses: Array.isArray(parsed.expenses) ? parsed.expenses : []
-                        };
-                    }
-                } catch (e) {
-                    console.error('Failed to parse saved state:', e);
-                }
-            }
-        }
-
-        function showToast(message, type = 'success') {
-            const toast = document.getElementById('toast');
-            const toastMsg = document.getElementById('toastMsg');
-            const toastIcon = document.getElementById('toastIcon');
-
-            toastMsg.innerText = message;
-            if (type === 'error') {
-                toastIcon.className = 'fa-solid fa-circle-exclamation text-rose-400 text-lg';
-            } else {
-                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 text-lg';
-            }
-
-            toast.classList.remove('translate-y-20', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-20', 'opacity-0');
-            }, 3000);
-        }
-
-        function switchTab(tabId) {
-            const tabs = ['setup', 'expenses', 'settlement'];
-            tabs.forEach(t => {
-                const btn = document.getElementById(`tabBtn-${t}`);
-                const sec = document.getElementById(`sec-${t}`);
-                if (t === tabId) {
-                    btn.className = 'tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-sky-500 text-sky-400 whitespace-nowrap transition';
-                    sec.classList.remove('hidden');
-                } else {
-                    btn.className = 'tab-btn px-4 py-3 text-sm font-semibold flex items-center gap-2 border-b-2 border-transparent text-slate-400 hover:text-slate-200 whitespace-nowrap transition';
-                    sec.classList.add('hidden');
-                }
-            });
-            if (tabId === 'settlement') renderSettlement();
-        }
-
-        function changeActiveMonth(monthVal) {
-            if (!monthVal) return;
-            state.activeMonth = monthVal;
-            saveState();
-            updateAllViews();
-        }
-
-        // Roommate Management
-        function openMemberModal(memberId = null) {
-            const modal = document.getElementById('memberModal');
-            const modalTitle = document.getElementById('memberModalTitle');
-            const editId = document.getElementById('editMemberId');
-
-            if (memberId) {
-                const member = state.members.find(m => m.id === memberId);
-                if (!member) return;
-                modalTitle.innerHTML = `<i class="fa-solid fa-user-pen text-sky-400"></i> Edit Roommate`;
-                editId.value = member.id;
-                document.getElementById('mName').value = member.name || '';
-                document.getElementById('mPhone').value = member.phone || '';
-            } else {
-                modalTitle.innerHTML = `<i class="fa-solid fa-user-plus text-sky-400"></i> Add Roommate`;
-                editId.value = '';
-                document.getElementById('mName').value = '';
-                document.getElementById('mPhone').value = '';
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeMemberModal() {
-            document.getElementById('memberModal').classList.add('hidden');
-        }
-
-        function saveMemberSubmit(e) {
-            e.preventDefault();
-            const editId = document.getElementById('editMemberId').value;
-            const name = document.getElementById('mName').value.trim();
-            const phone = document.getElementById('mPhone').value.trim();
-
-            if (!name) return;
-
-            if (editId) {
-                const member = state.members.find(m => m.id === editId);
-                if (member) {
-                    member.name = name;
-                    member.phone = phone;
-                }
-                showToast('Roommate updated!');
-            } else {
-                const newId = 'm_' + Date.now();
-                state.members.push({
-                    id: newId,
-                    name: name,
-                    phone: phone,
-                    dateAdded: getTodayISO()
-                });
-                showToast(`Added roommate ${name}!`);
-            }
-
-            saveState();
-            closeMemberModal();
-            updateAllViews();
-        }
-
-        function deleteMemberConfirmation(id) {
-            const member = state.members.find(m => m.id === id);
-            if (!member) return;
-
-            const modal = document.getElementById('confirmModal');
-            document.getElementById('confirmModalTitle').innerText = `Remove ${member.name}?`;
-            document.getElementById('confirmModalMessage').innerText = `This will remove ${member.name} from directory.`;
-            
-            const btn = document.getElementById('confirmModalActionBtn');
-            btn.onclick = () => {
-                state.members = state.members.filter(m => m.id !== id);
-                saveState();
-                closeConfirmModal();
-                updateAllViews();
-                showToast(`Removed ${member.name}.`);
-            };
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeConfirmModal() {
-            document.getElementById('confirmModal').classList.add('hidden');
-        }
-
-        function renderMembers() {
-            const container = document.getElementById('membersContainer');
-            document.getElementById('statMemberCount').innerText = state.members.length;
-
-            if (state.members.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-panel rounded-xl p-6 text-center space-y-2 border border-white/10">
-                        <i class="fa-solid fa-users text-3xl text-slate-500"></i>
-                        <h3 class="text-xs font-bold text-slate-300">No Roommates Added Yet</h3>
-                        <p class="text-[11px] text-slate-400">Click "Add Member" above to start tracking your flatmates.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = state.members.map(m => `
-                <div class="flex items-center justify-between glass-panel glass-panel-hover p-3 sm:p-3.5 rounded-xl border border-white/10 gap-2">
-                    <div class="flex items-center gap-2.5 sm:gap-3 min-w-0">
-                        <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-sky-400/20 to-indigo-500/20 border border-sky-400/30 flex-shrink-0 flex items-center justify-center font-bold text-sky-300 text-xs sm:text-sm shadow-sm">
-                            ${m.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div class="min-w-0">
-                            <h3 class="font-bold text-slate-100 text-xs truncate">${m.name}</h3>
-                            <p class="text-[11px] text-slate-400 truncate">${m.phone || 'No phone added'}</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-1 flex-shrink-0">
-                        <button onclick="openMemberModal('${m.id}')" class="p-1.5 text-slate-400 hover:text-sky-400 rounded-lg transition" title="Edit">
-                            <i class="fa-solid fa-pen text-xs"></i>
-                        </button>
-                        <button onclick="deleteMemberConfirmation('${m.id}')" class="p-1.5 text-slate-400 hover:text-rose-400 rounded-lg transition" title="Delete">
-                            <i class="fa-solid fa-trash text-xs"></i>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Fixed Expense Setup
-        function openFixedModal(fixedId = null) {
-            if (state.members.length === 0) {
-                showToast('Please add roommates first!', 'error');
-                return;
-            }
-
-            const modal = document.getElementById('fixedModal');
-            const editId = document.getElementById('editFixedId');
-
-            if (fixedId) {
-                const fix = state.fixedExpenses.find(f => f.id === fixedId);
-                if (!fix) return;
-                editId.value = fix.id;
-                document.getElementById('fTitle').value = fix.title;
-                document.getElementById('fAmount').value = fix.amount;
-                renderFixedMemberCheckboxes(fix.splitWith || state.members.map(m => m.id));
-            } else {
-                editId.value = '';
-                document.getElementById('fTitle').value = '';
-                document.getElementById('fAmount').value = '';
-                renderFixedMemberCheckboxes(state.members.map(m => m.id));
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeFixedModal() {
-            document.getElementById('fixedModal').classList.add('hidden');
-        }
-
-        function renderFixedMemberCheckboxes(selectedIds = []) {
-            const container = document.getElementById('fixedMemberCheckboxes');
-            container.innerHTML = state.members.map(m => {
-                const checked = selectedIds.includes(m.id) ? 'checked' : '';
-                return `
-                    <label class="flex items-center gap-2 bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs cursor-pointer hover:border-slate-700 min-w-0">
-                        <input type="checkbox" name="fMemberCheck" value="${m.id}" ${checked} class="accent-indigo-500 rounded flex-shrink-0">
-                        <span class="text-slate-200 truncate">${m.name}</span>
-                    </label>
-                `;
-            }).join('');
-        }
-
-        function toggleAllFixedMembers(select) {
-            const checkboxes = document.querySelectorAll('input[name="fMemberCheck"]');
-            checkboxes.forEach(cb => cb.checked = select);
-        }
-
-        function saveFixedSubmit(e) {
-            e.preventDefault();
-            const editId = document.getElementById('editFixedId').value;
-            const title = document.getElementById('fTitle').value.trim();
-            const amount = parseFloat(document.getElementById('fAmount').value);
-
-            const checkedNodes = document.querySelectorAll('input[name="fMemberCheck"]:checked');
-            const splitWith = Array.from(checkedNodes).map(cb => cb.value);
-
-            if (!title || isNaN(amount) || amount <= 0) return;
-            if (splitWith.length === 0) {
-                showToast('Select at least one member to share this bill!', 'error');
-                return;
-            }
-
-            if (editId) {
-                const fix = state.fixedExpenses.find(f => f.id === editId);
-                if (fix) {
-                    fix.title = title;
-                    fix.amount = amount;
-                    fix.splitWith = splitWith;
-                }
-                showToast('Fixed bill updated!');
-            } else {
-                state.fixedExpenses.push({
-                    id: 'f_' + Date.now(),
-                    title,
-                    amount,
-                    splitWith
-                });
-                showToast('Fixed bill recorded!');
-            }
-
-            saveState();
-            closeFixedModal();
-            updateAllViews();
-        }
-
-        function deleteFixedExpense(id) {
-            state.fixedExpenses = state.fixedExpenses.filter(f => f.id !== id);
-            saveState();
-            updateAllViews();
-            showToast('Fixed bill removed.');
-        }
-
-        function renderFixedExpenses() {
-            const container = document.getElementById('fixedContainer');
-            const totalFixed = state.fixedExpenses.reduce((s, f) => s + f.amount, 0);
-            document.getElementById('statFixedTotal').innerText = fmt(totalFixed);
-
-            if (state.fixedExpenses.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-panel rounded-xl p-6 text-center space-y-2 border border-white/10">
-                        <i class="fa-solid fa-building-columns text-3xl text-slate-500"></i>
-                        <h3 class="text-xs font-bold text-slate-300">No Fixed Bills Configured</h3>
-                        <p class="text-[11px] text-slate-400">Click "Add Fixed Bill" to set up Room Rent, Wi-Fi, DEWA, etc.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            container.innerHTML = state.fixedExpenses.map(f => {
-                const sharedCount = f.splitWith ? f.splitWith.length : 0;
-                const perPersonShare = sharedCount > 0 ? f.amount / sharedCount : 0;
-
-                return `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between glass-panel glass-panel-hover p-3.5 rounded-xl border border-white/10 gap-2">
-                        <div class="space-y-0.5 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-slate-100 text-xs break-words">${f.title}</span>
-                                <span class="px-2 py-0.5 glass-badge text-indigo-300 border border-indigo-400/20 text-[10px] rounded-full font-semibold flex-shrink-0">
-                                    Shared by ${sharedCount}
-                                </span>
-                            </div>
-                            <p class="text-[11px] text-slate-400">Share: <strong class="text-slate-300">${fmt(perPersonShare)} / person</strong></p>
-                        </div>
-                        <div class="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0 pt-1.5 sm:pt-0 border-t border-white/10 sm:border-0">
-                            <span class="font-mono font-bold text-indigo-300 text-sm drop-shadow-sm">${fmt(f.amount)}</span>
-                            <div class="flex items-center gap-1">
-                                <button onclick="openFixedModal('${f.id}')" class="text-slate-400 hover:text-indigo-400 p-1"><i class="fa-solid fa-pen text-xs"></i></button>
-                                <button onclick="deleteFixedExpense('${f.id}')" class="text-slate-400 hover:text-rose-400 p-1"><i class="fa-solid fa-trash text-xs"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        // Expenses Logging
-        function renderExpenseFormMemberCheckboxes() {
-            const container = document.getElementById('expenseMemberCheckboxes');
-            if (state.members.length === 0) {
-                container.innerHTML = `<p class="text-xs text-rose-400 col-span-full">No roommates found. Please add roommates in Setup tab first.</p>`;
-                return;
-            }
-
-            container.innerHTML = state.members.map(m => `
-                <label class="flex items-center gap-2 bg-slate-900 border border-slate-800 p-2.5 rounded-xl text-xs cursor-pointer hover:border-slate-700 transition min-w-0">
-                    <input type="checkbox" name="expMemberCheck" value="${m.id}" checked class="accent-sky-500 rounded w-4 h-4 flex-shrink-0">
-                    <span class="text-slate-200 font-medium truncate">${m.name}</span>
-                </label>
-            `).join('');
-        }
-
-        function toggleAllExpenseMembers(select) {
-            const checkboxes = document.querySelectorAll('input[name="expMemberCheck"]');
-            checkboxes.forEach(cb => cb.checked = select);
-        }
-
-        function handleExpenseSubmit(e) {
-            e.preventDefault();
-            const title = document.getElementById('expTitle').value.trim();
-            const amount = parseFloat(document.getElementById('expAmount').value);
-            const payerId = document.getElementById('expPayer').value;
-            const category = document.getElementById('expCategory').value;
-            const date = document.getElementById('expDate').value || getTodayISO();
-
-            const checkedNodes = document.querySelectorAll('input[name="expMemberCheck"]:checked');
-            const splitWith = Array.from(checkedNodes).map(cb => cb.value);
-
-            if (!title || isNaN(amount) || amount <= 0 || !payerId) return;
-            if (splitWith.length === 0) {
-                showToast('Please select at least one roommate to share this expense!', 'error');
-                return;
-            }
-
-            state.expenses.push({
-                id: 'exp_' + Date.now(),
-                title,
-                amount,
-                payerId,
-                category,
-                date,
-                splitWith
-            });
-
-            saveState();
-            document.getElementById('expenseForm').reset();
-            document.getElementById('expDate').value = getTodayISO();
-            toggleAllExpenseMembers(true);
-            updateAllViews();
-            showToast('Recorded expense!');
-        }
-
-        function deleteExpense(id) {
-            state.expenses = state.expenses.filter(e => e.id !== id);
-            saveState();
-            updateAllViews();
-            showToast('Expense record deleted.');
-        }
-
-        function renderExpenses() {
-            const list = document.getElementById('expenseList');
-            const monthExps = state.expenses.filter(e => e.date && e.date.startsWith(state.activeMonth));
-            
-            const totalVar = monthExps.reduce((s, e) => s + e.amount, 0);
-            document.getElementById('statVariableTotal').innerText = fmt(totalVar);
-            document.getElementById('expenseCountBadge').innerText = monthExps.length;
-
-            if (monthExps.length === 0) {
-                list.innerHTML = `<p class="text-xs text-slate-400 text-center py-6">No expenses recorded for ${state.activeMonth}. Enter an expense above to get started.</p>`;
-                return;
-            }
-
-            list.innerHTML = monthExps.map(e => {
-                const payer = state.members.find(m => m.id === e.payerId);
-                const sharedNames = e.splitWith ? e.splitWith.map(id => {
-                    const m = state.members.find(m => m.id === id);
-                    return m ? m.name : '';
-                }).filter(Boolean).join(', ') : 'All';
-
-                const perPersonShare = e.splitWith && e.splitWith.length > 0 ? e.amount / e.splitWith.length : 0;
-
-                return `
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between glass-panel glass-panel-hover p-3.5 rounded-xl border border-white/10 text-xs gap-2">
-                        <div class="space-y-1 min-w-0">
-                            <div class="flex items-center gap-2 flex-wrap">
-                                <span class="font-bold text-slate-100 break-words">${e.title}</span>
-                                <span class="px-2 py-0.5 rounded-full text-[10px] font-semibold glass-badge text-emerald-300 border border-emerald-400/20 flex-shrink-0">
-                                    ${e.category.toUpperCase()}
-                                </span>
-                            </div>
-                            <p class="text-[11px] text-slate-400">
-                                Paid by <strong class="text-slate-200">${payer ? payer.name : 'Unknown'}</strong> on ${e.date}
-                            </p>
-                            <p class="text-[11px] text-sky-400 break-words">
-                                Shared (${e.splitWith ? e.splitWith.length : 0}): <span class="text-slate-300">${sharedNames}</span> (${fmt(perPersonShare)} each)
-                            </p>
-                        </div>
-                        <div class="flex items-center justify-between sm:justify-end gap-3 flex-shrink-0 pt-1.5 sm:pt-0 border-t border-white/10 sm:border-0">
-                            <span class="font-mono font-bold text-emerald-300 text-sm drop-shadow-sm">${fmt(e.amount)}</span>
-                            <div class="flex items-center gap-1">
-                                <button onclick="openExpenseModal('${e.id}')" class="text-slate-400 hover:text-sky-400 p-1 transition" title="Edit Expense"><i class="fa-solid fa-pen text-xs"></i></button>
-                                <button onclick="deleteExpense('${e.id}')" class="text-slate-400 hover:text-rose-400 p-1 transition" title="Delete Expense"><i class="fa-solid fa-trash text-xs"></i></button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function openExpenseModal(expId) {
-            const exp = state.expenses.find(e => e.id === expId);
-            if (!exp) return;
-
-            document.getElementById('editExpId').value = exp.id;
-            document.getElementById('editExpTitle').value = exp.title;
-            document.getElementById('editExpAmount').value = exp.amount;
-            document.getElementById('editExpDate').value = exp.date;
-            document.getElementById('editExpCategory').value = exp.category;
-
-            // Populate Payer options
-            const editPayerSelect = document.getElementById('editExpPayer');
-            editPayerSelect.innerHTML = state.members.map(m => 
-                `<option value="${m.id}" ${m.id === exp.payerId ? 'selected' : ''}>${m.name}</option>`
-            ).join('');
-
-            // Populate member checkboxes
-            const container = document.getElementById('editExpenseMemberCheckboxes');
-            container.innerHTML = state.members.map(m => {
-                const checked = exp.splitWith && exp.splitWith.includes(m.id) ? 'checked' : '';
-                return `
-                    <label class="flex items-center gap-2 bg-slate-900 border border-slate-800 p-2 rounded-xl text-xs cursor-pointer hover:border-slate-700 min-w-0">
-                        <input type="checkbox" name="editExpMemberCheck" value="${m.id}" ${checked} class="accent-sky-500 rounded flex-shrink-0">
-                        <span class="text-slate-200 truncate">${m.name}</span>
-                    </label>
-                `;
-            }).join('');
-
-            document.getElementById('expenseModal').classList.remove('hidden');
-        }
-
-        function closeExpenseModal() {
-            document.getElementById('expenseModal').classList.add('hidden');
-        }
-
-        function toggleAllEditExpenseMembers(select) {
-            const checkboxes = document.querySelectorAll('input[name="editExpMemberCheck"]');
-            checkboxes.forEach(cb => cb.checked = select);
-        }
-
-        function saveExpenseEditSubmit(e) {
-            e.preventDefault();
-            const expId = document.getElementById('editExpId').value;
-            const title = document.getElementById('editExpTitle').value.trim();
-            const amount = parseFloat(document.getElementById('editExpAmount').value);
-            const date = document.getElementById('editExpDate').value;
-            const payerId = document.getElementById('editExpPayer').value;
-            const category = document.getElementById('editExpCategory').value;
-
-            const checkedNodes = document.querySelectorAll('input[name="editExpMemberCheck"]:checked');
-            const splitWith = Array.from(checkedNodes).map(cb => cb.value);
-
-            if (!title || isNaN(amount) || amount <= 0 || !payerId) return;
-            if (splitWith.length === 0) {
-                showToast('Please select at least one roommate to share this expense!', 'error');
-                return;
-            }
-
-            const exp = state.expenses.find(e => e.id === expId);
-            if (exp) {
-                exp.title = title;
-                exp.amount = amount;
-                exp.date = date;
-                exp.payerId = payerId;
-                exp.category = category;
-                exp.splitWith = splitWith;
-
-                saveState();
-                closeExpenseModal();
-                updateAllViews();
-                showToast('Expense updated successfully!');
-            }
-        }
-
-        function updateDropdowns() {
-            const expPayer = document.getElementById('expPayer');
-
-            const optionsHTML = state.members.length === 0
-                ? `<option value="">No roommates available</option>`
-                : state.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-
-            if (expPayer) expPayer.innerHTML = optionsHTML;
-            renderExpenseFormMemberCheckboxes();
-
-            // Populate PDF member select dropdown
-            const pdfSelect = document.getElementById('pdfMemberSelect');
-            if (pdfSelect) {
-                pdfSelect.innerHTML = state.members.map(m => `<option value="${m.id}">${m.name}</option>`).join('');
-            }
-        }
-
-        // Calculation & Settlement Engine
-        function getCalculatedStats() {
-            const monthExps = state.expenses.filter(e => e.date && e.date.startsWith(state.activeMonth));
-            const totalFixed = state.fixedExpenses.reduce((s, f) => s + f.amount, 0);
-            const totalVar = monthExps.reduce((s, e) => s + e.amount, 0);
-            const grandTotal = totalFixed + totalVar;
-
-            const memberStats = state.members.map(m => {
-                let totalPaid = 0;
-                let totalOwed = 0;
-
-                state.fixedExpenses.forEach(f => {
-                    if (f.splitWith && f.splitWith.includes(m.id)) {
-                        totalOwed += (f.amount / f.splitWith.length);
-                    }
-                });
-
-                monthExps.forEach(e => {
-                    if (e.payerId === m.id) {
-                        totalPaid += e.amount;
-                    }
-                    if (e.splitWith && e.splitWith.includes(m.id)) {
-                        totalOwed += (e.amount / e.splitWith.length);
-                    }
-                });
-
-                const netBalance = totalPaid - totalOwed;
-
-                return {
-                    id: m.id,
-                    name: m.name,
-                    phone: m.phone,
-                    totalPaid,
-                    totalOwed,
-                    netBalance
-                };
-            });
-
-            // Peer-to-peer transfers
-            const debtors = memberStats.filter(b => b.netBalance < -0.01).map(b => ({ name: b.name, amount: Math.abs(b.netBalance) }));
-            const creditors = memberStats.filter(b => b.netBalance > 0.01).map(b => ({ name: b.name, amount: b.netBalance }));
-            const transfers = [];
-
-            let i = 0, j = 0;
-            while (i < debtors.length && j < creditors.length) {
-                const debtor = debtors[i];
-                const creditor = creditors[j];
-                const amount = Math.min(debtor.amount, creditor.amount);
-
-                transfers.push({
-                    from: debtor.name,
-                    to: creditor.name,
-                    amount: amount
-                });
-
-                debtor.amount -= amount;
-                creditor.amount -= amount;
-
-                if (debtor.amount < 0.01) i++;
-                if (creditor.amount < 0.01) j++;
-            }
-
-            return {
-                month: state.activeMonth,
-                totalFixed,
-                totalVar,
-                grandTotal,
-                monthExps,
-                memberStats,
-                transfers
-            };
-        }
-
-        function renderSettlement() {
-            const grid = document.getElementById('settlementGrid');
-            if (state.members.length === 0) {
-                grid.innerHTML = `<div class="col-span-full p-6 text-center text-xs text-slate-400">Please add roommates in Setup tab first.</div>`;
-                document.getElementById('transferPlanContainer').innerHTML = '';
-                return;
-            }
-
-            const stats = getCalculatedStats();
-
-            document.getElementById('statMonthGrandTotal').innerText = fmt(stats.grandTotal);
-            document.getElementById('statAvgPerPerson').innerText = fmt(state.members.length > 0 ? stats.grandTotal / state.members.length : 0);
-
-            // Render member settlement breakdown cards
-            grid.innerHTML = stats.memberStats.map(s => {
-                const isRefund = s.netBalance >= 0;
-                const statusColor = isRefund ? 'text-emerald-300 bg-emerald-500/10 border-emerald-400/30' : 'text-rose-300 bg-rose-500/10 border-rose-400/30';
-                const statusBadge = isRefund ? 'Gets Refund' : 'Needs to Pay';
-
-                return `
-                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl border border-white/10 space-y-3">
-                        <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
-                            <h4 class="font-bold text-slate-100 text-sm flex items-center gap-2">
-                                <span class="w-7 h-7 rounded-lg bg-white/10 border border-white/10 text-sky-300 text-xs flex items-center justify-center font-bold">${s.name.charAt(0)}</span>
-                                ${s.name}
-                            </h4>
-                            <span class="px-2.5 py-1 rounded-lg text-xs font-bold border ${statusColor}">
-                                ${statusBadge}: ${fmt(Math.abs(s.netBalance))}
-                            </span>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-2 text-xs">
-                            <div class="glass-panel p-2.5 rounded-xl border border-white/5">
-                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Total Out of Pocket Paid</p>
-                                <p class="font-mono font-bold text-emerald-300 text-sm mt-0.5">${fmt(s.totalPaid)}</p>
-                            </div>
-                            <div class="glass-panel p-2.5 rounded-xl border border-white/5">
-                                <p class="text-[10px] text-slate-400 font-semibold uppercase">Calculated Share Owed</p>
-                                <p class="font-mono font-bold text-amber-300 text-sm mt-0.5">${fmt(s.totalOwed)}</p>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-            // Render Peer-to-Peer Transfers
-            const container = document.getElementById('transferPlanContainer');
-            if (stats.transfers.length === 0) {
-                container.innerHTML = `<p class="text-xs text-emerald-300 font-semibold glass-panel p-3.5 rounded-xl border border-emerald-500/30 text-center"><i class="fa-solid fa-circle-check mr-1"></i> All room accounts are fully balanced!</p>`;
-                return;
-            }
-
-            container.innerHTML = stats.transfers.map(t => `
-                <div class="flex items-center justify-between glass-panel glass-panel-hover p-3 rounded-xl border border-white/10 text-xs">
-                    <div class="flex items-center gap-2">
-                        <span class="font-bold text-rose-300">${t.from}</span>
-                        <i class="fa-solid fa-arrow-right text-slate-500 text-xs"></i>
-                        <span class="font-bold text-emerald-300">${t.to}</span>
-                    </div>
-                    <div class="font-mono font-extrabold text-amber-300 glass-badge px-2.5 py-1 rounded-lg border border-amber-400/30">
-                        Pays ${fmt(t.amount)}
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // WhatsApp Summary Export
-        function copyWhatsAppSummary() {
-            const stats = getCalculatedStats();
-
-            let text = `🏠 *ROOM EXPENSE SETTLEMENT REPORT (${stats.month})*\n`;
-            text += `-----------------------------------\n`;
-            text += `📌 *Fixed Rent & Bills:* ${fmt(stats.totalFixed)}\n`;
-            text += `🛒 *Variable Groceries:* ${fmt(stats.totalVar)}\n`;
-            text += `💰 *Total Room Spend:* ${fmt(stats.grandTotal)}\n\n`;
-
-            text += `👤 *INDIVIDUAL BREAKDOWN:*\n`;
-
-            stats.memberStats.forEach(m => {
-                const statusStr = m.netBalance >= 0 ? `Gets back ${fmt(m.netBalance)}` : `Owes ${fmt(Math.abs(m.netBalance))}`;
-                text += `• *${m.name}*: Paid ${fmt(m.totalPaid)} | Share ${fmt(m.totalOwed)} => *${statusStr}*\n`;
-            });
-
-            text += `\n🔄 *PAYMENT INSTRUCTIONS:*\n`;
-            
-            if (stats.transfers.length === 0) {
-                text += `✅ All accounts are balanced!\n`;
-            } else {
-                stats.transfers.forEach(t => {
-                    text += `👉 *${t.from}* pays *${t.to}*: ${fmt(t.amount)}\n`;
-                });
-            }
-
-            // Clipboard copy
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-
-            showToast('Summary copied to clipboard!');
-        }
-
-        // ADVANCED PDF GENERATOR ENGINE
-        function openPdfModal() {
-            if (state.members.length === 0) {
-                showToast('Add roommates before generating a PDF report.', 'error');
-                return;
-            }
-            updateDropdowns();
-            document.getElementById('pdfModal').classList.remove('hidden');
-            renderPdfPreview();
-        }
-
-        function closePdfModal() {
-            document.getElementById('pdfModal').classList.add('hidden');
-        }
-
-        function renderPdfPreview() {
-            const scope = document.getElementById('pdfScope').value;
-            const memberSelectWrapper = document.getElementById('pdfMemberSelectWrapper');
-            const incTx = document.getElementById('pdfIncludeTransactions').checked;
-            const incFixed = document.getElementById('pdfIncludeFixed').checked;
-            const notes = document.getElementById('pdfNotes').value.trim();
-
-            if (scope === 'member') {
-                memberSelectWrapper.classList.remove('hidden');
-            } else {
-                memberSelectWrapper.classList.add('hidden');
-            }
-
-            const canvas = document.getElementById('pdfRenderCanvas');
-            const stats = getCalculatedStats();
-
-            let html = '';
-
-            if (scope === 'full') {
-                html = `
-                    <div class="border-b-2 border-slate-900 pb-4 flex items-start justify-between">
+                    <!-- Key Business Indicators -->
+                    <div class="grid grid-cols-3 gap-4 pt-8 border-t border-slate-800/80 text-center lg:text-left">
                         <div>
-                            <div class="flex items-center gap-2 text-indigo-700 font-black text-xl tracking-tight">
-                                <i class="fa-solid fa-house-user"></i> ROOMMATE EXPENSE STATEMENT
-                            </div>
-                            <p class="text-xs text-slate-500 font-medium mt-0.5">Shared Room Account Audit & Settlement Statement</p>
-                        </div>
-                        <div class="text-right">
-                            <span class="inline-block bg-slate-100 text-slate-800 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-300">
-                                Month: ${stats.month}
-                            </span>
-                            <p class="text-[10px] text-slate-400 mt-1">Generated: ${new Date().toLocaleDateString()}</p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <div>
-                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Roommates</p>
-                            <p class="text-lg font-extrabold text-slate-800">${stats.memberStats.length}</p>
+                            <p class="font-serif-heading text-2xl sm:text-3xl font-bold text-brand-gold">100%</p>
+                            <p class="text-[11px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Authentic Sourcing</p>
                         </div>
                         <div>
-                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Fixed Rent & Bills</p>
-                            <p class="text-lg font-extrabold text-indigo-700">${fmt(stats.totalFixed)}</p>
+                            <p class="font-serif-heading text-2xl sm:text-3xl font-bold text-brand-gold">7 Emirates</p>
+                            <p class="text-[11px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Direct Delivery</p>
                         </div>
                         <div>
-                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Variable Expenses</p>
-                            <p class="text-lg font-extrabold text-emerald-700">${fmt(stats.totalVar)}</p>
-                        </div>
-                        <div>
-                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Grand Total</p>
-                            <p class="text-lg font-extrabold text-amber-700">${fmt(stats.grandTotal)}</p>
+                            <p class="font-serif-heading text-2xl sm:text-3xl font-bold text-brand-gold">HORECA</p>
+                            <p class="text-[11px] sm:text-xs text-slate-400 uppercase tracking-wider mt-1">Wholesale Partner</p>
                         </div>
                     </div>
+                </div>
 
-                    <div class="space-y-2">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">1. Roommate Settlement Summary</h4>
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
-                                    <th class="p-2">Roommate Name</th>
-                                    <th class="p-2 text-right">Out-of-Pocket Paid</th>
-                                    <th class="p-2 text-right">Fair Share Owed</th>
-                                    <th class="p-2 text-right">Net Settlement Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200">
-                                ${stats.memberStats.map(m => {
-                                    const isRefund = m.netBalance >= 0;
-                                    const netClass = isRefund ? 'text-emerald-700 font-bold' : 'text-rose-700 font-bold';
-                                    const netText = isRefund ? `+${fmt(m.netBalance)} (Gets Back)` : `${fmt(m.netBalance)} (Owes)`;
-                                    return `
-                                        <tr>
-                                            <td class="p-2 font-medium text-slate-800">${m.name}</td>
-                                            <td class="p-2 text-right font-mono text-slate-700">${fmt(m.totalPaid)}</td>
-                                            <td class="p-2 text-right font-mono text-slate-700">${fmt(m.totalOwed)}</td>
-                                            <td class="p-2 text-right font-mono ${netClass}">${netText}</td>
-                                        </tr>
-                                    `;
-                                }).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="space-y-2">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">2. Peer-to-Peer Payment Transfers</h4>
-                        ${stats.transfers.length === 0 
-                            ? `<p class="p-2 text-xs text-emerald-700 bg-emerald-50 rounded border border-emerald-200">All room accounts are fully settled!</p>`
-                            : `<div class="grid grid-cols-1 gap-2">
-                                ${stats.transfers.map(t => `
-                                    <div class="flex items-center justify-between p-2.5 bg-slate-50 border border-slate-200 rounded-lg text-xs">
-                                        <div class="font-medium text-slate-800">
-                                            <strong class="text-rose-700">${t.from}</strong> &nbsp;⇄&nbsp; <strong class="text-emerald-700">${t.to}</strong>
-                                        </div>
-                                        <span class="font-mono font-extrabold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded border border-amber-300">
-                                            Pays ${fmt(t.amount)}
-                                        </span>
-                                    </div>
-                                `).join('')}
-                               </div>`
-                        }
-                    </div>
-
-                    ${incFixed ? `
-                    <div class="space-y-2">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">3. Monthly Fixed Recurring Bills Setup</h4>
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
-                                    <th class="p-2">Fixed Item</th>
-                                    <th class="p-2 text-center">Split Count</th>
-                                    <th class="p-2 text-right">Per Person Share</th>
-                                    <th class="p-2 text-right">Total Monthly Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-slate-200">
-                                ${state.fixedExpenses.map(f => `
-                                    <tr>
-                                        <td class="p-2 font-medium text-slate-800">${f.title}</td>
-                                        <td class="p-2 text-center text-slate-600">${f.splitWith ? f.splitWith.length : 0} members</td>
-                                        <td class="p-2 text-right font-mono text-slate-700">${fmt(f.splitWith && f.splitWith.length > 0 ? f.amount / f.splitWith.length : 0)}</td>
-                                        <td class="p-2 text-right font-mono font-bold text-indigo-700">${fmt(f.amount)}</td>
-                                    </tr>
-                                `).join('')}
-                            </tbody>
-                        </table>
-                    </div>
-                    ` : ''}
-
-                    ${incTx ? `
-                    <div class="space-y-2">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">4. Itemized Variable Expenses Log (${stats.monthExps.length})</h4>
-                        ${stats.monthExps.length === 0 
-                            ? `<p class="p-2 text-xs text-slate-500 italic">No variable expenses logged for this month.</p>`
-                            : `<table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
-                                        <th class="p-2">Date</th>
-                                        <th class="p-2">Description</th>
-                                        <th class="p-2">Paid By</th>
-                                        <th class="p-2 text-center">Split Count</th>
-                                        <th class="p-2 text-right">Amount</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    ${stats.monthExps.map(e => {
-                                        const payer = state.members.find(m => m.id === e.payerId);
-                                        return `
-                                            <tr>
-                                                <td class="p-2 text-slate-500 text-[11px]">${e.date}</td>
-                                                <td class="p-2 font-medium text-slate-800">${e.title}</td>
-                                                <td class="p-2 text-slate-700">${payer ? payer.name : 'Unknown'}</td>
-                                                <td class="p-2 text-center text-slate-600">${e.splitWith ? e.splitWith.length : 0}</td>
-                                                <td class="p-2 text-right font-mono font-bold text-emerald-700">${fmt(e.amount)}</td>
-                                            </tr>
-                                        `;
-                                    }).join('')}
-                                </tbody>
-                            </table>`
-                        }
-                    </div>
-                    ` : ''}
-
-                    ${notes ? `
-                    <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-xs space-y-1">
-                        <p class="font-bold text-indigo-900"><i class="fa-solid fa-circle-info mr-1"></i> Payment Notes & Instructions:</p>
-                        <p class="text-indigo-800 font-medium">${notes}</p>
-                    </div>
-                    ` : ''}
-
-                    <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
-                        <p>Roomie Expense Management System • Official Statement</p>
-                        <p>Page 1 of 1</p>
-                    </div>
-                `;
-            } else {
-                const selectedMemberId = document.getElementById('pdfMemberSelect').value;
-                const member = stats.memberStats.find(m => m.id === selectedMemberId) || stats.memberStats[0];
-
-                if (!member) {
-                    canvas.innerHTML = `<p class="text-center text-slate-500 py-6">No roommate selected.</p>`;
-                    return;
-                }
-
-                const memberExpsPaid = stats.monthExps.filter(e => e.payerId === member.id);
-                const isRefund = member.netBalance >= 0;
-
-                html = `
-                    <div class="border-b-2 border-slate-900 pb-4 flex items-start justify-between">
-                        <div>
-                            <div class="flex items-center gap-2 text-indigo-700 font-black text-xl tracking-tight">
-                                <i class="fa-solid fa-user-tag"></i> PERSONAL STATEMENT
-                            </div>
-                            <p class="text-xs text-slate-500 font-medium mt-0.5">Roommate Expense Breakdown & Due Receipt</p>
-                        </div>
-                        <div class="text-right">
-                            <span class="inline-block bg-slate-100 text-slate-800 text-[11px] font-bold px-3 py-1 rounded-md border border-slate-300">
-                                Month: ${stats.month}
-                            </span>
-                        </div>
-                    </div>
-
-                    <div class="p-4 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between">
-                        <div>
-                            <p class="text-[10px] font-bold uppercase text-slate-400">Prepared For</p>
-                            <h3 class="text-lg font-bold text-slate-900">${member.name}</h3>
-                            <p class="text-xs text-slate-500">${member.phone || 'No phone listed'}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-[10px] font-bold uppercase text-slate-400">Net Balance Status</p>
-                            <p class="text-xl font-black ${isRefund ? 'text-emerald-700' : 'text-rose-700'}">
-                                ${isRefund ? `Gets Refund: ${fmt(member.netBalance)}` : `Amount Due: ${fmt(Math.abs(member.netBalance))}`}
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-2 gap-4">
-                        <div class="p-3 bg-emerald-50 border border-emerald-200 rounded-xl">
-                            <p class="text-[10px] font-bold text-emerald-800 uppercase">Total Out-of-Pocket Paid</p>
-                            <p class="text-xl font-extrabold text-emerald-700 font-mono mt-1">${fmt(member.totalPaid)}</p>
-                        </div>
-                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-xl">
-                            <p class="text-[10px] font-bold text-amber-800 uppercase">Total Calculated Fair Share</p>
-                            <p class="text-xl font-extrabold text-amber-700 font-mono mt-1">${fmt(member.totalOwed)}</p>
-                        </div>
-                    </div>
-
-                    <div class="space-y-2">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">Payment Settlement Action</h4>
-                        ${stats.transfers.filter(t => t.from === member.name || t.to === member.name).length === 0
-                            ? `<p class="p-3 text-xs bg-slate-50 text-slate-600 rounded-lg border">No peer transfers required for ${member.name}.</p>`
-                            : stats.transfers.filter(t => t.from === member.name || t.to === member.name).map(t => `
-                                <div class="p-3 bg-indigo-50 border border-indigo-200 rounded-lg text-xs flex justify-between items-center">
-                                    <span>${t.from === member.name ? `👉 Pay <strong>${t.to}</strong>` : `👈 Receive from <strong>${t.from}</strong>`}</span>
-                                    <span class="font-mono font-bold text-indigo-900">${fmt(t.amount)}</span>
+                <!-- Hero Featured Image Display -->
+                <div class="lg:col-span-5">
+                    <div class="relative mx-auto max-w-md rounded-2xl p-2 bg-gradient-to-b from-brand-gold/30 via-slate-800/60 to-slate-900 border border-slate-800 shadow-2xl">
+                        <div class="overflow-hidden rounded-xl bg-slate-950 relative group">
+                            <img src="https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=900&q=80" 
+                                 alt="Perrier Sparkling Mineral Water Green Bottles" 
+                                 referrerpolicy="no-referrer"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'><rect width=\'600\' height=\'400\' fill=\'%230b132b\'/><text x=\'50%\' y=\'45%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23d4af37\' font-family=\'sans-serif\' font-size=\'26\' font-weight=\'bold\'>AKH GULF</text><text x=\'50%\' y=\'58%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%2394a3b8\' font-family=\'sans-serif\' font-size=\'15\'>Perrier %26 Al Ameed Beverage Portfolio</text></svg>';"
+                                 class="w-full h-80 sm:h-96 object-cover object-center group-hover:scale-105 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent"></div>
+                            <div class="absolute bottom-0 left-0 right-0 p-6 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="bg-brand-emerald text-emerald-100 text-xs px-3 py-1 rounded-full font-semibold">Perrier & Al Ameed</span>
+                                    <span class="text-brand-gold font-serif text-xs">HORECA Grade</span>
                                 </div>
-                            `).join('')
-                        }
+                                <h3 class="text-xl font-bold text-white">Sparkling Water & Heritage Coffee</h3>
+                                <p class="text-xs text-slate-300">Natural French sparkling water paired with finely crafted Jordanian roasted coffee blends.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-16 bg-slate-50 border-b border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-12 gap-8 items-center">
+                <div class="md:col-span-5">
+                    <div class="rounded-2xl overflow-hidden border border-slate-200 shadow-lg relative">
+                        <img src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=800&q=80" 
+                             alt="AKH Gulf Warehousing and Logistics Fleet" 
+                             referrerpolicy="no-referrer"
+                             onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'><rect width=\'600\' height=\'400\' fill=\'%231c2541\'/><text x=\'50%\' y=\'50%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23d4af37\' font-family=\'sans-serif\' font-size=\'22\' font-weight=\'bold\'>AKH Warehousing %26 Logistics</text></svg>';"
+                             class="w-full h-72 sm:h-80 object-cover">
+                        <div class="absolute inset-0 bg-gradient-to-t from-slate-950/60 to-transparent"></div>
+                        <div class="absolute bottom-4 left-4 right-4 text-white text-xs font-semibold">
+                            <i class="fa-solid fa-warehouse text-brand-gold mr-1.5"></i> Temperature Controlled Facilities in UAE
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-7 space-y-4">
+                    <span class="text-brand-gold font-bold text-xs uppercase tracking-widest">About AKH Gulf General Trading</span>
+                    <h2 class="font-serif-heading text-2xl sm:text-3xl font-bold text-slate-900">
+                        Reliable B2B FMCG & Beverage Partner in the UAE
+                    </h2>
+                    <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
+                        AKH Gulf General Trading LLC is an established general trading firm headquartered in the United Arab Emirates. Specializing in high-demand beverages, imported groceries, and fine foodstuffs, we bridge international brand owners with premier regional hospitality, food service, and retail venues.
+                    </p>
+                    
+                    <div class="grid grid-cols-2 gap-4 pt-2 text-xs font-semibold text-slate-800">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-check text-brand-emerald text-sm"></i>
+                            <span>Climate-Controlled Warehousing</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-check text-brand-emerald text-sm"></i>
+                            <span>Full Regulatory Compliance</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-check text-brand-emerald text-sm"></i>
+                            <span>Direct Import & Clearance</span>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-circle-check text-brand-emerald text-sm"></i>
+                            <span>Dedicated Account Managers</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Brand Portfolio Section (Perrier Water & Al Ameed Coffee) -->
+    <section id="brands" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-3xl mx-auto mb-16">
+                <span class="text-brand-gold uppercase text-xs font-bold tracking-widest">Beverage Portfolio</span>
+                <h2 class="font-serif-heading text-3xl sm:text-4xl font-bold text-slate-900 mt-2">
+                    Perrier Water & Al Ameed Coffee
+                </h2>
+                <div class="w-16 h-1 bg-brand-gold mx-auto my-4 rounded-full"></div>
+                <p class="text-slate-600 text-base">
+                    Discover our primary beverage distribution lines supplied to leading hotels, cafes, catering services, and supermarket chains across the region.
+                </p>
+            </div>
+
+            <div class="grid lg:grid-cols-2 gap-10 items-stretch">
+                <!-- Perrier Water Showcase Card -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden card-hover perrier-border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="relative h-64 sm:h-80 bg-slate-900 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1527661591475-527312dd65f5?auto=format&fit=crop&w=1000&q=80" 
+                                 alt="Perrier Natural Sparkling Mineral Water Glass Bottles" 
+                                 referrerpolicy="no-referrer"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'><rect width=\'600\' height=\'400\' fill=\'%230b4f37\'/><text x=\'50%\' y=\'45%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23ffffff\' font-family=\'sans-serif\' font-size=\'28\' font-weight=\'bold\'>Perrier</text><text x=\'50%\' y=\'58%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23d4af37\' font-family=\'sans-serif\' font-size=\'16\'>Sparkling Mineral Water</text></svg>';"
+                                 class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4 bg-brand-emerald text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                                France • Natural Sparkling Water
+                            </div>
+                        </div>
+                        <div class="p-6 sm:p-8 space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-emerald-100 text-brand-emerald flex items-center justify-center font-bold text-lg">
+                                    <i class="fa-solid fa-bottle-water"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-serif-heading text-2xl font-bold text-slate-900">Perrier Sparkling Water</h3>
+                                    <p class="text-xs text-slate-500">Natural French Mineral Water with Intense Bubbles</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                World-famous for its signature green glass bottles and lively effervescence. Perrier delivers a crisp, refreshing mineral taste ideal for fine dining tables, bar mixology, cafe service, and premium retail displays.
+                            </p>
+                            
+                            <div class="border-t border-slate-200 pt-4 space-y-2">
+                                <p class="text-xs font-bold text-slate-900 uppercase tracking-wider">Available Wholesale Formats:</p>
+                                <div class="grid grid-cols-2 gap-2 text-xs text-slate-700">
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-brand-emerald mr-1.5"></i>Glass 330ml & 750ml</span>
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-brand-emerald mr-1.5"></i>Slim Cans 250ml / 330ml</span>
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-brand-emerald mr-1.5"></i>Lime & Lemon Flavors</span>
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-brand-emerald mr-1.5"></i>HORECA Carton Crates</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 sm:p-8 pt-0">
+                        <button onclick="openInquiryModal('Perrier Sparkling Water Wholesale')" class="w-full bg-brand-emerald hover:bg-emerald-900 text-white font-semibold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2 text-sm shadow-md">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            <span>Request Perrier Price List</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Al Ameed Coffee Showcase Card -->
+                <div class="bg-slate-50 border border-slate-200 rounded-2xl overflow-hidden card-hover alameed-border flex flex-col justify-between shadow-sm">
+                    <div>
+                        <div class="relative h-64 sm:h-80 bg-slate-900 overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&w=1000&q=80" 
+                                 alt="Al Ameed Specialty Coffee Beans and Turkish Coffee Cups" 
+                                 referrerpolicy="no-referrer"
+                                 onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'600\' height=\'400\' viewBox=\'0 0 600 400\'><rect width=\'600\' height=\'400\' fill=\'%233d2314\'/><text x=\'50%\' y=\'45%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23ffffff\' font-family=\'sans-serif\' font-size=\'28\' font-weight=\'bold\'>Al Ameed Coffee</text><text x=\'50%\' y=\'58%\' dominant-baseline=\'middle\' text-anchor=\'middle\' fill=\'%23d4af37\' font-family=\'sans-serif\' font-size=\'16\'>Jordan Heritage Roasters</text></svg>';"
+                                 class="w-full h-full object-cover object-center hover:scale-105 transition-transform duration-500">
+                            <div class="absolute top-4 left-4 bg-brand-coffee text-white text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                                Jordan • Heritage Coffee Roasters
+                            </div>
+                        </div>
+                        <div class="p-6 sm:p-8 space-y-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 rounded-full bg-amber-100 text-brand-coffee flex items-center justify-center font-bold text-lg">
+                                    <i class="fa-solid fa-mug-hot"></i>
+                                </div>
+                                <div>
+                                    <h3 class="font-serif-heading text-2xl font-bold text-slate-900">Al Ameed Coffee</h3>
+                                    <p class="text-xs text-slate-500">Master Roasted Turkish Coffee & Specialty Beans</p>
+                                </div>
+                            </div>
+                            <p class="text-slate-600 text-sm leading-relaxed">
+                                Crafting authentic coffee blends since 1973. Al Ameed Coffee is renowned across the Middle East for its rich aroma, carefully roasted Arabica beans, and traditional cardamom Turkish coffee varieties.
+                            </p>
+                            
+                            <div class="border-t border-slate-200 pt-4 space-y-2">
+                                <p class="text-xs font-bold text-slate-900 uppercase tracking-wider">Available Wholesale Formats:</p>
+                                <div class="grid grid-cols-2 gap-2 text-xs text-slate-700">
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-amber-800 mr-1.5"></i>Turkish Coffee (Cardamom)</span>
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-amber-800 mr-1.5"></i>Plain Light / Medium Roast</span>
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-amber-800 mr-1.5"></i>Espresso Whole Beans</span>
+                                    <span class="bg-white p-2 rounded-lg border border-slate-200"><i class="fa-solid fa-angle-right text-amber-800 mr-1.5"></i>French Coffee with Hazelnut</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6 sm:p-8 pt-0">
+                        <button onclick="openInquiryModal('Al Ameed Coffee Wholesale')" class="w-full bg-brand-coffee hover:bg-slate-900 text-white font-semibold py-3.5 px-6 rounded-xl transition-colors flex items-center justify-center space-x-2 text-sm shadow-md">
+                            <i class="fa-solid fa-file-invoice"></i>
+                            <span>Request Al Ameed Supply Quotation</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- B2B Product Catalog Section -->
+    <section id="catalog" class="py-20 bg-slate-100 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-10">
+                <div>
+                    <span class="text-brand-gold uppercase text-xs font-bold tracking-widest">Complete FMCG Lineup</span>
+                    <h2 class="font-serif-heading text-3xl font-bold text-slate-900 mt-1">
+                        Wholesale Distribution Catalog
+                    </h2>
+                </div>
+                <div class="mt-4 md:mt-0 w-full md:w-72">
+                    <div class="relative">
+                        <input type="text" id="catalog-search" placeholder="Search products..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-brand-gold outline-none shadow-sm">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-xs"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap gap-2 mb-8" id="filter-buttons">
+                <button class="filter-btn active bg-slate-900 text-white text-xs font-semibold px-4 py-2 rounded-lg transition-all" data-category="all">All Products</button>
+                <button class="filter-btn bg-white text-slate-700 hover:bg-slate-200 text-xs font-semibold px-4 py-2 rounded-lg border border-slate-200 transition-all" data-category="beverages">Perrier & Beverages</button>
+                <button class="filter-btn bg-white text-slate-700 hover:bg-slate-200 text-xs font-semibold px-4 py-2 rounded-lg border border-slate-200 transition-all" data-category="coffee">Al Ameed Coffee</button>
+                <button class="filter-btn bg-white text-slate-700 hover:bg-slate-200 text-xs font-semibold px-4 py-2 rounded-lg border border-slate-200 transition-all" data-category="foodstuffs">Gourmet Foodstuffs</button>
+            </div>
+
+            <!-- Product Cards Grid -->
+            <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" id="product-grid">
+                <!-- Card 1: Perrier Glass -->
+                <div class="product-card bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm card-hover flex flex-col justify-between" data-category="beverages" data-title="perrier sparkling mineral water glass bottle">
+                    <div>
+                        <div class="h-48 bg-slate-900 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1548839140-29a749e1bc4e?auto=format&fit=crop&w=600&q=80" alt="Perrier Mineral Water Glass Bottles" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-brand-emerald text-white text-[10px] font-bold px-2.5 py-1 rounded-md">French Sparkling Water</span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-bold text-slate-900 text-base">Perrier Glass Bottle Range</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed">
+                                Premium 330ml and 750ml green glass bottles for fine dining, hotels, and corporate events.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="openInquiryModal('Perrier Glass Bottle Wholesale')" class="w-full border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-bold py-2.5 rounded-lg transition-colors">Inquire Bulk Supply</button>
+                    </div>
+                </div>
+
+                <!-- Card 2: Al Ameed Turkish Coffee -->
+                <div class="product-card bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm card-hover flex flex-col justify-between" data-category="coffee" data-title="al ameed turkish coffee cardamom plain">
+                    <div>
+                        <div class="h-48 bg-slate-900 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1511920170033-f8396924c348?auto=format&fit=crop&w=600&q=80" alt="Al Ameed Coffee Package" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-brand-coffee text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Specialty Roast</span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-bold text-slate-900 text-base">Al Ameed Turkish Coffee</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed">
+                                Vacuum-sealed roast coffee available with natural golden cardamom or plain roast options.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="openInquiryModal('Al Ameed Turkish Coffee Wholesale')" class="w-full border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-bold py-2.5 rounded-lg transition-colors">Inquire Bulk Supply</button>
+                    </div>
+                </div>
+
+                <!-- Card 3: Perrier Slim Cans -->
+                <div class="product-card bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm card-hover flex flex-col justify-between" data-category="beverages" data-title="perrier slim cans lemon lime sparkling water">
+                    <div>
+                        <div class="h-48 bg-slate-900 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&w=600&q=80" alt="Perrier Slim Cans" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-emerald-800 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Sparkling Can</span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-bold text-slate-900 text-base">Perrier Slim Cans & Flavors</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed">
+                                On-the-go 250ml slim aluminum cans in original sparkling, subtle lemon, and lime infusions.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="openInquiryModal('Perrier Cans Wholesale')" class="w-full border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-bold py-2.5 rounded-lg transition-colors">Inquire Bulk Supply</button>
+                    </div>
+                </div>
+
+                <!-- Card 4: Al Ameed Espresso & Beans -->
+                <div class="product-card bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm card-hover flex flex-col justify-between" data-category="coffee" data-title="al ameed espresso beans coffee roast">
+                    <div>
+                        <div class="h-48 bg-slate-900 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1559496417-e7f25cb247f3?auto=format&fit=crop&w=600&q=80" alt="Al Ameed Espresso Beans" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-amber-900 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Whole Beans</span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-bold text-slate-900 text-base">Al Ameed Espresso & Filter</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed">
+                                Dark and medium roast coffee beans ideal for cafe espresso grinders and commercial brewing.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="openInquiryModal('Al Ameed Espresso Beans Wholesale')" class="w-full border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-bold py-2.5 rounded-lg transition-colors">Inquire Bulk Supply</button>
+                    </div>
+                </div>
+
+                <!-- Card 5: Natural Juices -->
+                <div class="product-card bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm card-hover flex flex-col justify-between" data-category="beverages" data-title="imported natural juices botanical drinks">
+                    <div>
+                        <div class="h-48 bg-slate-900 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1600271886742-f049cd451bba?auto=format&fit=crop&w=600&q=80" alt="Imported Juices" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-blue-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Beverages</span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-bold text-slate-900 text-base">Gourmet Imported Juices</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed">
+                                Premium organic fruit juices, nectar blends, and non-alcoholic beverage sparkling mixers.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="openInquiryModal('Gourmet Juices Wholesale')" class="w-full border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-bold py-2.5 rounded-lg transition-colors">Inquire Bulk Supply</button>
+                    </div>
+                </div>
+
+                <!-- Card 6: Confectionery & Pantry -->
+                <div class="product-card bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm card-hover flex flex-col justify-between" data-category="foodstuffs" data-title="gourmet foodstuffs confectionery pantry snacks">
+                    <div>
+                        <div class="h-48 bg-slate-900 relative overflow-hidden">
+                            <img src="https://images.unsplash.com/photo-1582293041079-7814c2f12063?auto=format&fit=crop&w=600&q=80" alt="Gourmet Foodstuffs" class="w-full h-full object-cover">
+                            <span class="absolute top-3 left-3 bg-purple-700 text-white text-[10px] font-bold px-2.5 py-1 rounded-md">Foodstuffs</span>
+                        </div>
+                        <div class="p-5 space-y-2">
+                            <h3 class="font-bold text-slate-900 text-base">Specialty Gourmet Pantry</h3>
+                            <p class="text-slate-600 text-xs leading-relaxed">
+                                Imported condiments, artisanal cookies, fine chocolates, and premium dry packaged goods.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="p-5 pt-0">
+                        <button onclick="openInquiryModal('Specialty Foodstuffs Wholesale')" class="w-full border border-slate-300 hover:bg-slate-900 hover:text-white text-slate-800 text-xs font-bold py-2.5 rounded-lg transition-colors">Inquire Bulk Supply</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logistics & Supply Chain Section -->
+    <section id="logistics" class="py-20 bg-slate-900 text-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-6">
+                    <span class="text-brand-gold uppercase text-xs font-bold tracking-widest">Supply Chain & Logistics</span>
+                    <h2 class="font-serif-heading text-3xl sm:text-4xl font-bold leading-tight">
+                        End-to-End Cold Chain & HORECA Distribution
+                    </h2>
+                    <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
+                        Maintaining beverage carbonation, water mineral purity, and coffee roast freshness demands strict temperature control. AKH Gulf operates fully equipped warehouses and refrigerated transport fleets.
+                    </p>
+
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-lg bg-brand-gold/20 text-brand-gold flex items-center justify-center shrink-0 mt-1">
+                                <i class="fa-solid fa-truck-ramp-box"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base">HORECA Key Account Deliveries</h4>
+                                <p class="text-slate-400 text-xs sm:text-sm mt-1">Scheduled daily and weekly restocking for luxury hotels, fine dining, and corporate venues across Abu Dhabi, Dubai, and Northern Emirates.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-lg bg-brand-gold/20 text-brand-gold flex items-center justify-center shrink-0 mt-1">
+                                <i class="fa-solid fa-warehouse"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base">Controlled Storage Facilities</h4>
+                                <p class="text-slate-400 text-xs sm:text-sm mt-1">Optimal humidity and temperature management preserving coffee beans and delicate glass bottle water packaging.</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-start space-x-4">
+                            <div class="w-10 h-10 rounded-lg bg-brand-gold/20 text-brand-gold flex items-center justify-center shrink-0 mt-1">
+                                <i class="fa-solid fa-handshake-simple"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-white text-base">Trade Merchandising Support</h4>
+                                <p class="text-slate-400 text-xs sm:text-sm mt-1">Point-of-sale display setup, menu pairing consultation, and promotional support for commercial clients.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-slate-800 p-8 rounded-2xl border border-slate-700 shadow-xl space-y-6">
+                    <h3 class="font-serif-heading text-2xl font-bold text-brand-gold">Become a Trade Client</h3>
+                    <p class="text-slate-300 text-sm">
+                        Partner with AKH Gulf General Trading for competitive wholesale pricing, flexible credit terms for verified accounts, and reliable delivery schedules.
+                    </p>
+                    
+                    <div class="space-y-3 bg-slate-900/80 p-5 rounded-xl border border-slate-700/80 text-xs text-slate-300">
+                        <div class="flex justify-between border-b border-slate-800 pb-2.5">
+                            <span class="font-medium text-white">Minimum Order Quantity (MOQ):</span>
+                            <span>Tiered Case Quantities</span>
+                        </div>
+                        <div class="flex justify-between border-b border-slate-800 pb-2.5">
+                            <span class="font-medium text-white">Delivery Areas:</span>
+                            <span>All 7 UAE Emirates</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="font-medium text-white">Account Management:</span>
+                            <span>Dedicated B2B Sales Executive</span>
+                        </div>
                     </div>
 
-                    ${incTx ? `
-                    <div class="space-y-2">
-                        <h4 class="text-xs font-bold text-slate-800 uppercase tracking-wider border-b pb-1">Expenses Logged by ${member.name} (${memberExpsPaid.length})</h4>
-                        ${memberExpsPaid.length === 0
-                            ? `<p class="text-xs text-slate-500 italic p-2">No out of pocket expenses logged by this member.</p>`
-                            : `<table class="w-full text-left border-collapse text-xs">
-                                <thead>
-                                    <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-300">
-                                        <th class="p-2">Date</th>
-                                        <th class="p-2">Title</th>
-                                        <th class="p-2 text-right">Amount Paid</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-slate-200">
-                                    ${memberExpsPaid.map(e => `
-                                        <tr>
-                                            <td class="p-2 text-slate-500">${e.date}</td>
-                                            <td class="p-2 font-medium text-slate-800">${e.title}</td>
-                                            <td class="p-2 text-right font-mono font-bold text-emerald-700">${fmt(e.amount)}</td>
-                                        </tr>
-                                    `).join('')}
-                                </tbody>
-                            </table>`
-                        }
-                    </div>
-                    ` : ''}
+                    <a href="#contact" class="w-full bg-brand-gold hover:bg-brand-goldHover text-slate-950 font-bold py-3.5 px-6 rounded-xl text-center block transition-colors text-sm shadow-lg">
+                        Submit Business Partnership Inquiry
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                    ${notes ? `
-                    <div class="p-3 bg-slate-100 border border-slate-200 rounded-lg text-xs space-y-1">
-                        <p class="font-bold text-slate-800">Note:</p>
-                        <p class="text-slate-600">${notes}</p>
-                    </div>
-                    ` : ''}
+    <!-- Trade Contact & Quotation Section -->
+    <section id="contact" class="py-20 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid lg:grid-cols-12 gap-12">
+                <div class="lg:col-span-5 space-y-6">
+                    <span class="text-brand-gold uppercase text-xs font-bold tracking-widest">Get In Touch</span>
+                    <h2 class="font-serif-heading text-3xl sm:text-4xl font-bold text-slate-900">
+                        Connect with Commercial Sales Desk
+                    </h2>
+                    <p class="text-slate-600 text-sm leading-relaxed">
+                        For wholesale price lists, product catalog requests, or agency partnerships, please contact our commercial distribution desk directly.
+                    </p>
 
-                    <div class="pt-4 border-t border-slate-200 flex items-center justify-between text-[10px] text-slate-400">
-                        <p>Roomie Expense Manager • Personal Statement</p>
-                        <p>Date: ${new Date().toLocaleDateString()}</p>
+                    <div class="space-y-4 pt-2">
+                        <div class="flex items-center space-x-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-amber-100 text-brand-coffee flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-location-dot"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-500 uppercase font-semibold">Location</p>
+                                <p class="text-sm font-bold text-slate-900">United Arab Emirates</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-amber-100 text-brand-coffee flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-500 uppercase font-semibold">Sales Desk Email</p>
+                                <p class="text-sm font-bold text-slate-900">info@akhgulf.com / sales@akhgulf.com</p>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center space-x-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
+                            <div class="w-10 h-10 rounded-full bg-amber-100 text-brand-coffee flex items-center justify-center shrink-0">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+                            <div>
+                                <p class="text-[11px] text-slate-500 uppercase font-semibold">Wholesale Desk</p>
+                                <p class="text-sm font-bold text-slate-900">+971 (0)4 123 4567</p>
+                            </div>
+                        </div>
                     </div>
-                `;
+                </div>
+
+                <!-- Trade Quotation Form -->
+                <div class="lg:col-span-7">
+                    <div class="bg-slate-50 border border-slate-200 p-8 rounded-2xl shadow-sm">
+                        <h3 class="font-serif-heading text-xl font-bold text-slate-900 mb-6">Trade Quotation Request</h3>
+                        
+                        <div id="form-status" class="hidden mb-6 p-4 rounded-xl text-sm"></div>
+
+                        <form id="inquiry-form" class="space-y-4">
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Company / Venue Name *</label>
+                                    <input type="text" id="form-company" required placeholder="Hotel / Cafe / Supermarket" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Contact Name *</label>
+                                    <input type="text" id="form-name" required placeholder="Full Name" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none text-sm">
+                                </div>
+                            </div>
+
+                            <div class="grid sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Email Address *</label>
+                                    <input type="email" id="form-email" required placeholder="name@company.com" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none text-sm">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Phone / WhatsApp *</label>
+                                    <input type="tel" id="form-phone" required placeholder="+971 50 000 0000" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none text-sm">
+                                </div>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Inquiry Category</label>
+                                <select id="form-category" class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none text-sm text-slate-700 bg-white">
+                                    <option value="Perrier Sparkling Water Wholesale">Perrier Sparkling Water Wholesale</option>
+                                    <option value="Al Ameed Coffee Wholesale">Al Ameed Coffee Wholesale</option>
+                                    <option value="Combined Perrier & Al Ameed Supply">Combined Perrier & Al Ameed Beverage Package</option>
+                                    <option value="General FMCG & Foodstuffs">General FMCG & Foodstuffs</option>
+                                    <option value="Distribution Partnership Proposal">Distribution Partnership Proposal</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-slate-700 uppercase mb-1">Estimated Monthly Volume / Requirements</label>
+                                <textarea id="form-message" rows="4" placeholder="Detail your monthly carton requirements, delivery location, or special product line requests..." class="w-full px-4 py-3 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-gold focus:border-brand-gold outline-none text-sm"></textarea>
+                            </div>
+
+                            <button type="submit" class="w-full bg-slate-900 hover:bg-brand-gold hover:text-slate-950 text-white font-bold py-4 rounded-xl transition-all shadow-md text-sm">
+                                Submit Trade Inquiry
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Product Inquiry Modal -->
+    <div id="inquiry-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative space-y-4">
+            <button onclick="closeInquiryModal()" class="absolute top-4 right-4 text-slate-400 hover:text-slate-700 p-2 text-xl" aria-label="Close modal">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-full bg-amber-100 text-brand-gold flex items-center justify-center font-bold">
+                    <i class="fa-solid fa-box"></i>
+                </div>
+                <div>
+                    <h3 class="font-serif-heading text-xl font-bold text-slate-900" id="modal-title">Wholesale Inquiry</h3>
+                    <p class="text-xs text-slate-500">Quick B2B Supply Quotation Request</p>
+                </div>
+            </div>
+
+            <form id="modal-form" class="space-y-3 pt-2">
+                <input type="hidden" id="modal-product-name">
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-700 uppercase mb-1">Your Name / Business Name *</label>
+                    <input type="text" required id="modal-input-name" placeholder="Company Name" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-brand-gold">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-700 uppercase mb-1">Contact Phone / WhatsApp *</label>
+                    <input type="tel" required id="modal-input-phone" placeholder="+971 50 000 0000" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-brand-gold">
+                </div>
+                <div>
+                    <label class="block text-[11px] font-semibold text-slate-700 uppercase mb-1">Estimated Cases Required *</label>
+                    <input type="text" required id="modal-input-qty" placeholder="e.g. 50 Cases / Month" class="w-full px-3 py-2.5 rounded-lg border border-slate-300 text-xs outline-none focus:ring-2 focus:ring-brand-gold">
+                </div>
+
+                <div id="modal-status" class="hidden text-xs p-3 rounded-lg"></div>
+
+                <button type="submit" class="w-full bg-slate-900 hover:bg-brand-gold hover:text-slate-950 text-white font-bold py-3 rounded-xl transition-all text-xs">
+                    Send Instant Quotation Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 text-slate-400 py-12 border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid md:grid-cols-4 gap-8 mb-12">
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-9 h-9 bg-brand-gold rounded-lg flex items-center justify-center text-slate-950 font-bold text-base">
+                            AKH
+                        </div>
+                        <span class="font-serif-heading font-bold text-lg text-white">AKH GULF</span>
+                    </div>
+                    <p class="text-xs leading-relaxed text-slate-400">
+                        AKH Gulf General Trading LLC is an established general trading enterprise distributing beverages and consumer products in the UAE.
+                    </p>
+                </div>
+
+                <div>
+                    <h4 class="text-white text-xs font-bold mb-4 uppercase tracking-wider">Quick Navigation</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><a href="#home" class="hover:text-brand-gold transition-colors">Home</a></li>
+                        <li><a href="#about" class="hover:text-brand-gold transition-colors">About Company</a></li>
+                        <li><a href="#brands" class="hover:text-brand-gold transition-colors">Perrier & Al Ameed</a></li>
+                        <li><a href="#catalog" class="hover:text-brand-gold transition-colors">Product Catalog</a></li>
+                        <li><a href="#logistics" class="hover:text-brand-gold transition-colors">Logistics Services</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white text-xs font-bold mb-4 uppercase tracking-wider">Brands & Lines</h4>
+                    <ul class="space-y-2 text-xs">
+                        <li><span class="text-slate-300">Perrier Sparkling Mineral Water</span></li>
+                        <li><span class="text-slate-300">Al Ameed Roasted Coffee</span></li>
+                        <li><span class="text-slate-300">Gourmet Juices & Soft Drinks</span></li>
+                        <li><span class="text-slate-300">Specialty Grocery & Pantry</span></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-white text-xs font-bold mb-4 uppercase tracking-wider">UAE Coverage</h4>
+                    <p class="text-xs leading-relaxed text-slate-400">
+                        Supplying HORECA outlets, fine dining, corporate venues, hypermarkets, and wholesalers across Abu Dhabi, Dubai, Sharjah, and Northern Emirates.
+                    </p>
+                </div>
+            </div>
+
+            <div class="pt-8 border-t border-slate-800 text-center text-xs text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-4">
+                <p>&copy; 2026 AKH Gulf General Trading LLC. All rights reserved.</p>
+                <div class="flex space-x-6">
+                    <a href="#home" class="hover:text-slate-400">Privacy Policy</a>
+                    <a href="#home" class="hover:text-slate-400">Terms of Supply</a>
+                    <a href="#contact" class="hover:text-slate-400">Trade Portal</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // Mobile Navigation Toggle Controller
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+            if (mobileMenu.classList.contains('hidden')) {
+                menuIcon.className = 'fa-solid fa-bars text-2xl';
+            } else {
+                menuIcon.className = 'fa-solid fa-xmark text-2xl';
             }
+        });
 
-            canvas.innerHTML = html;
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+                menuIcon.className = 'fa-solid fa-bars text-2xl';
+            });
+        });
+
+        // Interactive Catalog Filtering & Live Search Engine
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const productCards = document.querySelectorAll('.product-card');
+        const searchInput = document.getElementById('catalog-search');
+
+        function filterProducts() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const activeCategory = document.querySelector('.filter-btn.active').getAttribute('data-category');
+
+            productCards.forEach(card => {
+                const category = card.getAttribute('data-category');
+                const title = card.getAttribute('data-title').toLowerCase();
+
+                const matchesCategory = (activeCategory === 'all' || category === activeCategory);
+                const matchesSearch = title.includes(searchTerm);
+
+                if (matchesCategory && matchesSearch) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         }
 
-        async function downloadPdfDocument() {
-            const btn = document.getElementById('downloadPdfBtn');
-            const originalBtnHtml = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin mr-1"></i> Generating PDF...`;
-            btn.disabled = true;
-
-            try {
-                const element = document.getElementById('pdfRenderCanvas');
-                
-                const canvas = await html2canvas(element, {
-                    scale: 2,
-                    useCORS: true,
-                    backgroundColor: '#ffffff'
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => {
+                    b.classList.remove('active', 'bg-slate-900', 'text-white');
+                    b.classList.add('bg-white', 'text-slate-700');
                 });
+                btn.classList.add('active', 'bg-slate-900', 'text-white');
+                btn.classList.remove('bg-white', 'text-slate-700');
+                filterProducts();
+            });
+        });
 
-                const imgData = canvas.toDataURL('image/jpeg', 1.0);
-                const { jsPDF } = window.jspdf;
-                const pdf = new jsPDF('p', 'mm', 'a4');
+        searchInput.addEventListener('input', filterProducts);
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+        // Quick Modal Form Controller
+        const inquiryModal = document.getElementById('inquiry-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalProductName = document.getElementById('modal-product-name');
+        const modalForm = document.getElementById('modal-form');
+        const modalStatus = document.getElementById('modal-status');
 
-                pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight);
-                
-                const monthStr = state.activeMonth || 'Report';
-                pdf.save(`Room_Expense_Statement_${monthStr}.pdf`);
-
-                showToast('PDF Document downloaded successfully!');
-            } catch (err) {
-                console.error('PDF Generation Error:', err);
-                showToast('Failed to generate PDF document.', 'error');
-            } finally {
-                btn.innerHTML = originalBtnHtml;
-                btn.disabled = false;
-            }
+        function openInquiryModal(productName) {
+            modalProductName.value = productName;
+            modalTitle.innerText = productName;
+            modalStatus.className = 'hidden';
+            inquiryModal.classList.remove('hidden');
         }
 
-        function triggerNativePrint() {
-            window.print();
+        function closeInquiryModal() {
+            inquiryModal.classList.add('hidden');
+            modalForm.reset();
         }
 
-        // Optional Sample Data Loader (Manual Trigger Only)
-        function loadDemoData() {
-            const today = getTodayISO();
-            const currentMonth = state.activeMonth;
+        modalForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            modalStatus.className = 'block bg-emerald-100 text-emerald-800 border border-emerald-300 text-xs p-3 rounded-lg';
+            modalStatus.innerHTML = '<i class="fa-solid fa-circle-check mr-1.5"></i><strong>Inquiry Received!</strong> Our sales executive will contact you shortly.';
+            setTimeout(() => {
+                closeInquiryModal();
+            }, 2000);
+        });
 
-            state.members = [
-                { id: 'm_1', name: 'Tariq Mahmood', phone: '+971 50 234 5678', dateAdded: today },
-                { id: 'm_2', name: 'Rashid Al-Maktoum', phone: '+971 52 987 6543', dateAdded: today },
-                { id: 'm_3', name: 'Alex Miller', phone: '+971 55 112 2334', dateAdded: today }
-            ];
+        // Commercial Contact Form Submission Handler
+        const inquiryForm = document.getElementById('inquiry-form');
+        const formStatus = document.getElementById('form-status');
 
-            state.fixedExpenses = [
-                { id: 'f_1', title: 'Apartment Rent (Monthly Share)', amount: 5500, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'f_2', title: 'DEWA (Electricity & Water)', amount: 680, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'f_3', title: 'Empower / Chiller AC Bill', amount: 350, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'f_4', title: 'du High-Speed Home Internet', amount: 389, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'f_5', title: 'Weekly House Maid Service', amount: 400, splitWith: ['m_1', 'm_2', 'm_3'] }
-            ];
+        inquiryForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            formStatus.className = 'mb-6 p-4 rounded-xl text-sm bg-emerald-100 text-emerald-800 border border-emerald-300 block';
+            formStatus.innerHTML = '<i class="fa-solid fa-circle-check mr-2"></i><strong>Thank you!</strong> Your trade inquiry has been logged. An AKH Gulf account representative will get in touch with you within 24 hours.';
+            inquiryForm.reset();
+            formStatus.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
 
-            state.expenses = [
-                { id: 'exp_0', title: 'Paid Flat Rent to Landlord', amount: 5500, payerId: 'm_1', category: 'utilities', date: `${currentMonth}-01`, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'exp_1', title: 'Carrefour Hypermarket Groceries', amount: 480, payerId: 'm_2', category: 'grocery', date: `${currentMonth}-04`, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'exp_2', title: 'Lulu Hypermarket Fresh Items', amount: 210, payerId: 'm_3', category: 'grocery', date: `${currentMonth}-09`, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'exp_3', title: 'Talabat Weekend Dinner Order', amount: 165, payerId: 'm_1', category: 'dining', date: `${currentMonth}-14`, splitWith: ['m_1', 'm_2', 'm_3'] },
-                { id: 'exp_4', title: 'Gas Cylinder Refill', amount: 85, payerId: 'm_2', category: 'household', date: `${currentMonth}-18`, splitWith: ['m_1', 'm_2', 'm_3'] }
-            ];
-
-            saveState();
-            updateAllViews();
-            showToast('Loaded sample dataset!');
-        }
-
-        function resetAllDataConfirmation() {
-            const modal = document.getElementById('confirmModal');
-            document.getElementById('confirmModalTitle').innerText = 'Reset All Data?';
-            document.getElementById('confirmModalMessage').innerText = 'This will permanently clear all roommates, fixed bills, and expenses.';
-
-            const btn = document.getElementById('confirmModalActionBtn');
-            btn.onclick = () => {
-                localStorage.removeItem(STORAGE_KEY);
-                state = {
-                    activeMonth: new Date().toISOString().slice(0, 7),
-                    members: [],
-                    fixedExpenses: [],
-                    expenses: []
-                };
-                closeConfirmModal();
-                updateAllViews();
-                showToast('All stored data reset.');
-            };
-
-            modal.classList.remove('hidden');
-        }
-
-        function updateAllViews() {
-            renderMembers();
-            renderFixedExpenses();
-            renderExpenses();
-            updateDropdowns();
-            renderSettlement();
-        }
-
-        // Initialize App on DOM Load
-        window.addEventListener('DOMContentLoaded', () => {
-            loadSavedState();
-
-            const monthInput = document.getElementById('monthPicker');
-            if (monthInput) monthInput.value = state.activeMonth;
-
-            document.getElementById('expDate').value = getTodayISO();
-
-            // Render existing saved state or start completely clean
-            updateAllViews();
+        // Auto-fix for any remote image load failure across external viewers or shared links
+        document.addEventListener('DOMContentLoaded', () => {
+            const allImages = document.querySelectorAll('img');
+            allImages.forEach(img => {
+                if (!img.getAttribute('referrerpolicy')) {
+                    img.setAttribute('referrerpolicy', 'no-referrer');
+                }
+                img.addEventListener('error', function() {
+                    this.onerror = null;
+                    const altText = this.alt || 'AKH Gulf Product';
+                    this.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400"><rect width="600" height="400" fill="%230b132b"/><text x="50%" y="45%" dominant-baseline="middle" text-anchor="middle" fill="%23d4af37" font-family="sans-serif" font-size="24" font-weight="bold">AKH GULF</text><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" fill="%2394a3b8" font-family="sans-serif" font-size="14">' + encodeURIComponent(altText) + '</text></svg>';
+                });
+            });
         });
     </script>
 </body>
 </html>
+AKH_Gulf_General_Trading_LLC_Website.html
+Displaying AKH_Gulf_General_Trading_LLC_Website.html.
