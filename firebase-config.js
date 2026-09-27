@@ -1,5 +1,5 @@
 // Firebase configuration
-export const firebaseConfig = info@akhgulf.com{
+export const firebaseConfig = {
 apiKey: "AIzaSyBtbgLXeqrJdtkKELj43LOEDgueKn-w_eg",
 authDomain: "akh-gulf-web-site.firebaseapp.com",
 projectId: "akh-gulf-web-site",
@@ -10,4 +10,4 @@ measurementId: "G-VE1ZBN3QXO"
 };
 
 // Admin email
-export const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL";
+export const ADMIN_EMAIL = "info@akhgulf.com";
