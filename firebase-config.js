@@ -1,13 +1,13 @@
-// Paste the Firebase Web App configuration here.
-// Firebase Console -> Project settings -> Your apps -> Web app -> SDK setup and configuration.
-export const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  authDomain: "YOUR_PROJECT.firebaseapp.com",
-  projectId: "YOUR_PROJECT_ID",
-  storageBucket: "YOUR_PROJECT.firebasestorage.app",
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-  appId: "YOUR_APP_ID"
+// Firebase configuration
+export const firebaseConfig = info@akhgulf.com{
+apiKey: "AIzaSyBtbgLXeqrJdtkKELj43LOEDgueKn-w_eg",
+authDomain: "akh-gulf-web-site.firebaseapp.com",
+projectId: "akh-gulf-web-site",
+storageBucket: "akh-gulf-web-site.firebasestorage.app",
+messagingSenderId: "630289292480",
+appId: "1:630289292480:web:1ef78d3b757abcaeb76125",
+measurementId: "G-VE1ZBN3QXO"
 };
 
-// Use the same email you create in Firebase Authentication.
-export const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL@example.com";
+// Admin email
+export const ADMIN_EMAIL = "YOUR_ADMIN_EMAIL";
