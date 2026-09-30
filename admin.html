@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b342e">
+<title>AKH Gulf Admin</title>
+<style>
+:root{--ink:#102523;--muted:#60736e;--paper:#f5f8f6;--surface:#fff;--green:#0b594c;--deep:#073d35;--lime:#d7eb58;--line:#d5e0dc;--danger:#b42318;--shadow:0 16px 45px rgba(15,48,42,.1)}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,sans-serif}.wrap{width:min(1120px,calc(100% - 28px));margin:auto}.top{background:var(--deep);color:#fff;padding:22px 0}.topbar{display:flex;justify-content:space-between;align-items:center;gap:15px}.top h1{margin:0;font-size:24px}.top small{color:#c7dad4}.btn{border:0;border-radius:10px;padding:11px 15px;font-weight:700;cursor:pointer}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:var(--lime);color:#18342e}.secondary{background:#eaf2ef;color:var(--ink)}.danger{background:#fee4e2;color:var(--danger)}main{padding:28px 0}.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:22px}.login{max-width:430px;margin:50px auto}.h2{margin:0 0 18px;font-size:22px}label{display:block;font-size:13px;font-weight:700;margin:0 0 7px}.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;color:var(--ink);margin-bottom:14px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.full{grid-column:1/-1}.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.preview{width:130px;height:100px;border:1px dashed var(--line);border-radius:10px;object-fit:contain;background:#fafcfb}.msg{padding:11px 13px;border-radius:10px;background:#eef5f2;color:var(--green);margin-bottom:15px}.error{background:#fff0ee;color:var(--danger)}.products{display:grid;gap:12px}.product{display:grid;grid-template-columns:80px 1fr auto;gap:15px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:12px}.thumb{width:80px;height:65px;object-fit:contain;border-radius:8px;background:#fafcfb}.product h3{margin:0 0 3px;font-size:16px}.product p{margin:0;color:var(--muted);font-size:13px}.actions{display:flex;gap:7px}.note{color:var(--muted);font-size:13px;line-height:1.5}.category-list{display:grid;gap:10px}.category-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 14px}.category-name{font-weight:700}.category-actions{display:flex;gap:7px}.editing-category{background:#f8fbfa}.empty{padding:12px 0;color:var(--muted)}@media(max-width:650px){.grid{grid-template-columns:1fr}.full{grid-column:auto}.product{grid-template-columns:58px 1fr}.thumb{width:58px;height:55px}.actions{grid-column:1/-1}.topbar{align-items:flex-start;flex-direction:column}.category-row{grid-template-columns:1fr}.category-actions{justify-content:flex-start}}
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap topbar"><div><h1>AKH Gulf — Product Admin</h1><small>Manage products shown on your public website</small></div><button id="logout" class="btn secondary" hidden>Logout</button></div></header>
+<main class="wrap">
+<section id="loginPanel" class="panel login"><h2 class="h2">Admin Login</h2><div id="loginMsg" class="msg" hidden></div><label>Email</label><input id="email" class="input" type="email" autocomplete="username"><label>Password</label><input id="password" class="input" type="password" autocomplete="current-password"><button id="loginBtn" class="btn primary">Login</button><p class="note">Only the Firebase Authentication account whose email matches your configured admin email can manage products.</p></section>
+
+<section id="adminPanel" hidden>
+
+<div class="panel">
+  <div class="row" style="justify-content:space-between">
+    <div><h2 class="h2" style="margin-bottom:5px">Product Manager</h2><div class="note">Add, edit, delete, reorder, and update product images.</div></div>
+    <button id="newBtn" class="btn secondary">+ New Product</button>
+  </div>
+</div>
+
+<div class="panel">
+  <h2 class="h2">Category Manager</h2>
+  <p class="note">Create categories once, then select them when adding products. Edit or delete categories here.</p>
+  <div id="categoryMsg" class="msg" hidden></div>
+  <div class="row" style="margin-bottom:15px">
+    <input id="newCategory" class="input" style="margin:0;flex:1;min-width:220px" placeholder="Enter category name">
+    <button id="addCategoryBtn" class="btn primary">+ Add Category</button>
+  </div>
+  <div id="categoryList" class="category-list"></div>
+</div>
+
+<div class="panel">
+  <div id="formMsg" class="msg" hidden></div>
+  <form id="productForm">
+    <input type="hidden" id="productId">
+    <div class="grid">
+      <div><label>Product name *</label><input id="name" class="input" required></div>
+      <div>
+        <label>Category *</label>
+        <select id="category" class="input" required>
+          <option value="">Select category</option>
+        </select>
+      </div>
+      <div><label>Short description</label><input id="description" class="input"></div>
+      <div><label>Sort order</label><input id="sortOrder" class="input" type="number" value="100"></div>
+      <div class="full">
+        <label>Product image URL</label>
+        <input id="imageUrl" class="input" type="url" placeholder="https://example.com/product-image.jpg">
+        <div class="row"><img id="preview" class="preview" alt="Preview"><span class="note">Use a direct public image URL. Firebase Storage is not required.</span></div>
+        <div class="row" style="margin-top:8px">
+          <label style="display:flex;gap:8px;align-items:center;margin:0"><input id="featured" type="checkbox"> ⭐ Featured Product</label>
+          <label style="display:flex;gap:8px;align-items:center;margin:0"><input id="visible" type="checkbox" checked> 👁 Visible on Website</label>
+        </div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" id="saveBtn" type="submit">Save Product</button>
+      <button class="btn secondary" id="cancelBtn" type="button">Clear</button>
+    </div>
+  </form>
+</div>
+
+<div class="panel"><h2 class="h2">Current Products</h2><div id="products" class="products"></div></div>
+</section>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDocs, query, orderBy, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { firebaseConfig, ADMIN_EMAIL } from "./firebase-config.js";
+
+const loginPanel=document.getElementById('loginPanel'), adminPanel=document.getElementById('adminPanel'), loginMsg=document.getElementById('loginMsg'), formMsg=document.getElementById('formMsg'), categoryMsg=document.getElementById('categoryMsg'), logout=document.getElementById('logout');
+function msg(el,text,error=false){el.textContent=text;el.hidden=!text;el.classList.toggle('error',error)}
+if(firebaseConfig.apiKey.startsWith('YOUR_')) msg(loginMsg,'First open firebase-config.js and paste your Firebase Web App configuration.',true);
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+let editing=null, products=[], categories=[], editingCategoryId=null;
+
+document.getElementById('loginBtn').onclick=async()=>{msg(loginMsg,'');try{await signInWithEmailAndPassword(auth,document.getElementById('email').value.trim(),document.getElementById('password').value)}catch(e){msg(loginMsg,e.code==='auth/invalid-credential'?'Incorrect email or password.':e.message,true)}};
+logout.onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,user=>{
+  if(user && user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+    loginPanel.hidden=true;adminPanel.hidden=false;logout.hidden=false;loadCategories();loadProducts();
+  }else if(user){
+    signOut(auth);msg(loginMsg,'This account is not the configured admin account.',true);
+  }else{
+    loginPanel.hidden=false;adminPanel.hidden=true;logout.hidden=true;
+  }
+});
+
+async function loadCategories(){
+  try{
+    const snap=await getDocs(query(collection(db,'categories'),orderBy('name','asc')));
+    categories=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderCategories();
+    populateCategorySelect();
+  }catch(e){msg(categoryMsg,e.message,true)}
+}
+
+function renderCategories(){
+  const box=document.getElementById('categoryList');
+  box.innerHTML='';
+  if(!categories.length){box.innerHTML='<div class="empty">No categories yet. Add your first category above.</div>';return}
+  categories.forEach(c=>{
+    const row=document.createElement('div');
+    row.className='category-row';
+    row.innerHTML='<div class="category-name"></div><div class="category-actions"><button class="btn secondary edit-category">Edit</button><button class="btn danger delete-category">Delete</button></div>';
+    row.querySelector('.category-name').textContent=c.name||'';
+    row.querySelector('.edit-category').onclick=()=>startEditCategory(c);
+    row.querySelector('.delete-category').onclick=()=>removeCategory(c);
+    box.appendChild(row);
+  });
+}
+
+function populateCategorySelect(selected=''){
+  const select=document.getElementById('category');
+  select.innerHTML='<option value="">Select category</option>';
+  categories.forEach(c=>{
+    const o=document.createElement('option');
+    o.value=c.name;o.textContent=c.name;select.appendChild(o);
+  });
+  if(selected) select.value=selected;
+}
+
+function normalized(s){return s.trim().toLowerCase()}
+
+function startEditCategory(c){
+  editingCategoryId=c.id;
+  document.getElementById('newCategory').value=c.name||'';
+  document.getElementById('addCategoryBtn').textContent='Update Category';
+  document.getElementById('newCategory').focus();
+  msg(categoryMsg,'Editing: '+c.name);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cancelCategoryEdit(){
+  editingCategoryId=null;
+  document.getElementById('newCategory').value='';
+  document.getElementById('addCategoryBtn').textContent='+ Add Category';
+  msg(categoryMsg,'');
+}
+
+document.getElementById('addCategoryBtn').onclick=async()=>{
+  const input=document.getElementById('newCategory');
+  const name=input.value.trim();
+  if(!name){msg(categoryMsg,'Please enter a category name.',true);return}
+  const duplicate=categories.some(c=>c.id!==editingCategoryId && normalized(c.name||'')===normalized(name));
+  if(duplicate){msg(categoryMsg,'That category already exists.',true);return}
+
+  const btn=document.getElementById('addCategoryBtn');btn.disabled=true;
+  try{
+    if(editingCategoryId){
+      const old=categories.find(c=>c.id===editingCategoryId);
+      const oldName=old?.name||'';
+      await updateDoc(doc(db,'categories',editingCategoryId),{name,updatedAt:serverTimestamp()});
+
+      // Keep products synchronized with the renamed category.
+      const snap=await getDocs(query(collection(db,'products'),where('category','==',oldName)));
+      await Promise.all(snap.docs.map(d=>updateDoc(d.ref,{category:name,updatedAt:serverTimestamp()})));
+
+      msg(categoryMsg,`Category renamed to "${name}" and related products updated.`);
+    }else{
+      await addDoc(collection(db,'categories'),{name,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+      msg(categoryMsg,'Category added successfully.');
+    }
+    cancelCategoryEdit();
+    await loadCategories();
+    await loadProducts();
+  }catch(e){msg(categoryMsg,e.message,true)}
+  finally{btn.disabled=false}
+};
+
+async function removeCategory(c){
+  try{
+    const snap=await getDocs(query(collection(db,'products'),where('category','==',c.name)));
+    if(!snap.empty){
+      msg(categoryMsg,`Cannot delete "${c.name}" because ${snap.size} product${snap.size===1?' is':'s are'} using this category. Edit or move those products first.`,true);
+      return;
+    }
+    if(!confirm(`Delete category "${c.name}"?`))return;
+    await deleteDoc(doc(db,'categories',c.id));
+    msg(categoryMsg,'Category deleted successfully.');
+    if(editingCategoryId===c.id) cancelCategoryEdit();
+    await loadCategories();
+  }catch(e){msg(categoryMsg,e.message,true)}
+}
+
+async function loadProducts(){
+  try{
+    const snap=await getDocs(query(collection(db,'products'),orderBy('sortOrder','asc')));
+    products=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderProducts();
+  }catch(e){msg(formMsg,e.message,true)}
+}
+
+function renderProducts(){
+  const box=document.getElementById('products');box.innerHTML='';
+  if(!products.length){box.innerHTML='<p class="note">No Firebase products yet. Create your first product above.</p>';return}
+  products.forEach((p,index)=>{
+    const row=document.createElement('div');row.className='product';
+    row.innerHTML=`<img class="thumb" src="${p.imageUrl||''}" alt=""><div><h3></h3><p></p></div><div class="actions"><button class="btn secondary edit">Edit</button><button class="btn danger delete">Delete</button></div>`;
+    row.querySelector('h3').textContent=`${index+1}. ${p.name||''} ${p.featured?'⭐ Featured':''}`;
+    row.querySelector('p').textContent=(p.category||'Other')+' — '+(p.description||'')+` · Order: ${p.sortOrder??100} · ${p.visible===false?'Hidden':'Visible'}`;
+    row.querySelector('.edit').onclick=()=>editProduct(p);
+    row.querySelector('.delete').onclick=()=>removeProduct(p);
+    box.appendChild(row)
+  })
+}
+
+function editProduct(p){
+  editing=p;
+  document.getElementById('productId').value=p.id;
+  document.getElementById('name').value=p.name||'';
+  populateCategorySelect(p.category||'');
+  document.getElementById('description').value=p.description||'';
+  document.getElementById('sortOrder').value=p.sortOrder??100;
+  document.getElementById('imageUrl').value=p.imageUrl||'';
+  document.getElementById('featured').checked=p.featured===true;
+  document.getElementById('visible').checked=p.visible!==false;
+  document.getElementById('preview').src=p.imageUrl||'';
+  document.getElementById('saveBtn').textContent='Update Product';
+  window.scrollTo({top:0,behavior:'smooth'})
+}
+
+function clearForm(){
+  editing=null;
+  document.getElementById('productForm').reset();
+  document.getElementById('productId').value='';
+  document.getElementById('sortOrder').value=100;
+  document.getElementById('imageUrl').value='';
+  document.getElementById('featured').checked=false;
+  document.getElementById('visible').checked=true;
+  document.getElementById('preview').removeAttribute('src');
+  populateCategorySelect();
+  document.getElementById('saveBtn').textContent='Save Product';
+  msg(formMsg,'')
+}
+document.getElementById('cancelBtn').onclick=clearForm;
+document.getElementById('newBtn').onclick=()=>{clearForm();document.getElementById('name').focus()};
+document.getElementById('imageUrl').addEventListener('input',e=>{document.getElementById('preview').src=e.target.value.trim()||''});
+
+document.getElementById('productForm').onsubmit=async e=>{
+  e.preventDefault();
+  const save=document.getElementById('saveBtn');save.disabled=true;msg(formMsg,'Saving…');
+  try{
+    const name=document.getElementById('name').value.trim();
+    const category=document.getElementById('category').value.trim();
+    const description=document.getElementById('description').value.trim();
+    const sortOrder=Number(document.getElementById('sortOrder').value)||100;
+    const imageUrl=document.getElementById('imageUrl').value.trim();
+    const featured=document.getElementById('featured').checked;
+    const visible=document.getElementById('visible').checked;
+    if(!category)throw new Error('Please select a category.');
+    if(!categories.some(c=>c.name===category))throw new Error('Please select a valid category.');
+    if(imageUrl && !/^https?:\/\//i.test(imageUrl))throw new Error('Image URL must start with http:// or https://');
+    const data={name,category,description,sortOrder,imageUrl,featured,visible,updatedAt:serverTimestamp()};
+    if(editing)await updateDoc(doc(db,'products',editing.id),data);
+    else await addDoc(collection(db,'products'),{...data,createdAt:serverTimestamp()});
+    msg(formMsg,'Product saved successfully.');clearForm();await loadProducts()
+  }catch(e){msg(formMsg,e.message,true)}
+  finally{save.disabled=false}
+};
+
+async function removeProduct(p){
+  if(!confirm(`Delete ${p.name}?`))return;
+  try{await deleteDoc(doc(db,'products',p.id));msg(formMsg,'Product deleted.');await loadProducts()}
+  catch(e){msg(formMsg,e.message,true)}
+}
+</script>
+</body>
+</html>
