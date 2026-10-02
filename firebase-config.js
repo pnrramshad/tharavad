@@ -1,13 +1,11 @@
-// Firebase configuration
 export const firebaseConfig = {
-apiKey: "AIzaSyBtbgLXeqrJdtkKELj43LOEDgueKn-w_eg",
-authDomain: "akh-gulf-web-site.firebaseapp.com",
-projectId: "akh-gulf-web-site",
-storageBucket: "akh-gulf-web-site.firebasestorage.app",
-messagingSenderId: "630289292480",
-appId: "1:630289292480:web:1ef78d3b757abcaeb76125",
-measurementId: "G-VE1ZBN3QXO"
+  apiKey: "AIzaSyCyfmpJj-RAwklTXJdMOr0-r8LmkagrR_A",
+  authDomain: "tharavad-test-web-site.firebaseapp.com",
+  projectId: "tharavad-test-web-site",
+  storageBucket: "tharavad-test-web-site.firebasestorage.app",
+  messagingSenderId: "64219952944",
+  appId: "1:64219952944:web:ebc530efca7c13bdb0faf5",
+  measurementId: "G-N7330NQM0Y"
 };
 
-// Admin email
 export const ADMIN_EMAIL = "info@akhgulf.com";
