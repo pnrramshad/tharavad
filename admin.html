@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b342e">
+<title>AKH Gulf Admin</title>
+<style>
+:root{--bg:#f4f7f5;--surface:#fff;--ink:#16302b;--muted:#70817c;--line:#dce6e2;--green:#075b4e;--deep:#063d35;--lime:#d8ee58;--soft:#edf6f2;--danger:#b42318;--shadow:0 10px 30px rgba(9,55,47,.08)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--bg);color:var(--ink);font-family:Inter,Arial,sans-serif}.wrap{width:min(1240px,calc(100% - 32px));margin:auto}.top{position:sticky;top:0;z-index:50;background:rgba(6,61,53,.97);color:#fff;padding:13px 0;box-shadow:0 4px 18px rgba(0,0,0,.12)}.topbar{display:flex;justify-content:space-between;align-items:center;gap:18px}.brand{display:flex;align-items:center;gap:12px}.brand-mark{width:38px;height:38px;border-radius:11px;background:#fff;color:var(--green);display:grid;place-items:center;font-weight:900}.brand h1{margin:0;font-size:17px}.brand small{display:block;color:#c8ddd8;font-size:10px;margin-top:2px}.admin-chip{font-size:12px;color:#e7f2ef;display:flex;gap:10px;align-items:center}.admin-chip button{border:1px solid rgba(255,255,255,.25);background:transparent;color:#fff;border-radius:9px;padding:8px 11px;cursor:pointer}.login{max-width:430px;margin:70px auto}.panel{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:22px;box-shadow:var(--shadow);margin-bottom:20px}.h2{margin:0 0 7px;font-size:22px}.note{color:var(--muted);font-size:13px;line-height:1.5}.msg{padding:11px 13px;border-radius:10px;background:#eef6f2;color:var(--green);margin:12px 0}.error{background:#fff0ee;color:var(--danger)}label{display:block;font-size:12px;font-weight:800;margin:0 0 7px}.input{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;background:#fff;color:var(--ink);margin-bottom:14px}.btn{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}.btn:disabled{opacity:.55;cursor:not-allowed}.primary{background:var(--green);color:#fff}.secondary{background:#eaf2ef;color:var(--ink)}.danger{background:#fee4e2;color:var(--danger)}main{padding:24px 0 60px}.dashboard-head{display:flex;justify-content:space-between;gap:20px;align-items:flex-end;margin-bottom:18px}.dashboard-head h2{margin:0;font-size:27px}.dashboard-head p{margin:5px 0 0;color:var(--muted)}.save-main{background:var(--lime);color:#17342e;padding:12px 18px}.sidebar{display:none}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px}.stat b{display:block;font-size:25px}.stat span{font-size:12px;color:var(--muted)}.builder-panel{border-radius:20px}.builder-card{border:1px solid var(--line);border-radius:14px;padding:16px;margin:0 0 14px;background:#fbfdfc}.builder-card h3{margin:0 0 14px}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}.full{grid-column:1/-1}.toggle{display:flex;align-items:center;gap:8px;margin:6px 0;font-weight:800}.toggle input{width:18px;height:18px}.section-order{display:grid;gap:8px}.section-item{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--line);border-radius:10px;background:#fff;cursor:grab}.section-item input{margin-left:auto}.section-item.dragging{opacity:.5}.section-handle{font-size:18px;color:var(--muted)}.product{display:grid;grid-template-columns:78px 1fr auto;gap:14px;align-items:center;border:1px solid var(--line);border-radius:13px;padding:12px;background:#fff}.products{display:grid;gap:10px}.thumb{width:78px;height:64px;object-fit:contain;border-radius:9px;background:#fafcfb}.product h3{margin:0 0 4px;font-size:15px}.product p{margin:0;color:var(--muted);font-size:12px}.actions{display:flex;gap:7px}.category-list{display:grid;gap:9px}.category-row{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:#fff}.category-actions{display:flex;gap:7px}.category-name{font-weight:800}.empty{padding:12px 0;color:var(--muted)}.preview{width:130px;height:100px;border:1px dashed var(--line);border-radius:10px;object-fit:contain;background:#fafcfb}.quick-nav{display:flex;gap:8px;overflow:auto;padding:4px 0 14px}.quick-nav a{white-space:nowrap;text-decoration:none;color:var(--green);background:#fff;border:1px solid var(--line);padding:8px 11px;border-radius:20px;font-size:12px;font-weight:800}.preview-grid{display:grid;grid-template-columns:2fr 1fr;gap:16px}.preview-frame{height:520px;border:1px solid var(--line);border-radius:15px;background:#fff;overflow:hidden}.preview-frame iframe{width:100%;height:100%;border:0}.mobile-frame{max-width:330px;margin:auto;height:520px;border:10px solid #16211f;border-radius:28px;overflow:hidden;background:#fff}.mobile-frame iframe{width:100%;height:100%;border:0}.section-label{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}.section-label h3{margin:0;font-size:16px}.pill{display:inline-block;background:#dff1e8;color:#0b6a59;border-radius:20px;padding:4px 8px;font-size:10px;font-weight:900}.login-note{font-size:12px;color:var(--muted)}
+@media(min-width:1050px){body{padding-left:190px}.top{margin-left:-190px;padding-left:190px}.topbar{max-width:1050px;margin:0 auto}.sidebar{display:flex;position:fixed;z-index:60;left:0;top:0;bottom:0;width:190px;background:var(--deep);color:#fff;flex-direction:column;padding:20px 12px}.side-brand{padding:4px 10px 22px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:16px}.side-brand b{font-size:16px}.side-brand span{display:block;font-size:10px;color:#bcd1cc;margin-top:3px}.side-nav{display:grid;gap:5px}.side-nav a{color:#d7e7e2;text-decoration:none;padding:11px 12px;border-radius:9px;font-size:12px;font-weight:700}.side-nav a:hover,.side-nav a.active{background:#0b6c5b;color:#fff}.side-footer{margin-top:auto;font-size:10px;color:#9ebbb4;padding:10px}}
+@media(max-width:800px){.stats{grid-template-columns:repeat(2,1fr)}.preview-grid{grid-template-columns:1fr}.mobile-frame{max-width:300px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.dashboard-head{align-items:flex-start;flex-direction:column}}
+@media(max-width:560px){.wrap{width:min(100% - 20px,1240px)}.stats{grid-template-columns:1fr 1fr}.product{grid-template-columns:58px 1fr}.thumb{width:58px;height:55px}.actions{grid-column:1/-1}.topbar{align-items:flex-start}.admin-chip{flex-wrap:wrap}.category-row{grid-template-columns:1fr}.category-actions{justify-content:flex-start}}
+
+.admin-page{display:none}.admin-page.active{display:block}.admin-modal-page[hidden]{display:none!important}.page-modal{position:fixed;inset:0;z-index:80;background:rgba(3,24,20,.55);backdrop-filter:blur(5px);display:none;align-items:flex-start;justify-content:center;padding:22px;overflow:auto}.page-modal.open{display:flex}.page-modal-card{width:min(1100px,100%);margin-top:20px;max-height:calc(100vh - 40px);overflow:auto;background:var(--bg);border-radius:20px;padding:20px;box-shadow:0 24px 80px rgba(0,0,0,.25)}.page-modal-head{display:flex;justify-content:space-between;align-items:center;gap:12px;position:sticky;top:-20px;background:var(--bg);padding:4px 0 15px;z-index:2}.page-modal-head h2{margin:0}.close-page{font-size:20px;width:38px;height:38px;border-radius:50%}.dashboard-card-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.dashboard-action{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;text-align:left;cursor:pointer}.dashboard-action b{display:block;font-size:16px;margin-bottom:6px}.dashboard-action span{font-size:12px;color:var(--muted)}
+@media(max-width:700px){.page-modal{padding:8px}.page-modal-card{margin-top:8px;max-height:calc(100vh - 16px);padding:12px}.dashboard-card-grid{grid-template-columns:1fr}}</style>
+</head>
+<body><aside class="sidebar">
+  <div class="side-brand"><b>AKH Gulf</b><span>General Trading LLC</span></div>
+  <nav class="side-nav">
+    <a href="#" class="active" data-admin-page="dashboard">⌂ &nbsp; Dashboard</a>
+    <a href="#" data-admin-page="homepage">▣ &nbsp; Homepage Builder</a>
+    <a href="#" data-admin-page="products">▦ &nbsp; Products</a>
+    <a href="#" data-admin-page="categories">◇ &nbsp; Categories</a>
+    <a href="#" data-admin-page="enquiries">✉ &nbsp; Enquiries</a>
+    <a href="#" data-admin-page="settings">⚙ &nbsp; Website Settings</a>
+  </nav>
+  <div class="side-footer">Tharavad Test Environment</div>
+</aside>
+<header class="top"><div class="wrap topbar"><div class="brand"><div class="brand-mark">AKH</div><div><h1>AKH Gulf Admin</h1><small>Manage your website content</small></div></div><div class="admin-chip"><span>● Admin</span><button id="logout" type="button" hidden>Logout ↗</button></div></div></header>
+<section id="loginPanel" class="panel login"><h2 class="h2">Admin Login</h2><div id="loginMsg" class="msg" hidden></div><label>Email</label><input id="email" class="input" type="email" autocomplete="username"><label>Password</label><input id="password" class="input" type="password" autocomplete="current-password"><button id="loginBtn" class="btn primary">Login</button><p class="note">Only the Firebase Authentication account whose email matches your configured admin email can manage products.</p></section>
+<main class="wrap" id="dashboard" hidden>
+  <div class="dashboard-head"><div><h2>Website Dashboard</h2><p>Control your homepage, products and categories from one place.</p></div><button class="btn save-main" type="button" onclick="document.getElementById('saveHomepageBtn')?.click()">Save Changes</button></div>
+  <div class="quick-nav"><a href="#" data-admin-page="homepage">Homepage Builder</a><a href="#" data-admin-page="products">Products</a><a href="#" data-admin-page="categories">Categories</a><a href="#" data-admin-page="preview">Public Preview</a></div>
+  <div class="stats"><div class="stat"><b id="statProducts">—</b><span>Products</span></div><div class="stat"><b id="statCategories">—</b><span>Categories</span></div><div class="stat"><b id="statFeatured">—</b><span>Featured</span></div><div class="stat"><b id="statSections">7</b><span>Homepage sections</span></div></div>
+
+
+
+<section id="adminPanel" hidden>
+
+
+<div class="panel builder-panel" id="builder">
+  <div class="row" style="justify-content:space-between">
+    <div><h2 class="h2" style="margin-bottom:5px">Homepage Builder</h2><div class="note">Control the public homepage content, visibility and section order from Firebase.</div></div>
+    <button id="loadHomepageBtn" class="btn secondary" type="button">Reload Homepage</button>
+  </div>
+  <div id="homepageMsg" class="msg" hidden></div>
+  <form id="homepageForm">
+    <div class="builder-card"><h3>Hero</h3><div class="grid">
+      <div><label>Eyebrow</label><input id="hpHeroEyebrow" class="input"></div>
+      <div><label>Heading</label><input id="hpHeroTitle" class="input"></div>
+      <div class="full"><label>Description</label><textarea id="hpHeroLead" class="input" rows="3"></textarea></div>
+      <div><label>Primary button text</label><input id="hpHeroPrimaryText" class="input"></div>
+      <div><label>Primary button link</label><input id="hpHeroPrimaryLink" class="input"></div>
+      <div><label>Secondary button text</label><input id="hpHeroSecondaryText" class="input"></div>
+      <div><label>Secondary button link</label><input id="hpHeroSecondaryLink" class="input"></div>
+    </div></div>
+    <div class="builder-card"><h3>Featured Products</h3><div class="grid">
+      <div><label>Section title</label><input id="hpFeaturedTitle" class="input"></div>
+      <div><label>Section description</label><input id="hpFeaturedDescription" class="input"></div>
+      <div><label>Animation speed (seconds, 1–60)</label><input id="hpFeaturedSpeed" class="input" type="number" min="1" max="60"></div>
+      <label class="toggle"><input id="hpFeaturedEnabled" type="checkbox"> <span>Show Featured Products section</span></label>
+      <label class="toggle"><input id="hpFeaturedAutoplay" type="checkbox"> <span>Auto-scroll featured products</span></label>
+    </div><p class="note">Choose individual Featured products from Product Manager. Featured ON/OFF is stored on each product.</p>
+    <div class="builder-card"><h3>Product Promotions</h3><p class="note">Promotions are now managed directly inside Product Manager. Open Products → New Product/Edit Product and set the badge and promotion details in one place. This avoids duplicate promotion entries.</p></div>
+    <div class="builder-card"><h3>About Us</h3><div class="grid">
+      <div><label>Eyebrow</label><input id="hpAboutEyebrow" class="input"></div><div><label>Heading</label><input id="hpAboutTitle" class="input"></div>
+      <div class="full"><label>Description</label><textarea id="hpAboutText" class="input" rows="3"></textarea></div>
+      <div><label>Button text</label><input id="hpAboutButton" class="input"></div><div><label>Button link</label><input id="hpAboutLink" class="input"></div>
+    </div></div>
+    <div class="builder-card"><h3>Vision</h3><div class="grid"><div><label>Eyebrow</label><input id="hpVisionEyebrow" class="input"></div><div><label>Heading</label><input id="hpVisionTitle" class="input"></div><div class="full"><label>Description</label><textarea id="hpVisionText" class="input" rows="3"></textarea></div></div></div>
+    <div class="builder-card"><h3>How We Work</h3><div class="grid"><div><label>Eyebrow</label><input id="hpBusinessEyebrow" class="input"></div><div><label>Heading</label><input id="hpBusinessTitle" class="input"></div><div class="full"><label>Steps (one per line: Title | Description)</label><textarea id="hpBusinessSteps" class="input" rows="5"></textarea></div></div></div>
+    <div class="builder-card"><h3>Inquiry & Contact</h3><div class="grid"><div><label>Inquiry heading</label><input id="hpInquiryTitle" class="input"></div><div><label>Inquiry description</label><input id="hpInquiryText" class="input"></div><div><label>Contact heading</label><input id="hpContactTitle" class="input"></div><div><label>Contact description</label><input id="hpContactText" class="input"></div></div></div>
+    <div class="builder-card"><h3>Social Media</h3><div class="grid">
+      <div><label>Instagram URL</label><input id="hpSocialInstagram" class="input" type="url" placeholder="https://instagram.com/yourpage"></div>
+      <div><label>Facebook URL</label><input id="hpSocialFacebook" class="input" type="url" placeholder="https://facebook.com/yourpage"></div>
+      <div><label>LinkedIn URL</label><input id="hpSocialLinkedin" class="input" type="url" placeholder="https://linkedin.com/company/yourpage"></div>
+      <div><label>TikTok URL</label><input id="hpSocialTiktok" class="input" type="url" placeholder="https://tiktok.com/@yourpage"></div>
+      <div><label>YouTube URL</label><input id="hpSocialYoutube" class="input" type="url" placeholder="https://youtube.com/@yourpage"></div>
+      <div><label>WhatsApp URL</label><input id="hpSocialWhatsapp" class="input" type="url" placeholder="https://wa.me/971..."></div>
+    </div><p class="note">Leave a field empty if you do not use that social platform. The public website will only show links that are filled in.</p></div>
+    <div class="builder-card"><h3>Section Visibility & Order</h3><p class="note">Drag sections to the order you want. The public homepage will follow this order.</p><div id="sectionOrder" class="section-order"></div></div>
+    <div class="row"><button class="btn primary" type="submit" id="saveHomepageBtn">Save Homepage</button><button class="btn secondary" type="button" id="resetHomepageBtn">Reset to current saved values</button></div>
+  </form>
+</div>
+
+<div class="panel" id="enquiryInfo"><h2 class="h2">Enquiry Settings</h2><p class="note">Customer enquiries are managed on the public website. Products selected by visitors are collected in the enquiry drawer and sent through the website WhatsApp enquiry form. Use Homepage Builder → Inquiry & Contact to change the enquiry heading and message.</p><button class="btn primary" type="button" data-admin-page="homepage">Open Homepage / Inquiry Settings</button></div>
+
+<div class="panel" id="productsPanel">
+  <div class="row" style="justify-content:space-between">
+    <div><h2 class="h2" style="margin-bottom:5px">Product Manager</h2><div class="note">Add, edit, delete, reorder, and update product images.</div></div>
+    <button id="newBtn" class="btn primary" type="button">+ New Product</button>
+  </div>
+</div>
+
+<div class="panel" id="categoriesPanel">
+  <h2 class="h2">Category Manager</h2>
+  <p class="note">Create categories once, then select them when adding products. Edit or delete categories here.</p>
+  <div id="categoryMsg" class="msg" hidden></div>
+  <div class="row" style="margin-bottom:15px">
+    <input id="newCategory" class="input" style="margin:0;flex:1;min-width:220px" placeholder="Enter category name">
+    <button id="addCategoryBtn" class="btn primary">+ Add Category</button>
+  </div>
+  <div id="categoryList" class="category-list"></div>
+</div>
+
+<div class="panel" id="productFormPanel">
+  <div class="section-label"><div><h2 class="h2">Add / Edit Product</h2><div class="note">Create a new product or update an existing product.</div></div><button id="backProductsBtn" class="btn secondary" type="button">← Back to Products</button></div>
+  <div id="formMsg" class="msg" hidden></div>
+  <form id="productForm">
+    <input type="hidden" id="productId">
+    <div class="grid">
+      <div><label>Product name *</label><input id="name" class="input" required></div>
+      <div>
+        <label>Category</label>
+        <select id="category" class="input">
+          <option value="">Select category</option>
+        </select>
+      </div>
+      <div><label>Short description</label><input id="description" class="input"></div>
+      <div><label>Sort order</label><input id="sortOrder" class="input" type="number" value="100">
+      <label class="toggle"><input id="featured" type="checkbox"> <span>Featured on homepage</span></label></div>
+      <div><label>Product badge</label><select id="badge" class="input"><option value="">None</option><option>New Arrival</option><option>Special Offer</option><option>Promotion</option><option>Best Seller</option><option>Featured</option><option>Limited</option><option value="custom">Custom</option></select><input id="customBadge" class="input" placeholder="Custom badge text" style="display:none;margin-top:-4px"></div>
+      <div class="full builder-card" style="margin:0"><h3 style="margin-bottom:8px">Promotion / Slider Details</h3><p class="note">Optional. If enabled, this product can appear once in the Featured slider with its promotion badge and campaign text.</p><label class="toggle"><input id="promotionEnabled" type="checkbox"> <span>Show this product as a promotion in the Featured slider</span></label><div class="grid" id="promotionFields"><div><label>Promotion title</label><input id="promotionTitle" class="input" placeholder="Special Offer"></div><div><label>Promotion subtitle / offer</label><input id="promotionSubtitle" class="input" placeholder="Limited-time offer"></div><div><label>Promotion button text</label><input id="promotionButtonText" class="input" placeholder="Enquire Now"></div><div><label>Promotion link (optional)</label><input id="promotionButtonLink" class="input" placeholder="#inquiry or https://..."></div><div><label>Promotion image URL (optional)</label><input id="promotionImageUrl" class="input" type="url" placeholder="Leave empty to use product image"></div><div><label>Promotion order</label><input id="promotionSortOrder" class="input" type="number" value="50"></div><label class="toggle"><input id="promotionActive" type="checkbox" checked> <span>Promotion active</span></label></div></div>
+      <div class="full">
+        <label>Product image URL</label>
+        <input id="imageUrl" class="input" type="url" placeholder="https://example.com/product-image.jpg">
+        <div class="row"><img id="preview" class="preview" alt="Preview"><span class="note">Use a direct public image URL. Firebase Storage is not required.</span></div>
+      </div>
+    </div>
+    <div class="row" style="margin-top:10px">
+      <button class="btn primary" id="saveBtn" type="submit">Save Product</button>
+      <button class="btn secondary" id="cancelBtn" type="button">Clear</button>
+    </div>
+  </form>
+</div>
+
+<div class="panel" id="currentProductsPanel"><h2 class="h2">Current Products</h2><div id="products" class="products"></div></div>
+</section>
+
+  <div class="panel" id="previewPanel">
+    <div class="section-label"><div><h3>Public Website Preview</h3><div class="note">Preview the same <b>index.html</b> that visitors will see.</div></div><button class="btn secondary" type="button" onclick="document.getElementById('publicPreview').src='index.html?t='+Date.now();document.getElementById('mobilePreview').src='index.html?t='+Date.now();">Refresh Preview</button></div>
+    <div class="preview-grid"><div class="preview-frame"><iframe id="publicPreview" src="index.html"></iframe></div><div><div class="section-label"><h3>Mobile View</h3><span class="pill">LIVE PREVIEW</span></div><div class="mobile-frame"><iframe id="mobilePreview" src="index.html"></iframe></div></div></div>
+  </div>
+</main>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, getDoc, getDocs, query, orderBy, serverTimestamp, where, setDoc } from "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+import { firebaseConfig, ADMIN_EMAIL } from "./firebase-config.js";
+
+const loginPanel=document.getElementById('loginPanel'), adminPanel=document.getElementById('adminPanel'), loginMsg=document.getElementById('loginMsg'), formMsg=document.getElementById('formMsg'), categoryMsg=document.getElementById('categoryMsg'), logout=document.getElementById('logout');
+function msg(el,text,error=false){el.textContent=text;el.hidden=!text;el.classList.toggle('error',error)}
+if(firebaseConfig.apiKey.startsWith('YOUR_')) msg(loginMsg,'First open firebase-config.js and paste your Firebase Web App configuration.',true);
+const app=initializeApp(firebaseConfig), auth=getAuth(app), db=getFirestore(app);
+// Keep the admin session stable across Firebase writes and page navigation.
+setPersistence(auth,browserLocalPersistence).catch(err=>console.warn('Auth persistence:',err));
+let editing=null, products=[], categories=[], editingCategoryId=null;
+let editingPromoIndex=null;
+
+document.getElementById('loginBtn').onclick=async()=>{msg(loginMsg,'');try{await signInWithEmailAndPassword(auth,document.getElementById('email').value.trim(),document.getElementById('password').value)}catch(e){msg(loginMsg,e.code==='auth/invalid-credential'?'Incorrect email or password.':e.message,true)}};
+logout.onclick=()=>signOut(auth);
+
+onAuthStateChanged(auth,user=>{
+  if(user && user.email?.toLowerCase()===ADMIN_EMAIL.toLowerCase()){
+    loginPanel.hidden=true;adminPanel.hidden=false;document.getElementById('dashboard').hidden=false;logout.hidden=false;window.showAdminPage?.('dashboard');loadCategories();loadProducts();loadHomepage();
+  }else if(user){
+    signOut(auth);msg(loginMsg,'This account is not the configured admin account.',true);
+  }else{
+    loginPanel.hidden=false;adminPanel.hidden=true;document.getElementById('dashboard').hidden=true;logout.hidden=true;
+  }
+});
+
+const defaultHomepage={hero:{eyebrow:'AKH GULF',title:'Everyday products.\nDirect trade.',lead:'Everyday products, responsive sourcing and a direct route from your requirement to our trading team.',primaryText:'Explore catalogue',primaryLink:'#products',secondaryText:'WhatsApp us',secondaryLink:'https://wa.me/971524594923'},featured:{enabled:true,title:'Featured products',description:'Selected products from the live catalogue.',autoplay:true,speed:24,slides:[]},about:{eyebrow:'AKH GULF',title:'A practical partner for the products your customers already know.',text:'We serve trade customers across everyday consumer categories, with a responsive approach to sourcing and inquiries.',button:'Tell us what you need',link:'#inquiry'},vision:{eyebrow:'OUR VISION',title:'Clear, responsive trade for the long term.',text:'Our vision is to make sourcing and trade communication clear, responsive and straightforward for customers across the UAE.'},business:{eyebrow:'HOW WE WORK',title:'Simple process. Clear communication.',steps:['Explore | Browse food, beverage, personal care and home care products.','Specify | Tell us the brand, product, pack size or quantity you need.','Connect | Send a prepared inquiry and discuss availability and sourcing directly.']},inquiry:{title:'What can we source for you?',text:'Build a simple product list, add quantities, and send one clear inquiry to our trading team on WhatsApp.'},contact:{title:'Let’s talk supply.',text:'Contact our team for availability, quantities and product sourcing.'},social:{instagram:'',facebook:'',linkedin:'',tiktok:'',youtube:'',whatsapp:'https://wa.me/971524594923'},sections:[{id:'featuredSection',label:'Featured Products',visible:true},{id:'products',label:'Products',visible:true},{id:'about',label:'About Us',visible:true},{id:'vision',label:'Vision',visible:true},{id:'business',label:'How We Work',visible:true},{id:'inquiry',label:'Inquiry',visible:true},{id:'contact',label:'Contact',visible:true}]};
+let homepage=JSON.parse(JSON.stringify(defaultHomepage));
+function setVal(id,v){const e=document.getElementById(id);if(e)e.value=v??''} function setCheck(id,v){const e=document.getElementById(id);if(e)e.checked=!!v}
+function renderHomepageForm(){const h=homepage;setVal('hpHeroEyebrow',h.hero.eyebrow);setVal('hpHeroTitle',h.hero.title);setVal('hpHeroLead',h.hero.lead);setVal('hpHeroPrimaryText',h.hero.primaryText);setVal('hpHeroPrimaryLink',h.hero.primaryLink);setVal('hpHeroSecondaryText',h.hero.secondaryText);setVal('hpHeroSecondaryLink',h.hero.secondaryLink);setVal('hpFeaturedTitle',h.featured.title);setVal('hpFeaturedDescription',h.featured.description);setVal('hpFeaturedSpeed',h.featured.speed);setCheck('hpFeaturedEnabled',h.featured.enabled);setCheck('hpFeaturedAutoplay',h.featured.autoplay);setVal('hpAboutEyebrow',h.about.eyebrow);setVal('hpAboutTitle',h.about.title);setVal('hpAboutText',h.about.text);setVal('hpAboutButton',h.about.button);setVal('hpAboutLink',h.about.link);setVal('hpVisionEyebrow',h.vision.eyebrow);setVal('hpVisionTitle',h.vision.title);setVal('hpVisionText',h.vision.text);setVal('hpBusinessEyebrow',h.business.eyebrow);setVal('hpBusinessTitle',h.business.title);setVal('hpBusinessSteps',(h.business.steps||[]).join('\n'));setVal('hpInquiryTitle',h.inquiry.title);setVal('hpInquiryText',h.inquiry.text);setVal('hpContactTitle',h.contact.title);setVal('hpContactText',h.contact.text);setVal('hpSocialInstagram',h.social?.instagram||'');setVal('hpSocialFacebook',h.social?.facebook||'');setVal('hpSocialLinkedin',h.social?.linkedin||'');setVal('hpSocialTiktok',h.social?.tiktok||'');setVal('hpSocialYoutube',h.social?.youtube||'');setVal('hpSocialWhatsapp',h.social?.whatsapp||'');renderSectionOrder()}
+function renderSectionOrder(){const box=document.getElementById('sectionOrder');box.innerHTML='';(homepage.sections||[]).forEach(sec=>{const row=document.createElement('div');row.className='section-item';row.draggable=true;row.dataset.id=sec.id;row.innerHTML=`<span class="section-handle">☰</span><strong>${sec.label}</strong><label class="toggle"><input type="checkbox" ${sec.visible?'checked':''}> Show</label>`;row.querySelector('input').onchange=e=>sec.visible=e.target.checked;row.ondragstart=()=>row.classList.add('dragging');row.ondragend=()=>{row.classList.remove('dragging');homepage.sections=[...box.children].map(x=>homepage.sections.find(y=>y.id===x.dataset.id));};row.ondragover=e=>{e.preventDefault();const drag=box.querySelector('.dragging');if(drag&&drag!==row){const r=row.getBoundingClientRect();box.insertBefore(drag,e.clientY<r.top+r.height/2?row:row.nextSibling)}};box.appendChild(row)})}
+async function loadHomepage(){try{const snap=await getDoc(doc(db,'homepage','settings'));homepage=snap.exists()?{...defaultHomepage,...snap.data(),hero:{...defaultHomepage.hero,...(snap.data().hero||{})},featured:{...defaultHomepage.featured,...(snap.data().featured||{}),slides:Array.isArray(snap.data().featured?.slides)?snap.data().featured.slides:[]},about:{...defaultHomepage.about,...(snap.data().about||{})},vision:{...defaultHomepage.vision,...(snap.data().vision||{})},business:{...defaultHomepage.business,...(snap.data().business||{})},inquiry:{...defaultHomepage.inquiry,...(snap.data().inquiry||{})},contact:{...defaultHomepage.contact,...(snap.data().contact||{})},social:{...defaultHomepage.social,...(snap.data().social||{})}}:JSON.parse(JSON.stringify(defaultHomepage));renderHomepageForm()}catch(e){msg(document.getElementById('homepageMsg'),e.message,true)}}
+document.getElementById('homepageForm').onsubmit=async e=>{e.preventDefault();const btn=document.getElementById('saveHomepageBtn');btn.disabled=true;try{homepage.hero={eyebrow:document.getElementById('hpHeroEyebrow').value,title:document.getElementById('hpHeroTitle').value,lead:document.getElementById('hpHeroLead').value,primaryText:document.getElementById('hpHeroPrimaryText').value,primaryLink:document.getElementById('hpHeroPrimaryLink').value,secondaryText:document.getElementById('hpHeroSecondaryText').value,secondaryLink:document.getElementById('hpHeroSecondaryLink').value};homepage.featured={...homepage.featured,enabled:document.getElementById('hpFeaturedEnabled').checked,title:document.getElementById('hpFeaturedTitle').value,description:document.getElementById('hpFeaturedDescription').value,autoplay:document.getElementById('hpFeaturedAutoplay').checked,speed:Number(document.getElementById('hpFeaturedSpeed').value)||24,slides:Array.isArray(homepage.featured?.slides)?homepage.featured.slides:[]};homepage.about={eyebrow:document.getElementById('hpAboutEyebrow').value,title:document.getElementById('hpAboutTitle').value,text:document.getElementById('hpAboutText').value,button:document.getElementById('hpAboutButton').value,link:document.getElementById('hpAboutLink').value};homepage.vision={eyebrow:document.getElementById('hpVisionEyebrow').value,title:document.getElementById('hpVisionTitle').value,text:document.getElementById('hpVisionText').value};homepage.business={eyebrow:document.getElementById('hpBusinessEyebrow').value,title:document.getElementById('hpBusinessTitle').value,steps:document.getElementById('hpBusinessSteps').value.split('\n').map(x=>x.trim()).filter(Boolean)};homepage.inquiry={title:document.getElementById('hpInquiryTitle').value,text:document.getElementById('hpInquiryText').value};homepage.contact={title:document.getElementById('hpContactTitle').value,text:document.getElementById('hpContactText').value};homepage.social={instagram:document.getElementById('hpSocialInstagram').value.trim(),facebook:document.getElementById('hpSocialFacebook').value.trim(),linkedin:document.getElementById('hpSocialLinkedin').value.trim(),tiktok:document.getElementById('hpSocialTiktok').value.trim(),youtube:document.getElementById('hpSocialYoutube').value.trim(),whatsapp:document.getElementById('hpSocialWhatsapp').value.trim()};await setDoc(doc(db,'homepage','settings'),{...homepage,updatedAt:serverTimestamp()},{merge:true});msg(document.getElementById('homepageMsg'),'Homepage saved successfully. Changes will appear on the public website after reload.')}catch(e){msg(document.getElementById('homepageMsg'),e.message,true)}finally{btn.disabled=false}};
+document.getElementById('loadHomepageBtn').onclick=loadHomepage;document.getElementById('resetHomepageBtn').onclick=loadHomepage;
+function getPromoSlides(){return Array.isArray(homepage.featured?.slides)?homepage.featured.slides:[]}
+function clearPromoForm(){editingPromoIndex=null;['promoBadge','promoTitle','promoSubtitle','promoImageUrl','promoButtonLink'].forEach(id=>document.getElementById(id).value='');document.getElementById('promoSortOrder').value=50;document.getElementById('promoActive').checked=true;document.getElementById('savePromoBtn').textContent='Add Promotion Slide';msg(document.getElementById('promoMsg'),'')}
+function renderPromoList(){const box=document.getElementById('promoList');if(!box)return;const slides=getPromoSlides();box.innerHTML='';if(!slides.length){box.innerHTML='<div class="empty">No promotion slides yet. Add a promotion above.</div>';return}slides.forEach((p,i)=>{const row=document.createElement('div');row.className='product';row.innerHTML='<img class="thumb" alt=""><div><h3></h3><p></p></div><div class="actions"><button class="btn secondary edit-promo">Edit</button><button class="btn danger delete-promo">Delete</button></div>';row.querySelector('img').src=p.imageUrl||'';row.querySelector('h3').textContent=p.title||'Promotion';row.querySelector('p').textContent=(p.badge?p.badge+' — ':'')+(p.subtitle||'')+' · '+(p.active===false?'Inactive':'Active')+' · Order: '+(p.sortOrder??50);row.querySelector('.edit-promo').onclick=()=>editPromo(i);row.querySelector('.delete-promo').onclick=()=>deletePromo(i);box.appendChild(row)})}
+function editPromo(i){const p=getPromoSlides()[i];if(!p)return;editingPromoIndex=i;document.getElementById('promoBadge').value=p.badge||'';document.getElementById('promoTitle').value=p.title||'';document.getElementById('promoSubtitle').value=p.subtitle||'';document.getElementById('promoImageUrl').value=p.imageUrl||'';document.getElementById('promoButtonLink').value=p.buttonLink||'';document.getElementById('promoSortOrder').value=p.sortOrder??50;document.getElementById('promoActive').checked=p.active!==false;document.getElementById('savePromoBtn').textContent='Update Promotion Slide';document.getElementById('promoTitle').focus()}
+async function savePromo(){const title=document.getElementById('promoTitle').value.trim(),imageUrl=document.getElementById('promoImageUrl').value.trim();if(!title||!imageUrl){msg(document.getElementById('promoMsg'),'Title and promotion image are required.',true);return}if(!/^https?:\/\//i.test(imageUrl)){msg(document.getElementById('promoMsg'),'Promotion image URL must start with http:// or https://',true);return}const slide={badge:document.getElementById('promoBadge').value.trim(),title,subtitle:document.getElementById('promoSubtitle').value.trim(),imageUrl,buttonLink:document.getElementById('promoButtonLink').value.trim(),sortOrder:Number(document.getElementById('promoSortOrder').value)||50,active:document.getElementById('promoActive').checked};const slides=[...getPromoSlides()];if(editingPromoIndex===null)slides.push(slide);else slides[editingPromoIndex]=slide;homepage.featured={...homepage.featured,slides};const btn=document.getElementById('savePromoBtn');btn.disabled=true;try{await setDoc(doc(db,'homepage','settings'),{featured:homepage.featured,updatedAt:serverTimestamp()},{merge:true});msg(document.getElementById('promoMsg'),'Promotion slide saved successfully.');clearPromoForm();renderPromoList()}catch(e){msg(document.getElementById('promoMsg'),e.message,true)}finally{btn.disabled=false}}
+async function deletePromo(i){const slides=[...getPromoSlides()];const p=slides[i];if(!p||!confirm(`Delete promotion "${p.title||'Promotion'}"?`))return;slides.splice(i,1);homepage.featured={...homepage.featured,slides};try{await setDoc(doc(db,'homepage','settings'),{featured:homepage.featured,updatedAt:serverTimestamp()},{merge:true});msg(document.getElementById('promoMsg'),'Promotion slide deleted.');renderPromoList()}catch(e){msg(document.getElementById('promoMsg'),e.message,true)}}
+document.getElementById('savePromoBtn').onclick=savePromo;document.getElementById('clearPromoBtn').onclick=clearPromoForm;
+
+async function loadCategories(){
+  try{
+    const snap=await getDocs(query(collection(db,'categories'),orderBy('name','asc')));
+    categories=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderCategories();
+    populateCategorySelect();
+  }catch(e){msg(categoryMsg,e.message,true)}
+}
+
+function renderCategories(){
+  const box=document.getElementById('categoryList');
+  box.innerHTML='';
+  if(!categories.length){box.innerHTML='<div class="empty">No categories yet. Add your first category above.</div>';return}
+  categories.forEach(c=>{
+    const row=document.createElement('div');
+    row.className='category-row';
+    row.innerHTML='<div class="category-name"></div><div class="category-actions"><button class="btn secondary edit-category" type="button">Edit</button><button class="btn danger delete-category" type="button">Delete</button></div>';
+    row.querySelector('.category-name').textContent=c.name||'';
+    row.querySelector('.edit-category').onclick=()=>startEditCategory(c);
+    row.querySelector('.delete-category').onclick=()=>removeCategory(c);
+    box.appendChild(row);
+  });
+}
+
+function populateCategorySelect(selected=''){
+  const select=document.getElementById('category'); if(!select)return;
+  select.innerHTML='';
+  const other=document.createElement('option'); other.value='Other'; other.textContent='Other'; select.appendChild(other);
+  categories.forEach(c=>{const o=document.createElement('option');o.value=c.name;o.textContent=c.name;select.appendChild(o)});
+  if(selected){let exists=[...select.options].some(o=>o.value===selected);if(!exists){const o=document.createElement('option');o.value=selected;o.textContent=selected;select.appendChild(o)}select.value=selected}else select.value='Other';
+}
+function normalized(s){return s.trim().toLowerCase()}
+
+function startEditCategory(c){
+  editingCategoryId=c.id;
+  document.getElementById('newCategory').value=c.name||'';
+  document.getElementById('addCategoryBtn').textContent='Update Category';
+  document.getElementById('newCategory').focus();
+  msg(categoryMsg,'Editing: '+c.name);
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function cancelCategoryEdit(){
+  editingCategoryId=null;
+  document.getElementById('newCategory').value='';
+  document.getElementById('addCategoryBtn').textContent='+ Add Category';
+  msg(categoryMsg,'');
+}
+
+document.getElementById('addCategoryBtn').onclick=async()=>{
+  const input=document.getElementById('newCategory');
+  const name=input.value.trim();
+  if(!name){msg(categoryMsg,'Please enter a category name.',true);return}
+  const duplicate=categories.some(c=>c.id!==editingCategoryId && normalized(c.name||'')===normalized(name));
+  if(duplicate){msg(categoryMsg,'That category already exists.',true);return}
+
+  const btn=document.getElementById('addCategoryBtn');btn.disabled=true;
+  try{
+    if(editingCategoryId){
+      const old=categories.find(c=>c.id===editingCategoryId);
+      const oldName=old?.name||'';
+      await updateDoc(doc(db,'categories',editingCategoryId),{name,updatedAt:serverTimestamp()});
+
+      // Keep products synchronized with the renamed category.
+      const snap=await getDocs(query(collection(db,'products'),where('category','==',oldName)));
+      await Promise.all(snap.docs.map(d=>updateDoc(d.ref,{category:name,updatedAt:serverTimestamp()})));
+
+      msg(categoryMsg,`Category renamed to "${name}" and related products updated.`);
+    }else{
+      await addDoc(collection(db,'categories'),{name,createdAt:serverTimestamp(),updatedAt:serverTimestamp()});
+      msg(categoryMsg,'Category added successfully.');
+    }
+    cancelCategoryEdit();
+    await loadCategories();
+    await loadProducts();
+  }catch(e){msg(categoryMsg,e.message,true)}
+  finally{btn.disabled=false}
+};
+
+async function removeCategory(c){
+  try{
+    const snap=await getDocs(query(collection(db,'products'),where('category','==',c.name)));
+    if(!snap.empty){
+      msg(categoryMsg,`Cannot delete "${c.name}" because ${snap.size} product${snap.size===1?' is':'s are'} using this category. Edit or move those products first.`,true);
+      return;
+    }
+    if(!confirm(`Delete category "${c.name}"?`))return;
+    await deleteDoc(doc(db,'categories',c.id));
+    msg(categoryMsg,'Category deleted successfully.');
+    if(editingCategoryId===c.id) cancelCategoryEdit();
+    await loadCategories();
+  }catch(e){msg(categoryMsg,e.message,true)}
+}
+
+async function loadProducts(){
+  try{
+    let snap;
+    try{snap=await getDocs(query(collection(db,'products'),orderBy('sortOrder','asc')))}catch(orderError){console.warn('sortOrder query unavailable; loading products without ordering:',orderError);snap=await getDocs(collection(db,'products'))}
+    products=snap.docs.map(d=>({id:d.id,...d.data()}));
+    renderProducts();
+  }catch(e){msg(formMsg,e.message,true)}
+}
+
+function renderProducts(){
+  const box=document.getElementById('products');box.innerHTML='';
+  if(!products.length){box.innerHTML='<p class="note">No Firebase products yet. Create your first product above.</p>';return}
+  products.forEach((p,index)=>{
+    const row=document.createElement('div');row.className='product';
+    row.innerHTML=`<img class="thumb" alt=""><div><h3></h3><p></p></div><div class="actions"><button class="btn secondary edit" type="button">Edit</button><button class="btn danger delete" type="button">Delete</button></div>`; row.querySelector('.thumb').src=p.imageUrl||'';
+    row.querySelector('h3').textContent=`${index+1}. ${p.name||''}`;
+    row.querySelector('p').textContent=(p.category||'Other')+' — '+(p.description||'')+` · Order: ${p.sortOrder??100}`;
+    row.querySelector('.edit').onclick=()=>editProduct(p);
+    row.querySelector('.delete').onclick=()=>removeProduct(p);
+    box.appendChild(row)
+  })
+}
+
+function getProductBadge(){const select=document.getElementById('badge'),custom=document.getElementById('customBadge');if(select.value==='custom')return custom.value.trim();return select.value.trim()}
+function setProductBadge(value){const select=document.getElementById('badge'),custom=document.getElementById('customBadge');const presets=['','New Arrival','Special Offer','Promotion','Best Seller','Featured','Limited'];if(presets.includes(value)){select.value=value;custom.value='';custom.style.display='none'}else{select.value='custom';custom.value=value||'';custom.style.display='block'}}
+document.getElementById('badge')?.addEventListener('change',()=>{document.getElementById('customBadge').style.display=document.getElementById('badge').value==='custom'?'block':'none'});
+
+function editProduct(p){
+  editing=p;
+  const promo=p.promotion&&typeof p.promotion==='object'?p.promotion:{};
+  document.getElementById('productId').value=p.id;
+  document.getElementById('name').value=p.name||'';
+  populateCategorySelect(p.category||'');
+  document.getElementById('description').value=p.description||'';
+  document.getElementById('sortOrder').value=p.sortOrder??100;
+  document.getElementById('imageUrl').value=p.imageUrl||'';
+  document.getElementById('featured').checked=!!p.featured;
+  setProductBadge(p.badge||'');
+  document.getElementById('promotionEnabled').checked=!!promo.enabled;
+  document.getElementById('promotionEnabled').disabled=!p.featured;
+  document.getElementById('promotionTitle').value=promo.title||'';
+  document.getElementById('promotionSubtitle').value=promo.subtitle||'';
+  document.getElementById('promotionButtonText').value=promo.buttonText||'';
+  document.getElementById('promotionButtonLink').value=promo.buttonLink||'';
+  document.getElementById('promotionImageUrl').value=promo.imageUrl||'';
+  document.getElementById('promotionSortOrder').value=promo.sortOrder??50;
+  document.getElementById('promotionActive').checked=promo.active!==false;
+  document.getElementById('preview').src=p.imageUrl||'';
+  document.getElementById('saveBtn').textContent='Update Product';
+  window.showAdminPage('newproduct');
+  document.getElementById('name').focus();
+}
+
+function clearForm(){
+  editing=null;
+  document.getElementById('productForm').reset();
+  document.getElementById('productId').value='';
+  document.getElementById('sortOrder').value=100;
+  document.getElementById('promotionSortOrder').value=50;
+  document.getElementById('promotionActive').checked=true;
+  document.getElementById('imageUrl').value='';
+  document.getElementById('featured').checked=false;
+  document.getElementById('promotionEnabled').checked=false;
+  document.getElementById('promotionEnabled').disabled=true;
+  setProductBadge('');
+  document.getElementById('preview').removeAttribute('src');
+  populateCategorySelect();
+  document.getElementById('saveBtn').textContent='Save Product';
+  msg(formMsg,'')
+}
+document.getElementById('cancelBtn').onclick=clearForm;
+document.getElementById('imageUrl').addEventListener('input',e=>{document.getElementById('preview').src=e.target.value.trim()||''});
+
+document.getElementById('productForm').onsubmit=async e=>{
+  e.preventDefault();
+  const save=document.getElementById('saveBtn'); save.disabled=true; msg(formMsg,'Saving product…');
+  try{
+    const user=auth.currentUser;
+    if(!user) throw new Error('Your admin session has expired. Please log in again.');
+    if(user.email?.toLowerCase()!==ADMIN_EMAIL.toLowerCase()) throw new Error('This account is not authorized as the admin.');
+    const name=document.getElementById('name').value.trim();
+    if(!name) throw new Error('Product name is required.');
+    const category=document.getElementById('category').value.trim()||'Other';
+    const description=document.getElementById('description').value.trim();
+    const sortOrder=Number(document.getElementById('sortOrder').value)||100;
+    const imageUrl=document.getElementById('imageUrl').value.trim();
+    let featured=document.getElementById('featured').checked;
+    const badge=getProductBadge();
+    const promotionEnabled=document.getElementById('promotionEnabled').checked;
+    if(promotionEnabled) featured=true;
+    const promotion={enabled:promotionEnabled,title:document.getElementById('promotionTitle').value.trim(),subtitle:document.getElementById('promotionSubtitle').value.trim(),buttonText:document.getElementById('promotionButtonText').value.trim(),buttonLink:document.getElementById('promotionButtonLink').value.trim(),imageUrl:document.getElementById('promotionImageUrl').value.trim(),sortOrder:Number(document.getElementById('promotionSortOrder').value)||50,active:document.getElementById('promotionActive').checked};
+    if(imageUrl && !/^https?:\/\//i.test(imageUrl)) throw new Error('Product image URL must start with http:// or https://');
+    if(promotion.imageUrl && !/^https?:\/\//i.test(promotion.imageUrl)) throw new Error('Promotion image URL must start with http:// or https://');
+    const data={name,category,description,sortOrder,imageUrl,featured,badge,promotion,updatedAt:serverTimestamp()};
+    let savedId;
+    if(editing){savedId=editing.id;await setDoc(doc(db,'products',savedId),data,{merge:true});}
+    else{const ref=await addDoc(collection(db,'products'),{...data,createdAt:serverTimestamp()});savedId=ref.id;}
+    const verify=await getDoc(doc(db,'products',savedId));
+    if(!verify.exists()) throw new Error('The product could not be verified after saving.');
+    msg(formMsg,editing?'Product updated successfully.':'Product added successfully.');
+    await loadProducts();
+    clearForm();
+    window.showAdminPage('products');
+  }catch(e){console.error('Product save failed:',e);msg(formMsg,e.message||'Unable to save product.',true)}
+  finally{save.disabled=false}
+};
+
+window.clearAdminProductForm=clearForm;
+window.reloadAdminHomepage=loadHomepage;
+
+async function removeProduct(p){
+  if(!confirm(`Delete ${p.name}?`))return;
+  try{await deleteDoc(doc(db,'products',p.id));msg(formMsg,'Product deleted.');await loadProducts()}
+  catch(e){msg(formMsg,e.message,true)}
+}
+</script>
+
+<script>
+(function(){
+  // Router is intentionally outside the page content: it only hides/shows existing panels.
+  // No DOM moving, no modal cloning, and no form re-submission.
+  const groups={dashboard:[],homepage:['builder'],products:['productsPanel','currentProductsPanel'],newproduct:['productFormPanel'],categories:['categoriesPanel'],preview:['previewPanel'],settings:['builder'],enquiries:['enquiryInfo']};
+  const titles={dashboard:'Website Dashboard',homepage:'Homepage Builder',products:'Product Management',newproduct:'Add / Edit Product',categories:'Category Management',preview:'Public Website Preview',settings:'Website Settings',enquiries:'Enquiries'};
+  window.showAdminPage=function(name){
+    if(document.getElementById('adminPanel'))document.getElementById('adminPanel').hidden=false;
+    const page=groups[name]?name:'dashboard';
+    ['builder','enquiryInfo','productsPanel','currentProductsPanel','productFormPanel','categoriesPanel','previewPanel'].forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=true});
+    (groups[page]||[]).forEach(id=>{const el=document.getElementById(id);if(el)el.hidden=false});
+    document.querySelectorAll('[data-admin-page]').forEach(a=>a.classList.toggle('active',a.dataset.adminPage===page));
+    
+    
+    
+    if(page==='newproduct')setTimeout(()=>document.getElementById('name')?.focus(),50);
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+  document.querySelectorAll('[data-admin-page]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();window.showAdminPage(a.dataset.adminPage)}));
+  document.getElementById('newBtn')?.addEventListener('click',()=>{window.clearAdminProductForm?.();window.showAdminPage('newproduct')});
+  document.getElementById('backProductsBtn')?.addEventListener('click',()=>window.showAdminPage('products'));
+  document.getElementById('featured')?.addEventListener('change',()=>{const on=document.getElementById('featured').checked, p=document.getElementById('promotionEnabled');if(p){p.disabled=!on;if(!on)p.checked=false}});
+  document.getElementById('promotionEnabled')?.addEventListener('change',()=>{if(document.getElementById('promotionEnabled').checked){document.getElementById('featured').checked=true;document.getElementById('promotionEnabled').disabled=false}});
+  document.getElementById('resetHomepageBtn')?.addEventListener('click',()=>window.reloadAdminHomepage?.());
+  // Start with a clean dashboard page; other panels stay hidden until selected.
+  window.showAdminPage('dashboard');
+})();
+</script>
+
+<script>
+(function(){
+  const refreshStats=()=>{
+    const p=document.querySelectorAll('#products .product').length;
+    const c=document.querySelectorAll('#categoryList .category-row').length;
+    const f=[...document.querySelectorAll('#products .product')].filter(x=>x.textContent.includes('Featured')).length;
+    const a=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v};
+    a('statProducts',p||0);a('statCategories',c||0);a('statFeatured',f||0);
+  };
+  const obs=new MutationObserver(refreshStats);
+  window.addEventListener('load',()=>{refreshStats();const p=document.getElementById('products'),c=document.getElementById('categoryList');if(p)obs.observe(p,{childList:true,subtree:true});if(c)obs.observe(c,{childList:true,subtree:true});});
+})();
+</script>
+
+
+</body>
+</html>
